@@ -1,0 +1,43 @@
+#pragma once
+#include <vector>
+#include <string>
+#include <d2d1_3.h>
+#include "TextRenderer.h"
+
+class UIObject
+{
+public:
+    UIObject();
+    virtual ~UIObject();
+
+    virtual void Initialize();
+    virtual void Update(float deltaTime);
+    virtual void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer);
+    virtual void Release();
+
+    // 계층 구조 관리
+    void AddChild(UIObject* child);
+
+    // 위치 계산 로직 (지역 좌표 -> 전역 좌표 변환)
+    void UpdateTransform();
+
+    // 상태 제어 접근자
+    void SetLocalPosition(float x, float y) { m_localPosition = { x, y }; }
+    D2D1_POINT_2F GetGlobalPosition() const { return m_globalPosition; }
+
+    void SetActive(bool active) { m_isActive = active; }
+    bool IsActive() const { return m_isActive; }
+
+protected:
+    UIObject* m_parent;
+    std::vector<UIObject*> m_children;
+
+    // 공간 데이터
+    D2D1_POINT_2F m_localPosition;  // 부모를 기준으로 한 상대 좌표
+    D2D1_POINT_2F m_globalPosition; // 실제 화면에 그려질 절대 좌표
+    D2D1_SIZE_F m_size;
+
+    // 상태 데이터
+    bool m_isActive;  // Update와 Render를 모두 수행할지 여부
+    bool m_isVisible; // Update는 하되 화면에 그리기만 생략할지 여부
+};

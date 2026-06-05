@@ -1,0 +1,36 @@
+// TextRoguelike 용 별도 엔진 파일
+#pragma once
+
+#include <d2d1_3.h>
+#include <dwrite_3.h>
+#include <wrl/client.h>
+#include <string>
+
+using Microsoft::WRL::ComPtr;
+
+class TextRenderer
+{
+public:
+    TextRenderer() = default;
+    ~TextRenderer();
+
+    bool Initialize(ID2D1DeviceContext7* pContext);
+    void Release();
+
+    // 텍스트 포맷 생성 및 기본 폰트 설정
+    bool CreateTextFormat(const std::wstring& fontName, float fontSize);
+    void SetDefaultFont(const std::wstring& fontName, float fontSize);
+
+    // 문자열 출력
+    void DrawText(const std::wstring& text, float x, float y, float width, float height, const D2D1::ColorF& color);
+
+    // 문자열이 차지하는 영역 계산 (UI_Menu 크기 자동화 등에 사용)
+    D2D1_SIZE_F MeasureText(const std::wstring& text);
+
+private:
+    ID2D1DeviceContext7* m_pContext = nullptr; // 렌더러에서 전달받아 참조만 함 (메모리 해제 X)
+
+    ComPtr<IDWriteFactory> m_pDWriteFactory;
+    ComPtr<IDWriteTextFormat> m_pDefaultTextFormat;
+    ComPtr<ID2D1SolidColorBrush> m_pTextBrush;
+};

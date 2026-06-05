@@ -1,0 +1,16 @@
+{
+  "monsters": [
+    {
+      "id": "MOB_SLIME",
+      "name": "슬라임",
+      "maxHp": 30,
+      "attack": 5
+    },
+    {
+      "id": "MOB_GOBLIN",
+      "name": "고블린",
+      "maxHp": 50,
+      "attack": 12
+    }
+  ]
+}
