@@ -22,10 +22,10 @@ void GameObject::Attack(GameObject& target)
 	target.TakeDamage(attack);
 }
 
-void GameObject::Defend() 
-{
-
-}
+//void GameObject::Defend() 
+//{
+//
+//}
 
 bool GameObject::IsDead() const
 {

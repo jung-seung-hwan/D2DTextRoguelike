@@ -141,6 +141,7 @@
     <ClInclude Include="PlatformHelpers.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayScene.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SimpleMathHelper.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIImage.h" />
     <ClInclude Include="UIObject.h" />
     <ClInclude Include="UIPanel.h" />
   </ItemGroup>
@@ -167,11 +169,13 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayScene.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SimpleMathHelper.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIImage.cpp" />
     <ClCompile Include="UIObject.cpp" />
     <ClCompile Include="UIPanel.cpp" />
   </ItemGroup>

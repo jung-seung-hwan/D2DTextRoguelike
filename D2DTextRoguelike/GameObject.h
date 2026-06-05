@@ -23,7 +23,7 @@ public:
 
 	virtual void TakeDamage(int damage);
 	virtual void Attack(GameObject& target);
-	virtual void Defend();
+	//virtual void Defend();
 
 	bool IsDead() const;
 };
