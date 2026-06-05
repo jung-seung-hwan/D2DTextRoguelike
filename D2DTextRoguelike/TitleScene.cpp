@@ -38,9 +38,9 @@ void TitleScene::Update(float deltaTime)
 
 void TitleScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
 {
-    pTextRenderer->DrawTextW(
+    pTextRenderer->DrawText(
         L"TEXT ROGUELIKE",
-        100.0f, 300.0f, 300.0f, 50.0f,
+        0.0f, 0.0f, 300.0f, 50.0f,
         D2D1::ColorF(D2D1::ColorF::White)
     );
 
