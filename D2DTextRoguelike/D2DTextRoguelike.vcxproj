@@ -125,19 +125,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CombatManager.h" />
     <ClInclude Include="D2DApp.h" />
     <ClInclude Include="D2DRender.h" />
     <ClInclude Include="D2DTransform.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="DialoguePanel.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Monster.h" />
     <ClInclude Include="NzWndBase.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlatformHelpers.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayScene.h" />
-    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SimpleMathHelper.h" />
@@ -145,29 +148,30 @@
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="UIButton.h" />
-    <ClInclude Include="UIImage.h" />
     <ClInclude Include="UIObject.h" />
     <ClInclude Include="UIPanel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CombatManager.cpp" />
     <ClCompile Include="D2DApp.cpp" />
     <ClCompile Include="D2DRenderer.cpp" />
     <ClCompile Include="D2DTransform.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="DialoguePanel.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Monster.cpp" />
     <ClCompile Include="NzWndBase.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayScene.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SimpleMathHelper.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UIButton.cpp" />
-    <ClCompile Include="UIImage.cpp" />
     <ClCompile Include="UIObject.cpp" />
     <ClCompile Include="UIPanel.cpp" />
   </ItemGroup>
