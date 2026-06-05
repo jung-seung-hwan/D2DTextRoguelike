@@ -15,7 +15,7 @@ void PlayScene::Update(float deltaTime)
 
 void PlayScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
 {
-    // 전투 화면 출력 테스트용 텍스트
+    // 화면 출력 테스트용 텍스트
     pTextRenderer->DrawTextW(
         L"Play Started!",
         100.0f, 100.0f, 300.0f, 50.0f,
@@ -30,7 +30,7 @@ void PlayScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRendere
             m_currentMonster->maxHp,
             m_currentMonster->attack);
 
-        pTextRenderer->DrawTextW(
+        pTextRenderer->DrawText(
             buffer,
             100.0f, 150.0f, 300.0f, 150.0f, // 텍스트가 그려질 사각형 영역
             D2D1::ColorF(D2D1::ColorF::White)

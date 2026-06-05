@@ -28,6 +28,7 @@ void SceneManager::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRend
     if (m_currentScene != nullptr)
     {
         // 현재 활성화된 씬에게 그리기 도구를 그대로 전달
+        // 매니저는 화면 갱신 요청만 전송하고 그림은 각각의 렌더링 파이프라인에서 처리
         m_currentScene->Render(pContext, pTextRenderer);
     }
 }

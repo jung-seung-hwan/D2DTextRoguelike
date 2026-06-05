@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <string>
 
+
+// 씬 매니저는 싱글톤으로 설정하여 하나의 매니저만 존재하도록 설정
 class SceneManager : public SingletonBase<SceneManager>
 {
     friend class SingletonBase<SceneManager>;

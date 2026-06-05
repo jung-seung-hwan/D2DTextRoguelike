@@ -38,7 +38,7 @@ bool D2DApp::Initialize()
 
     DataManager::Instance().LoadMonsterData("./Resource/MonsterData.json");
 
-    // 씬 등록 및 초기 화면 설정
+    // 씬 등록 및 초기 화면 설정 (필요한 씬이 있으면 추가)
     SceneManager::Instance().AddScene(L"TitleScene", new TitleScene());
     SceneManager::Instance().AddScene(L"PlayScene", new PlayScene());
 
