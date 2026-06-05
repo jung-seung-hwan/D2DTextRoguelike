@@ -16,7 +16,7 @@ void PlayScene::Update(float deltaTime)
 void PlayScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
 {
     // 화면 출력 테스트용 텍스트
-    pTextRenderer->DrawTextW(
+    pTextRenderer->DrawText(
         L"Play Started!",
         100.0f, 100.0f, 300.0f, 50.0f,
         D2D1::ColorF(D2D1::ColorF::Red)

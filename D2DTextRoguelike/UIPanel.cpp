@@ -18,9 +18,11 @@ void UIPanel::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
 {
     if (!m_isActive || !m_isVisible) return;
 
-    // 패널 배경 사각형 그리기
-    Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> brush;
-    pContext->CreateSolidColorBrush(m_bgColor, &brush);
+    /// 브러시가 아직 생성되지 않았을 때만 1회 생성
+    if (m_pBrush == nullptr)
+    {
+        pContext->CreateSolidColorBrush(m_bgColor, &m_pBrush);
+    }
 
     D2D1_RECT_F rect = D2D1::RectF(
         m_globalPosition.x,
@@ -29,8 +31,19 @@ void UIPanel::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
         m_globalPosition.y + m_size.height
     );
 
-    pContext->FillRectangle(rect, brush.Get());
+    pContext->FillRectangle(rect, m_pBrush.Get());
 
     // 자식 UI 요소들(버튼, 텍스트 등) 렌더링
     UIObject::Render(pContext, pTextRenderer);
+}
+
+void UIPanel::SetBackgroundColor(D2D1::ColorF color)
+{
+    m_bgColor = color;
+
+    // 브러시가 이미 존재한다면 새로 만들지 않고 색상만 갱신
+    if (m_pBrush != nullptr)
+    {
+        m_pBrush->SetColor(color);
+    }
 }

@@ -3,8 +3,7 @@
 #include "TextRenderer.h"
 #include <vector>
 #include "DataManager.h"
-
-class UIObject;
+#include "UIObject.h"
 
 class PlayScene : public Scene
 {
@@ -17,6 +16,6 @@ public:
     void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
     void Release() override;
 private:
-    std::vector<UIObject*> m_uiList;
+    std::vector<std::unique_ptr<UIObject>> m_uiList;
     const MonsterData* m_currentMonster = nullptr;
 };

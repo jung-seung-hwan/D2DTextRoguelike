@@ -31,7 +31,7 @@ void UIButton::Update(float deltaTime)
     {
         m_isHovered = true;
 
-        // 마우스 왼쪽 버튼이 이번 프레임에 '막 클릭' 되었는지 검사
+        // 마우스 왼쪽 버튼이 이번 프레임에 클릭 되었는지 검사
         if (InputManager::Instance().IsMouseLeftClicked())
         {
             // 등록된 동작이 있다면 실행
@@ -55,7 +55,7 @@ void UIButton::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer
     D2D1::ColorF color = m_isHovered ? D2D1::ColorF(D2D1::ColorF::Yellow) : D2D1::ColorF(D2D1::ColorF::White);
 
     // 버튼 영역을 기준으로 텍스트 출력
-    pTextRenderer->DrawTextW(
+    pTextRenderer->DrawText(
         m_text.c_str(),
         m_globalPosition.x, m_globalPosition.y, m_size.width, m_size.height,
         color

@@ -7,11 +7,6 @@ UIObject::UIObject()
 {
 }
 
-UIObject::~UIObject()
-{
-    Release();
-}
-
 void UIObject::Initialize()
 {
 }
@@ -24,7 +19,7 @@ void UIObject::Update(float deltaTime)
     UpdateTransform();
 
     // 내 자식들에게 Update 전달
-    for (auto child : m_children)
+    for (auto& child : m_children)
     {
         child->Update(deltaTime);
     }
@@ -35,30 +30,16 @@ void UIObject::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer
     if (!m_isActive || !m_isVisible) return;
 
     // 자식들에게 Render 전달
-    for (auto child : m_children)
+    for (auto& child : m_children)
     {
         child->Render(pContext, pTextRenderer);
     }
 }
 
-void UIObject::Release()
+void UIObject::AddChild(std::unique_ptr<UIObject> child)
 {
-    // 자식들의 메모리를 일괄 해제
-    for (auto child : m_children)
-    {
-        child->Release();
-        delete child;
-    }
-    m_children.clear();
-}
-
-void UIObject::AddChild(UIObject* child)
-{
-    if (child != nullptr)
-    {
-        child->m_parent = this;
-        m_children.push_back(child);
-    }
+    child->m_parent = this;
+    m_children.push_back(std::move(child));
 }
 
 void UIObject::UpdateTransform()

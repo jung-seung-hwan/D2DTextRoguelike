@@ -7,7 +7,7 @@ class UIButton : public UIObject
 {
 public:
     UIButton(const std::wstring& text, float width, float height);
-    ~UIButton() override = default;
+    ~UIButton() = default;
 
     void Update(float deltaTime) override;
     void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
