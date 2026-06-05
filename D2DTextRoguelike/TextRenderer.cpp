@@ -95,9 +95,10 @@ void TextRenderer::SetDefaultFont(const std::wstring& fontName, float fontSize)
     width : 텍스트가 출력될 영역의 너비
     height : 텍스트가 출력될 영역의 높이
     color : 텍스트 색상
-    align : 정렬 방식
+    align : 가로 정렬 방식
+    verticalalign : 세로 정렬 방식
 */
-void TextRenderer::DrawText(const std::wstring& text, float x, float y, float width, float height, const D2D1::ColorF& color, TextAlign align) {
+void TextRenderer::DrawText(const std::wstring& text, float x, float y, float width, float height, const D2D1::ColorF& color, TextAlign align, VerticalAlign vAlign) {
     if (m_pContext == nullptr || m_pDefaultTextFormat == nullptr) return;
 
     // 텍스트를 그릴 색상 브러시 생성
@@ -122,6 +123,19 @@ void TextRenderer::DrawText(const std::wstring& text, float x, float y, float wi
         break;
     case TextAlign::Right:
         m_pDefaultTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
+        break;
+    }
+
+    switch (vAlign)
+    {
+    case VerticalAlign::Top:
+        m_pDefaultTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+        break;
+    case VerticalAlign::Center:
+        m_pDefaultTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+        break;
+    case VerticalAlign::Bottom:
+        m_pDefaultTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR);
         break;
     }
 

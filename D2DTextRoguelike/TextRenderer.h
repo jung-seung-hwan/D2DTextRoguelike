@@ -16,6 +16,14 @@ enum class TextAlign
     Right
 };
 
+// 세로 정렬
+enum class VerticalAlign
+{
+    Top,
+    Center,
+    Bottom
+};
+
 class TextRenderer
 {
 public:
@@ -30,7 +38,7 @@ public:
     void SetDefaultFont(const std::wstring& fontName, float fontSize);
 
     // 문자열 출력 (기본값은 왼쪽 정렬)
-    void DrawText(const std::wstring& text, float x, float y, float width, float height, const D2D1::ColorF& color, TextAlign align = TextAlign::Left);
+    void DrawText(const std::wstring& text, float x, float y, float width, float height, const D2D1::ColorF& color, TextAlign align = TextAlign::Left, VerticalAlign vAlign = VerticalAlign::Top);
 
     // 문자열이 차지하는 영역 계산 (UI_Menu 크기 자동화 등에 사용)
     D2D1_SIZE_F MeasureText(const std::wstring& text);
