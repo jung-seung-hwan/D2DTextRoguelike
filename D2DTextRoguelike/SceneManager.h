@@ -4,7 +4,15 @@
 #include "TextRenderer.h"
 #include <unordered_map>
 #include <string>
+#include <wrl/client.h>
 
+// 씬 전환 상태를 관리
+enum class TransitionState
+{
+    None,
+    FadeOut, // 화면이 어두워지는 중
+    FadeIn   // 화면이 밝아지는 중
+};
 
 // 씬 매니저는 싱글톤으로 설정하여 하나의 매니저만 존재하도록 설정
 class SceneManager : public SingletonBase<SceneManager>
@@ -27,4 +35,11 @@ private:
 
     Scene* m_currentScene = nullptr;
     Scene* m_nextScene = nullptr;
+
+    // 페이드 연출용 데이터
+    TransitionState m_transitionState = TransitionState::None;
+    float m_fadeAlpha = 0.0f;
+    float m_fadeSpeed = 1.0f;
+
+    Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> m_pFadeBrush;
 };
