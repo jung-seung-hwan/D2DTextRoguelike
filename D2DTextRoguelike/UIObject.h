@@ -26,7 +26,7 @@ public:
 
     // 상태 제어 접근자
     // 부모 기준 위치와 실제 화면 기준 위치를 저장
-    void SetLocalPosition(float x, float y) { m_localPosition = { x, y }; }
+    void SetLocalPosition(float x, float y) { m_localPosition = { x, y }; UpdateTransform(); }
     D2D1_POINT_2F GetGlobalPosition() const { return m_globalPosition; }
 
     void SetActive(bool active) { m_isActive = active; }

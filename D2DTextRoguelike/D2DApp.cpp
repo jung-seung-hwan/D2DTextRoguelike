@@ -22,7 +22,7 @@ bool D2DApp::Initialize()
     const wchar_t* className = L"D2DTextRoguelike";
     const wchar_t* windowName = L"TextRoguelike";
 
-    if (false == __super::Create(className, windowName, 430, 932))
+    if (false == __super::Create(className, windowName, 900, 700))
     {
         return false;
     }

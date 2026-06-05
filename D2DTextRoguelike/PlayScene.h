@@ -1,9 +1,12 @@
 #pragma once
+#include <vector>
+#include <memory>
 #include "Scene.h"
 #include "TextRenderer.h"
-#include <vector>
 #include "DataManager.h"
 #include "UIObject.h"
+#include "UIButton.h"
+#include "DialoguePanel.h"
 
 class PlayScene : public Scene
 {
@@ -18,4 +21,7 @@ public:
 private:
     std::vector<std::unique_ptr<UIObject>> m_uiList;
     const MonsterData* m_currentMonster = nullptr;
+
+    // 패널 조작을 위한 포인터
+    DialoguePanel* m_dialoguePanel = nullptr;
 };

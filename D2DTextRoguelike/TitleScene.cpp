@@ -7,9 +7,9 @@
 void TitleScene::Initialize()
 {
     // 패널 생성
-    auto mainPanel = std::make_unique<UIPanel>(400.0f, 600.0f);
+    auto mainPanel = std::make_unique<UIPanel>(800.0f, 600.0f);
 
-    mainPanel->SetLocalPosition(15.0f, 150.0f);
+    mainPanel->SetLocalPosition(50.0f, 50.0f);
     mainPanel->SetBackgroundColor(D2D1::ColorF(D2D1::ColorF::DarkSlateGray));
 
     auto startBtn = std::make_unique<UIButton>(L"Game Start", 300.0f, 50.0f);

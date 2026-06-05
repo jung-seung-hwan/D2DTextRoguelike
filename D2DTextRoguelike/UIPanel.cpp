@@ -14,6 +14,19 @@ void UIPanel::Update(float deltaTime)
     UIObject::Update(deltaTime);
 }
 
+void UIPanel::SetBorder(bool hasBorder, float thickness, D2D1::ColorF color)
+{
+    m_hasBorder = hasBorder;
+    m_borderThickness = thickness;
+    m_borderColor = color;
+
+    // 이미 브러시가 생성되어 있다면 색상만 교체
+    if (m_pBorderBrush != nullptr)
+    {
+        m_pBorderBrush->SetColor(color);
+    }
+}
+
 void UIPanel::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
 {
     if (!m_isActive || !m_isVisible) return;
@@ -31,7 +44,19 @@ void UIPanel::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
         m_globalPosition.y + m_size.height
     );
 
+    // 배경 색
     pContext->FillRectangle(rect, m_pBrush.Get());
+
+    // 테두리 그리기
+    if (m_hasBorder)
+    {
+        if (m_pBorderBrush == nullptr)
+        {
+            pContext->CreateSolidColorBrush(m_borderColor, &m_pBorderBrush);
+        }
+        // DrawRectangle의 3번째 매개변수로 선의 두께(Thickness)를 전달
+        pContext->DrawRectangle(rect, m_pBorderBrush.Get(), m_borderThickness);
+    }
 
     // 자식 UI 요소들(버튼, 텍스트 등) 렌더링
     UIObject::Render(pContext, pTextRenderer);

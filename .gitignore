@@ -1,3 +1,21 @@
-x64/
+# Visual Studio
 .vs/
-D2DTextRoguelike/x64/
+*.user
+
+# Build Output
+x64/
+Debug/
+Release/
+
+# Intermediate Files
+*.obj
+*.pch
+*.pdb
+*.ilk
+*.log
+*.tlog
+*.lastbuildstate
+
+# Visual Studio Database
+*.VC.db
+*.VC.opendb
