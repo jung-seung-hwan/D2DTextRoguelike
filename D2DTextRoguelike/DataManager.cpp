@@ -66,3 +66,4 @@ void DataManager::Release()
 {
     m_monsterTable.clear();
 }
+
