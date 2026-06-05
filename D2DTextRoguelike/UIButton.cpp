@@ -58,7 +58,9 @@ void UIButton::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer
     pTextRenderer->DrawText(
         m_text.c_str(),
         m_globalPosition.x, m_globalPosition.y, m_size.width, m_size.height,
-        color
+        color,
+        TextAlign::Center,
+        VerticalAlign::Center
     );
 
     // 자식 UI가 있다면 마저 그리도록 부모 Render 호출

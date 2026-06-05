@@ -3,35 +3,40 @@
 #include "SceneManager.h"
 #include "UIButton.h"
 #include "UIPanel.h"
+#include "UIImage.h"
+#include "ResourceManager.h"
 
 void TitleScene::Initialize()
 {
-    // 패널 생성
-    auto mainPanel = std::make_unique<UIPanel>(800.0f, 600.0f);
+    ID2D1Bitmap* pBgBitmap = ResourceManager::Instance().GetBitmap(L"TitleBG");
+    if (pBgBitmap != nullptr)
+    {
+        // 화면 해상도에 맞추어 이미지 객체 생성
+        auto bgImage = std::make_unique<UIImage>(pBgBitmap, 900.0f, 700.0f);
+        bgImage->SetLocalPosition(0.0f, 0.0f);
 
-    mainPanel->SetLocalPosition(50.0f, 50.0f);
-    mainPanel->SetBackgroundColor(D2D1::ColorF(D2D1::ColorF::DarkSlateGray));
+        // 배경화면이므로 반드시 UI 요소들 중 가장 먼저 벡터에 삽입해야 뒤로 깔림
+        m_uiList.push_back(std::move(bgImage));
+    }
 
     auto startBtn = std::make_unique<UIButton>(L"Game Start", 300.0f, 50.0f);
-    startBtn->SetLocalPosition(50.0f, 100.0f);
+    startBtn->SetLocalPosition(300.0f, 400.0f);
     startBtn->SetOnClick([]()
         {
             SceneManager::Instance().ChangeScene(L"PlayScene");
         });
 
-    mainPanel->AddChild(std::move(startBtn));
 
     auto exitBtn = std::make_unique<UIButton>(L"Exit Game", 300.0f, 50.0f);
-    exitBtn->SetLocalPosition(50.0f, 200.0f);
+    exitBtn->SetLocalPosition(300.0f, 430.0f);
     exitBtn->SetOnClick([]()
         {
             PostQuitMessage(0);
         });
 
-    mainPanel->AddChild(std::move(exitBtn));
 
-    // 씬에는 완성된 패널 1개만 등록
-    m_uiList.push_back(std::move(mainPanel));
+    m_uiList.push_back(std::move(startBtn));
+    m_uiList.push_back(std::move(exitBtn));
 }
 
 void TitleScene::Update(float deltaTime)

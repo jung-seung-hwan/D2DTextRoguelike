@@ -5,6 +5,7 @@
 #include "TitleScene.h"
 #include "PlayScene.h"
 #include "DataManager.h"
+#include "ResourceManager.h"
 
 bool D2DApp::OnWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -33,6 +34,14 @@ bool D2DApp::Initialize()
     // 텍스트 분리 처리를 위해 context를 TextRenderer에 넘겨줌
     m_pTextRenderer = new TextRenderer();
     m_pTextRenderer->Initialize(m_d2dContext.Get());
+
+    // 배경 로딩
+    if (!ResourceManager::Instance().Initialize(m_d2dContext.Get()))
+    {
+        OutputDebugStringW(L"[Error] ResourceManager Initialization Failed.\n");
+        return false;
+    }
+    ResourceManager::Instance().LoadWICBitmap(L"TitleBG", L"./Resource/TitleScene.png");
 
     m_timer.Reset();
 
@@ -68,6 +77,11 @@ void D2DApp::Run()
 
 void D2DApp::Finalize()
 {
+    // 관리자 해제
+    SceneManager::Instance().Release();
+    ResourceManager::Instance().Release();
+    DataManager::Instance().Release();
+
     if (m_pTextRenderer != nullptr)
     {
         m_pTextRenderer->Release();
@@ -79,6 +93,8 @@ void D2DApp::Finalize()
 
     __super::Destroy();
 
+    // com 라이브러리 종료
+    CoUninitialize();
 }
 
 void D2DApp::Update()
