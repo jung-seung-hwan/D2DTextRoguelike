@@ -1,12 +1,12 @@
 #include "GameObject.h"
 #include <algorithm>
 
-void GameObject::TakeDamage(int damage)
+int GameObject::TakeDamage(int damage)
 {
 	int finalDamage = damage - defense;
 
 	if (finalDamage < 1)
-		finalDamage = 0;
+		finalDamage = 1;
 
 	hp -= finalDamage;
 
@@ -15,11 +15,13 @@ void GameObject::TakeDamage(int damage)
 		hp = 0;
 		isDead = true;
 	}
+
+	return finalDamage;
 }
 
-void GameObject::Attack(GameObject& target)
+int GameObject::Attack(GameObject& target)
 {
-	target.TakeDamage(attack);
+	return target.TakeDamage(attack);
 }
 
 //void GameObject::Defend() 

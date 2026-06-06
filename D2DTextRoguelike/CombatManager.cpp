@@ -21,7 +21,7 @@ void CombatManager::PlayerAction(PLAYERACTION action)
 	switch (action)
 	{
 	case PLAYERACTION::ATTACK:
-		m_player->Attack(*m_monster);
+		m_damageToMonster = m_player->Attack(*m_monster);
 		break;
 
 	case PLAYERACTION::DEFEND:
@@ -52,7 +52,7 @@ void CombatManager::EnemyTurn()
 	if (m_state != BATTLESTATE::ENEMYTURN)
 		return;
 
-	m_monster->Attack(*m_player);
+	m_damageToPlayer = m_monster->Attack(*m_player);
 
 	if (m_player->isDead)
 	{
@@ -66,7 +66,7 @@ void CombatManager::EnemyTurn()
 
 bool CombatManager::IsBattleEnd() const
 {
-	return m_state == BATTLESTATE::PLAYERTURN ||
+	return m_state == BATTLESTATE::VICTORY ||
 		m_state == BATTLESTATE::DEFEAT;
 }
 

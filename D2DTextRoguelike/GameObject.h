@@ -21,8 +21,8 @@ public:
 	virtual void Update(float deltaTime) {}
 	virtual void Render() {}
 
-	virtual void TakeDamage(int damage);
-	virtual void Attack(GameObject& target);
+	virtual int TakeDamage(int damage);
+	virtual int Attack(GameObject& target);
 	//virtual void Defend();
 
 	bool IsDead() const;

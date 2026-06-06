@@ -29,6 +29,9 @@ private:
 	BATTLESTATE m_state = BATTLESTATE::NONE;
 	int m_turnCount = 0;
 
+	int m_damageToMonster = 0;
+	int m_damageToPlayer = 0;
+
 public:
 	void StartBattle(Player* player, Monster* monster);
 
@@ -38,5 +41,15 @@ public:
 
 	bool IsBattleEnd() const;
 	BATTLESTATE GetState() const;
+
+	int GetDamageToMonster() const
+	{
+		return m_damageToMonster;
+	}
+
+	int GetDamageToPlayer() const
+	{
+		return m_damageToPlayer;
+	}
 };
 

@@ -8,6 +8,21 @@ void PlayScene::Initialize()
     // 몬스터 생성, 플레이어 초기화 등
     m_currentMonster = DataManager::Instance().GetMonsterData(L"MOB_SLIME");
 
+    if (m_currentMonster != nullptr)
+    {
+        m_monster.InitFromData(*m_currentMonster);
+    }
+
+    // 플레이어 임시 초기화
+    m_player.name = L"플레이어";
+    m_player.maxHp = 100;
+    m_player.hp = 100;
+    m_player.attack = 10;
+    m_player.defense = 0;
+    m_player.isDead = false;
+
+    m_combatManager.StartBattle(&m_player, &m_monster);
+
     // 대화 패널 생성 및 등록
     auto dialoguePanel = std::make_unique<DialoguePanel>(860.0f, 150.0f);
 
@@ -30,6 +45,54 @@ void PlayScene::Initialize()
         });
 
     m_uiList.push_back(std::move(testBtn));
+
+    auto attackBtn = std::make_unique<UIButton>(L"공격", 120.0f, 40.0f);
+
+    attackBtn->SetLocalPosition(160.0f, 470.0f);
+    attackBtn->SetOnClick([this]()
+        {
+            int monsterHpBefore = m_monster.hp;
+            int playerHpBefore = m_player.hp;
+
+            m_combatManager.PlayerAction(PLAYERACTION::ATTACK);
+
+            int playerDamage = m_combatManager.GetDamageToMonster();
+            int enemyDamage = m_combatManager.GetDamageToPlayer();
+
+
+            if (m_dialoguePanel == nullptr)
+                return;
+
+            if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
+            {
+                m_dialoguePanel->PlayText(L"몬스터를 쓰러뜨렸다!");
+            }
+            else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
+            {
+                m_dialoguePanel->PlayText(L"플레이어가 쓰러졌다...");
+            }
+            else
+            {
+                wchar_t buffer[256];
+
+                swprintf_s(
+                    buffer,
+                    256,
+                    L"플레이어 공격!\n%s에게 %d 대미지!\n%s의 반격!\n플레이어가 %d 대미지를 받았다. ",
+                    m_monster.name.c_str(),
+                    m_combatManager.GetDamageToMonster(),
+                    m_monster.name.c_str(),
+                    m_combatManager.GetDamageToPlayer()
+                    );
+
+                m_dialoguePanel->PlayText(buffer);
+            
+            }
+        });
+
+    m_uiList.push_back(std::move(attackBtn));
+
+
 }
 
 void PlayScene::Update(float deltaTime)
@@ -53,10 +116,15 @@ void PlayScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRendere
     if (m_currentMonster != nullptr)
     {
         wchar_t buffer[256];
-        swprintf_s(buffer, 256, L"이름: %s\n체력: %d\n공격력: %d",
-            m_currentMonster->name.c_str(),
-            m_currentMonster->maxHp,
-            m_currentMonster->attack);
+        swprintf_s(buffer, 256, L"이름: %s\n체력: %d / %d\n공격력: %d",
+            //m_currentMonster->name.c_str(),
+            //m_currentMonster->maxHp,
+            //m_currentMonster->attack);
+            m_monster.name.c_str(),
+            m_monster.hp,
+            m_monster.maxHp,
+            m_monster.attack);
+
 
         pTextRenderer->DrawText(
             buffer,
@@ -64,6 +132,19 @@ void PlayScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRendere
             D2D1::ColorF(D2D1::ColorF::White)
         );
     }
+    wchar_t playerBuffer[256];
+    swprintf_s(playerBuffer, 256, L"플레이어\n체력: %d / %d\n공격력: %d",
+        m_player.hp,
+        m_player.maxHp,
+        m_player.attack
+    );
+
+    pTextRenderer->DrawText(
+        playerBuffer,
+        100.0f, 320.0f, 300.0f, 150.0f,
+        D2D1::ColorF(D2D1::ColorF::White)
+    );
+    
 
     // UI 일괄 렌더링
     for (auto& ui : m_uiList)

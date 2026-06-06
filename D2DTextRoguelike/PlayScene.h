@@ -7,6 +7,9 @@
 #include "UIObject.h"
 #include "UIButton.h"
 #include "DialoguePanel.h"
+#include "Player.h"
+#include "Monster.h"
+#include "CombatManager.h"
 
 class PlayScene : public Scene
 {
@@ -21,6 +24,10 @@ public:
 private:
     std::vector<std::unique_ptr<UIObject>> m_uiList;
     const MonsterData* m_currentMonster = nullptr;
+
+    Player m_player;
+    Monster m_monster;
+    CombatManager m_combatManager;
 
     // 패널 조작을 위한 포인터
     DialoguePanel* m_dialoguePanel = nullptr;
