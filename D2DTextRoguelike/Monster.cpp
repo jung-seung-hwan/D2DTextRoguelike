@@ -11,5 +11,7 @@ void Monster::InitFromData(const MonsterData& data)
 
 	attack = data.attack;
 
+	evasion = data.evasion;
+
 	isDead = false;
 }

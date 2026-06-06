@@ -7,3 +7,8 @@ void Player::Heal(int amount)
 	if (hp > maxHp)
 		hp = maxHp;
 }
+
+void Player::Defend()
+{
+	shield += 5;
+}

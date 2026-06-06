@@ -5,93 +5,18 @@
 
 void PlayScene::Initialize()
 {
-    // 몬스터 생성, 플레이어 초기화 등
-    m_currentMonster = DataManager::Instance().GetMonsterData(L"MOB_SLIME");
-
-    if (m_currentMonster != nullptr)
-    {
-        m_monster.InitFromData(*m_currentMonster);
-    }
-
     // 플레이어 임시 초기화
     m_player.name = L"플레이어";
     m_player.maxHp = 100;
     m_player.hp = 100;
     m_player.attack = 10;
     m_player.defense = 0;
+    m_player.evasion = 10;
     m_player.isDead = false;
 
-    m_combatManager.StartBattle(&m_player, &m_monster);
+    StartBattle(L"MOB_SLIME");
 
-    // 대화 패널 생성 및 등록
-    auto dialoguePanel = std::make_unique<DialoguePanel>(860.0f, 150.0f);
-
-    // 패널 제어를 위한 주소 확보
-    m_dialoguePanel = dialoguePanel.get();
-    m_dialoguePanel->SetLocalPosition(20.0f, 530.0f);
-    m_dialoguePanel->SetActive(false);
-
-    m_uiList.push_back(std::move(dialoguePanel));
-
-    // 테스트 버튼 생성 및 등록
-    auto testBtn = std::make_unique<UIButton>(L"대화 재생", 120.0f, 40.0f);
-    testBtn->SetLocalPosition(20.0f, 470.0f);
-    testBtn->SetOnClick([this]()
-        {
-            if (m_dialoguePanel != nullptr && !m_dialoguePanel->IsActive())
-            {
-                m_dialoguePanel->PlayText(L"앗! 야생의 슬라임이 튀어나왔다 앗! 야생의 슬라임이 튀어나왔다 앗! 야생의 슬라임이 튀어나왔다앗! 야생의 슬라임이 튀어나왔다!\n무엇을 할까?\n1. 공격  2. 도망");
-            }
-        });
-
-    m_uiList.push_back(std::move(testBtn));
-
-    auto attackBtn = std::make_unique<UIButton>(L"공격", 120.0f, 40.0f);
-
-    attackBtn->SetLocalPosition(160.0f, 470.0f);
-    attackBtn->SetOnClick([this]()
-        {
-            int monsterHpBefore = m_monster.hp;
-            int playerHpBefore = m_player.hp;
-
-            m_combatManager.PlayerAction(PLAYERACTION::ATTACK);
-
-            int playerDamage = m_combatManager.GetDamageToMonster();
-            int enemyDamage = m_combatManager.GetDamageToPlayer();
-
-
-            if (m_dialoguePanel == nullptr)
-                return;
-
-            if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
-            {
-                m_dialoguePanel->PlayText(L"몬스터를 쓰러뜨렸다!");
-            }
-            else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
-            {
-                m_dialoguePanel->PlayText(L"플레이어가 쓰러졌다...");
-            }
-            else
-            {
-                wchar_t buffer[256];
-
-                swprintf_s(
-                    buffer,
-                    256,
-                    L"플레이어 공격!\n%s에게 %d 대미지!\n%s의 반격!\n플레이어가 %d 대미지를 받았다. ",
-                    m_monster.name.c_str(),
-                    m_combatManager.GetDamageToMonster(),
-                    m_monster.name.c_str(),
-                    m_combatManager.GetDamageToPlayer()
-                    );
-
-                m_dialoguePanel->PlayText(buffer);
-            
-            }
-        });
-
-    m_uiList.push_back(std::move(attackBtn));
-
+    CreateUI();
 
 }
 
@@ -113,13 +38,19 @@ void PlayScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRendere
         D2D1::ColorF(D2D1::ColorF::Red)
     );
 
+    wchar_t floorBuffer[64];
+    swprintf_s(floorBuffer, 64, L"현재 층: %d층", m_currentFloor);
+
+    pTextRenderer->DrawText(
+        floorBuffer,
+        100.0f, 60.0f, 300.0f, 50.0f,
+        D2D1::ColorF(D2D1::ColorF::Yellow)
+    );
+
     if (m_currentMonster != nullptr)
     {
         wchar_t buffer[256];
         swprintf_s(buffer, 256, L"이름: %s\n체력: %d / %d\n공격력: %d",
-            //m_currentMonster->name.c_str(),
-            //m_currentMonster->maxHp,
-            //m_currentMonster->attack);
             m_monster.name.c_str(),
             m_monster.hp,
             m_monster.maxHp,
@@ -159,3 +90,100 @@ void PlayScene::Release()
     m_dialoguePanel = nullptr;
     m_uiList.clear();
 }
+
+
+void PlayScene::StartBattle(const std::wstring& monsterId)
+{
+    m_currentMonster = DataManager::Instance().GetMonsterData(monsterId);
+
+    if (m_currentMonster == nullptr)
+        return;
+
+    m_monster.InitFromData(*m_currentMonster);
+    m_combatManager.StartBattle(&m_player, &m_monster);
+}
+
+void PlayScene::GoNextFloor()
+{
+    m_currentFloor++;
+
+    StartBattle(L"MOB_SLIME");
+
+    if (m_dialoguePanel != nullptr)
+    {
+        wchar_t buffer[128];
+        swprintf_s(buffer, 128, L"- %d층 -", m_currentFloor);
+        m_dialoguePanel->PlayText(buffer);
+    }
+}
+
+void PlayScene::CreateUI()
+{
+    CreateDialoguePanel();
+
+
+    CreateButton(L"공격", 160.0f, 470.0f, [this]()
+        {
+            if (m_combatManager.IsBattleEnd())
+                return;
+
+            m_combatManager.PlayerAction(PLAYERACTION::ATTACK);
+
+            if (m_dialoguePanel == nullptr)
+                return;
+
+            wchar_t buffer[256];
+
+            if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
+            {
+                swprintf_s(buffer, 256, L"%s을/를 쓰러뜨렸다!", m_monster.name.c_str());
+            }
+            else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
+            {
+                swprintf_s(buffer, 256, L"플레이어가 쓰러졌다...");
+            }
+            else
+            {
+                swprintf_s(
+                    buffer,
+                    256,
+                    L"플레이어 공격!\n%s에게 %d 대미지!\n%s의 반격!\n플레이어가 %d 대미지를 받았다.",
+                    m_monster.name.c_str(),
+                    m_combatManager.GetDamageToMonster(),
+                    m_monster.name.c_str(),
+                    m_combatManager.GetDamageToPlayer()
+                );
+            }
+
+            m_dialoguePanel->PlayText(buffer);
+        });
+
+    CreateButton(L"다음 층", 300.0f, 470.0f, [this]()
+        {
+            if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
+            {
+                GoNextFloor();
+            }
+        });
+}
+
+void PlayScene::CreateDialoguePanel()
+{
+    auto dialoguePanel = std::make_unique<DialoguePanel>(860.0f, 150.0f);
+
+    m_dialoguePanel = dialoguePanel.get();
+    m_dialoguePanel->SetLocalPosition(20.0f, 530.0f);
+    m_dialoguePanel->SetActive(false);
+
+    m_uiList.push_back(std::move(dialoguePanel));
+}
+
+void PlayScene::CreateButton(const std::wstring& text, float x, float y, std::function<void()> onClick)
+{
+    auto button = std::make_unique<UIButton>(text, 120.0f, 40.0f);
+    button->SetLocalPosition(x, y);
+    button->SetOnClick(onClick);
+
+    m_uiList.push_back(std::move(button));
+}
+

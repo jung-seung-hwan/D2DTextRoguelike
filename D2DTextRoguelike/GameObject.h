@@ -11,6 +11,7 @@ public:
 
 	int attack = 0;
 	int defense = 0;
+	int evasion = 0;
 
 	bool isDead = false;
 

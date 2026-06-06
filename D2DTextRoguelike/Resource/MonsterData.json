@@ -4,13 +4,15 @@
       "id": "MOB_SLIME",
       "name": "슬라임",
       "maxHp": 30,
-      "attack": 5
+      "attack": 5,
+      "evasion": 10
     },
     {
       "id": "MOB_GOBLIN",
       "name": "고블린",
       "maxHp": 50,
-      "attack": 12
+      "attack": 12,
+      "evasion": 10
     }
   ]
 }

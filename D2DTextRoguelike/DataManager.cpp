@@ -37,6 +37,7 @@ bool DataManager::LoadMonsterData(const std::string& filePath)
             data.name = UTF8ToWString(item["name"].get<std::string>());
             data.maxHp = item["maxHp"].get<int>();
             data.attack = item["attack"].get<int>();
+            data.evasion = item["evasion"].get<int>();
 
             // 해시맵에 등록
             m_monsterTable[data.id] = data;

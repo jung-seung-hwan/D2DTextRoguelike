@@ -10,6 +10,7 @@ struct MonsterData
     std::wstring name;
     int maxHp;
     int attack;
+    int evasion;
 };
 
 class DataManager : public SingletonBase<DataManager>
