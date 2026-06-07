@@ -2,6 +2,7 @@
 #include "PlayScene.h"
 #include "DataManager.h"
 #include "InputManager.h"
+#include "ResourceManager.h"
 
 void PlayScene::Initialize()
 {
@@ -31,6 +32,26 @@ void PlayScene::Update(float deltaTime)
 
 void PlayScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
 {
+    ID2D1Bitmap* playerBitmap = ResourceManager::Instance().GetBitmap(L"PlayerDummy");
+
+    if (playerBitmap != nullptr)
+    {
+        pContext->DrawBitmap(
+            playerBitmap,
+            D2D1::RectF(0.0f, 0.0f, 700.0f, 1000.0f)
+        );
+    }
+
+    ID2D1Bitmap* slimeBitmap = ResourceManager::Instance().GetBitmap(L"SlimeDummy");
+
+    if (slimeBitmap != nullptr)
+    {
+        pContext->DrawBitmap(
+            slimeBitmap,
+            D2D1::RectF(560.0f, 130.0f, 720.0f, 290.0f)
+        );
+    }
+
     // 화면 출력 테스트용 텍스트
     pTextRenderer->DrawText(
         L"Play Started!",

@@ -49,4 +49,6 @@ private:
     // 패널 조작을 위한 포인터
     DialoguePanel* m_dialoguePanel = nullptr;
 
+    ID2D1Bitmap1* m_playerImage = nullptr;
+    ID2D1Bitmap1* m_monsterImage = nullptr;
 };

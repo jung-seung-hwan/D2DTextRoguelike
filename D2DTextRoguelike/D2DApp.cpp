@@ -42,6 +42,9 @@ bool D2DApp::Initialize()
         return false;
     }
     ResourceManager::Instance().LoadWICBitmap(L"TitleBG", L"./Resource/TitleScene.png");
+    ResourceManager::Instance().LoadWICBitmap(L"SlimeDummy", L"./Resource/PlayerDummy.png");
+    ResourceManager::Instance().LoadWICBitmap(L"SlimeDummy", L"./Resource/SlimeDummy.png");
+
 
     m_timer.Reset();
 
