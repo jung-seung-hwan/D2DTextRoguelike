@@ -24,7 +24,7 @@ public:
     void Release() override;
 
 private:
-    void StartBattle(const std::wstring& monsterId);
+    void StartBattle(int floor, MonsterType type);
     void GoNextFloor();
 
     void CreateUI();

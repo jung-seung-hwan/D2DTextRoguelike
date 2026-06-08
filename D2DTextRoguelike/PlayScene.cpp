@@ -9,12 +9,15 @@ void PlayScene::Initialize()
     m_player.name = L"플레이어";
     m_player.maxHp = 100;
     m_player.hp = 100;
-    m_player.attack = 10;
+    m_player.attack = 1000;
     m_player.defense = 0;
     m_player.evasion = 10;
     m_player.isDead = false;
 
-    StartBattle(L"MOB_SLIME");
+    // 초기 층수 설정
+    m_currentFloor = 1;
+
+    StartBattle(m_currentFloor, MonsterType::Normal);
 
     CreateUI();
 
@@ -92,14 +95,26 @@ void PlayScene::Release()
 }
 
 
-void PlayScene::StartBattle(const std::wstring& monsterId)
+void PlayScene::StartBattle(int floor, MonsterType type)
 {
-    m_currentMonster = DataManager::Instance().GetMonsterData(monsterId);
+    // DataManager를 통해 조건에 맞는 무작위 몬스터 포인터 획득
+    m_currentMonster = DataManager::Instance().GetRandomMonster(floor, type);
 
     if (m_currentMonster == nullptr)
+    {
+        OutputDebugStringW(L"[Warning] No monster found for the current floor/type.\n");
         return;
+    }
 
-    m_monster.InitFromData(*m_currentMonster);
+    // 현재 전투에 사용할 몬스터 객체 상태 초기화
+    m_monster.name = m_currentMonster->name;
+    m_monster.maxHp = m_currentMonster->maxHp;
+    m_monster.hp = m_currentMonster->maxHp; // 전투 시작 시 체력은 최대치로 회복
+    m_monster.attack = m_currentMonster->attack;
+    m_monster.evasion = m_currentMonster->evasion;
+    m_monster.isDead = false;
+
+    // 전투 매니저에 객체 주입 및 전투 개시
     m_combatManager.StartBattle(&m_player, &m_monster);
 }
 
@@ -107,12 +122,32 @@ void PlayScene::GoNextFloor()
 {
     m_currentFloor++;
 
-    StartBattle(L"MOB_SLIME");
+    // 층수에 따른 몬스터 등급 분기 처리
+    if (m_currentFloor % 10 == 0)
+    {
+        StartBattle(m_currentFloor, MonsterType::Boss);
+    }
+    else if (m_currentFloor % 5 == 0)
+    {
+        StartBattle(m_currentFloor, MonsterType::MidBoss);
+    }
+    else
+    {
+        StartBattle(m_currentFloor, MonsterType::Normal);
+    }
 
+    // UI 대화창 갱신
     if (m_dialoguePanel != nullptr)
     {
-        wchar_t buffer[128];
-        swprintf_s(buffer, 128, L"- %d층 -", m_currentFloor);
+        wchar_t buffer[256];
+        if (m_currentMonster != nullptr)
+        {
+            swprintf_s(buffer, 256, L"- %d층 -\n야생의 %s(이)가 나타났다!", m_currentFloor, m_monster.name.c_str());
+        }
+        else
+        {
+            swprintf_s(buffer, 256, L"- %d층 -", m_currentFloor);
+        }
         m_dialoguePanel->PlayText(buffer);
     }
 }

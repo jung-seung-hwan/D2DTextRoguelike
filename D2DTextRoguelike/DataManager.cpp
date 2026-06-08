@@ -29,19 +29,39 @@ bool DataManager::LoadMonsterData(const std::string& filePath)
         file >> j; // JSON 파일 읽기 완료
 
         // JSON 배열 순회
-        for (const auto& item : j["monsters"])
-        {
-            MonsterData data;
-            // JSON 데이터 추출 및 인코딩 변환
-            data.id = UTF8ToWString(item["id"].get<std::string>());
-            data.name = UTF8ToWString(item["name"].get<std::string>());
-            data.maxHp = item["maxHp"].get<int>();
-            data.attack = item["attack"].get<int>();
-            data.evasion = item["evasion"].get<int>();
+        for (const auto& item : j["Monsters"])
+    {
+        MonsterData data;
 
-            // 해시맵에 등록
-            m_monsterTable[data.id] = data;
+        // 기본 식별자 파싱 및 문자열 변환
+        data.id = UTF8ToWString(item["Id"].get<std::string>());
+        data.name = UTF8ToWString(item["Name"].get<std::string>());
+
+        // 등급 파싱
+        std::string typeStr = item["Type"].get<std::string>();
+        if (typeStr == "Boss")
+        {
+            data.type = MonsterType::Boss;
         }
+        else if (typeStr == "MidBoss")
+        {
+            data.type = MonsterType::MidBoss;
+        }
+        else
+        {
+            data.type = MonsterType::Normal;
+        }
+
+        // 전투 및 스폰 속성 파싱
+        data.minFloor = item["MinFloor"].get<int>();
+        data.maxFloor = item["MaxFloor"].get<int>();
+        data.maxHp = item["MaxHp"].get<int>();
+        data.attack = item["Attack"].get<int>();
+        data.evasion = item["Evasion"].get<int>();
+
+        // 해시맵에 적재
+        m_monsterTable[data.id] = data;
+    }
 
         OutputDebugStringW(L"[System] MonsterData Loaded Successfully.\n");
         return true;
@@ -51,6 +71,36 @@ bool DataManager::LoadMonsterData(const std::string& filePath)
         OutputDebugStringA(e.what()); // 파싱 에러 출력
         return false;
     }
+}
+
+const MonsterData* DataManager::GetRandomMonster(int floor, MonsterType type)
+{
+    std::vector<const MonsterData*> validPool;
+
+    // 전체 테이블 순회 및 조건 필터링
+    for (const auto& pair : m_monsterTable)
+    {
+        const MonsterData& data = pair.second;
+
+        // 요청된 등급과 층수 조건에 부합하는지 검사
+        if (data.type == type && floor >= data.minFloor && floor <= data.maxFloor)
+        {
+            validPool.push_back(&data);
+        }
+    }
+
+    // 예외 처리
+    if (validPool.empty())
+    {
+        // 조건에 맞는 몬스터가 JSON에 정의되어 있지 않은 경우
+        return nullptr;
+    }
+
+    // 난수 생성 및 무작위 데이터 반환
+    std::uniform_int_distribution<size_t> dist(0, validPool.size() - 1);
+    size_t randomIndex = dist(m_rng);
+
+    return validPool[randomIndex];
 }
 
 const MonsterData* DataManager::GetMonsterData(const std::wstring& id) const

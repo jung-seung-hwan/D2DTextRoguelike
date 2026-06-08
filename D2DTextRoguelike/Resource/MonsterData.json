@@ -1,18 +1,54 @@
 {
-  "monsters": [
+  "Monsters": [
     {
-      "id": "MOB_SLIME",
-      "name": "슬라임",
-      "maxHp": 30,
-      "attack": 5,
-      "evasion": 10
+      "Id": "MOB_SLIME",
+      "Name": "슬라임",
+      "Type": "Normal",
+      "Evasion": 10,
+      "MinFloor": 1,
+      "MaxFloor": 5,
+      "MaxHp": 100,
+      "Attack": 10
     },
     {
-      "id": "MOB_GOBLIN",
-      "name": "고블린",
-      "maxHp": 50,
-      "attack": 12,
-      "evasion": 10
+      "Id": "MOB_GOBLIN",
+      "Name": "고블린",
+      "Type": "Normal",
+      "Evasion": 10,
+      "MinFloor": 2,
+      "MaxFloor": 7,
+      "MaxHp": 150,
+      "Attack": 18
+    },
+    {
+      "Id": "MOB_Golem",
+      "Name": "골렘",
+      "Type": "Normal",
+      "Evasion": 10,
+      "MinFloor": 2,
+      "MaxFloor": 8,
+      "MaxHp": 300,
+      "Attack": 10
+    },
+    {
+      "Id": "MID_ORC",
+      "Name": "정예 오크",
+      "Type": "MidBoss",
+      "Evasion": 10,
+      "MinFloor": 5,
+      "MaxFloor": 5,
+      "MaxHp": 500,
+      "Attack": 40
+    },
+    {
+      "Id": "BOSS_DRAGON",
+      "Name": "드래곤",
+      "Type": "Boss",
+      "Evasion": 10,
+      "MinFloor": 10,
+      "MaxFloor": 10,
+      "MaxHp": 2000,
+      "Attack": 100
     }
   ]
 }
