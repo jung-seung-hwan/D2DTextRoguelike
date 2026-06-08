@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CombatState.h" />
     <ClInclude Include="CombatManager.h" />
     <ClInclude Include="D2DApp.h" />
     <ClInclude Include="D2DRender.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="ISceneState.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="NzWndBase.h" />
     <ClInclude Include="pch.h" />
@@ -142,6 +144,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="RoomSelectState.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SimpleMathHelper.h" />
@@ -154,6 +157,7 @@
     <ClInclude Include="UIPanel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CombatState.cpp" />
     <ClCompile Include="CombatManager.cpp" />
     <ClCompile Include="D2DApp.cpp" />
     <ClCompile Include="D2DRenderer.cpp" />
@@ -170,6 +174,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="RoomSelectState.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SimpleMathHelper.cpp" />
     <ClCompile Include="TextRenderer.cpp" />

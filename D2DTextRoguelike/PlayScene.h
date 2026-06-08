@@ -3,14 +3,8 @@
 #include <memory>
 #include "Scene.h"
 #include "TextRenderer.h"
-#include "DataManager.h"
-#include "UIObject.h"
-#include "UIButton.h"
-#include "DialoguePanel.h"
 #include "Player.h"
-#include "Monster.h"
-#include "CombatManager.h"
-#include <functional>
+#include "ISceneState.h"
 
 class PlayScene : public Scene
 {
@@ -23,32 +17,20 @@ public:
     void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
     void Release() override;
 
-private:
-    void StartBattle(int floor, MonsterType type);
-    void GoNextFloor();
+    // 상태를 전환하는 인터페이스
+    void ChangeState(std::unique_ptr<ISceneState> newState);
 
-    void CreateUI();
-    void CreateDialoguePanel();
-    void CreateButton(
-        const std::wstring& text,
-        float x,
-        float y,
-        std::function<void()> onClick
-    );
+    // 상태 객체들이 씬의 데이터를 참조하거나 조작하기 위한 인터페이스
+    Player* GetPlayer() { return &m_player; }
+    int GetCurrentFloor() const { return m_currentFloor; }
+    void IncreaseFloor() { m_currentFloor++; }
 
 private:
+    // 씬에서 공통으로 유지해야 할 데이터
     int m_currentFloor = 1;
-
-    std::vector<std::unique_ptr<UIObject>> m_uiList;
-    const MonsterData* m_currentMonster = nullptr;
-
     Player m_player;
-    Monster m_monster;
-    CombatManager m_combatManager;
 
-    // 패널 조작을 위한 포인터
-    DialoguePanel* m_dialoguePanel = nullptr;
-
-    ID2D1Bitmap1* m_playerImage = nullptr;
-    ID2D1Bitmap1* m_monsterImage = nullptr;
+    // 현재 실행 중인 상태를 관리하는 스마트 포인터
+    std::unique_ptr<ISceneState> m_currentState;
+    std::unique_ptr<ISceneState> m_nextState;
 };

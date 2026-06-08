@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <d2d1_3.h>
-#include <vector>
 #include <memory>
 #include "TextRenderer.h"
 

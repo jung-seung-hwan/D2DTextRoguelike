@@ -102,6 +102,15 @@
     <ClInclude Include="UIImage.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="ISceneState.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatState.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomSelectState.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -175,6 +184,12 @@
     </ClCompile>
     <ClCompile Include="UIImage.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatState.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomSelectState.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
