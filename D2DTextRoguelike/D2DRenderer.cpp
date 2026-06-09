@@ -238,7 +238,6 @@ void D2DRenderer::CreateRenderTargets()
 
 
 // 엔진 분리 void D2DRenderer::CreateWriteResource() - D2DTextRoguelike에서 별도로 분리해서 사용
-
 void D2DRenderer::ReleaseRenderTargets()
 {
     if (m_d2dContext)
@@ -248,49 +247,6 @@ void D2DRenderer::ReleaseRenderTargets()
 
     m_targetBitmap.Reset();
     m_brush.Reset();
-}
-
-void D2DRenderer::CreateBitmapFromFile(const wchar_t* path, ID2D1Bitmap1*& outBitmap)
-{
-    ComPtr<IWICBitmapDecoder>     decoder;
-    ComPtr<IWICBitmapFrameDecode> frame;
-    ComPtr<IWICFormatConverter>   converter;
-
-
-    HRESULT hr = m_wicFactory->CreateDecoderFromFilename(
-        path, nullptr, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &decoder);
-
-    DX::ThrowIfFailed(hr);
-
-
-    hr = decoder->GetFrame(0, &frame);
-
-    DX::ThrowIfFailed(hr);
-
-    hr = m_wicFactory->CreateFormatConverter(&converter);
-
-    DX::ThrowIfFailed(hr);
-
-
-    hr = converter->Initialize(
-        frame.Get(),
-        GUID_WICPixelFormat32bppPBGRA,
-        WICBitmapDitherTypeNone,
-        nullptr,
-        0.0f,
-        WICBitmapPaletteTypeCustom
-    );
-
-    DX::ThrowIfFailed(hr);
-
-    // Direct2D 비트맵 속성 (premultiplied alpha, B8G8R8A8_UNORM)
-    D2D1_BITMAP_PROPERTIES1 bmpProps = D2D1::BitmapProperties1(
-        D2D1_BITMAP_OPTIONS_NONE,
-        D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED)
-    );
-
-    // ⑥ DeviceContext에서 WIC 비트맵으로부터 D2D1Bitmap1 생성
-    hr = m_d2dContext->CreateBitmapFromWicBitmap(converter.Get(), &bmpProps, &outBitmap);
 }
 
 void D2DRenderer::FillRectangle(const D2D1_RECT_F& rect, const D2D1::ColorF& color)
@@ -305,99 +261,80 @@ void D2DRenderer::DrawRectangle(const D2D1_RECT_F& rect, const D2D1::ColorF& col
     m_d2dContext->DrawRectangle(rect, m_brush.Get(), thickness);
 }
 
-void D2DRenderer::DrawBitmap(
-    ID2D1Bitmap* bitmap,
-    const D2D1_RECT_F& dest,
-    float opacity,
-    D2D1_BITMAP_INTERPOLATION_MODE interpolation)
-{
-    if (bitmap == nullptr) return;
-
-    m_d2dContext->DrawBitmap(
-        bitmap,
-        dest,
-        opacity,
-        interpolation
-    );
-}
-
 void D2DRenderer::DrawHPBar(
     float x,
     float y,
     float width,
     float height,
     int hp,
-    int maxHp) 
+    int maxHp)
 {
+    if (maxHp <= 0) return;
+
+    float ratio = static_cast<float>(hp) / static_cast<float>(maxHp);
+    float result = std::max(0.0f, std::min(0.0f, 1.0f));
+
+    D2D1_COLOR_F hpColor;
+    D2D1_COLOR_F hpShadowColor;
+
+    if (ratio > 0.5f)
     {
-        if (maxHp <= 0)
-            return;
-
-        float ratio = static_cast<float>(hp) / maxHp;
-
-        if (ratio < 0.0f) ratio = 0.0f;
-        if (ratio > 1.0f) ratio = 1.0f;
-
-        D2D1_COLOR_F hpColor;
-        D2D1_COLOR_F hpShadowColor;
-
-        if (ratio > 0.5f)
-        {
-            hpColor = D2D1::ColorF(0.1f, 0.9f, 0.2f);
-            hpShadowColor = D2D1::ColorF(0.05f, 0.45f, 0.1f);
-        }
-        else if (ratio > 0.25f)
-        {
-            hpColor = D2D1::ColorF(1.0f, 0.55f, 0.05f);
-            hpShadowColor = D2D1::ColorF(0.5f, 0.25f, 0.02f);
-        }
-        else
-        {
-            hpColor = D2D1::ColorF(0.95f, 0.1f, 0.1f);
-            hpShadowColor = D2D1::ColorF(0.45f, 0.02f, 0.02f);
-        }
-
-        Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> bgBrush;
-        Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> borderBrush;
-        Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> hpBrush;
-        Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> hpShadowBrush;
-
-        m_d2dContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &bgBrush);
-        m_d2dContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &borderBrush);
-        m_d2dContext->CreateSolidColorBrush(hpColor, &hpBrush);
-        m_d2dContext->CreateSolidColorBrush(hpShadowColor, &hpShadowBrush);
-
-        D2D1_ROUNDED_RECT bgRect =
-        {
-            D2D1::RectF(x, y, x + width, y + height),
-            6.0f,
-            6.0f
-        };
-
-        m_d2dContext->FillRoundedRectangle(bgRect, bgBrush.Get());
-
-        float hpLeft = x + 2.0f;
-        float hpTop = y + 2.0f;
-        float hpRight = x + 2.0f + (width - 4.0f) * ratio;
-        float hpBottom = y + height - 2.0f;
-
-        D2D1_ROUNDED_RECT hpRect =
-        {
-            D2D1::RectF(hpLeft, hpTop, hpRight, hpBottom),
-            4.0f,
-            4.0f
-        };
-
-        // 아래쪽 그림자 먼저
-        m_d2dContext->FillRoundedRectangle(hpRect, hpShadowBrush.Get());
-
-        // 위쪽 밝은 HP 영역
-        D2D1_RECT_F hpHighlightRect =
-            D2D1::RectF(hpLeft, hpTop, hpRight, hpTop + (hpBottom - hpTop) * 0.65f);
-
-        m_d2dContext->FillRectangle(hpHighlightRect, hpBrush.Get());
-
-        // 테두리는 마지막
-        m_d2dContext->DrawRoundedRectangle(bgRect, borderBrush.Get(), 2.0f);
+        hpColor = D2D1::ColorF(0.1f, 0.9f, 0.2f);
+        hpShadowColor = D2D1::ColorF(0.05f, 0.45f, 0.1f);
     }
+    else if (ratio > 0.25f)
+    {
+        hpColor = D2D1::ColorF(1.0f, 0.55f, 0.05f);
+        hpShadowColor = D2D1::ColorF(0.5f, 0.25f, 0.02f);
+    }
+    else
+    {
+        hpColor = D2D1::ColorF(0.95f, 0.1f, 0.1f);
+        hpShadowColor = D2D1::ColorF(0.45f, 0.02f, 0.02f);
+    }
+
+    D2D1_ROUNDED_RECT bgRect =
+    {
+        D2D1::RectF(x, y, x + width, y + height),
+        6.0f,
+        6.0f
+    };
+
+    m_brush->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
+    m_d2dContext->FillRoundedRectangle(bgRect, m_brush.Get());
+
+    float hpLeft = x + 2.0f;
+    float hpTop = y + 2.0f;
+    float hpRight = x + 2.0f + (width - 4.0f) * ratio;
+    float hpBottom = y + height - 2.0f;
+
+    D2D1_ROUNDED_RECT hpRect =
+    {
+        D2D1::RectF(hpLeft, hpTop, hpRight, hpBottom),
+        4.0f,
+        4.0f
+    };
+
+    m_brush->SetColor(hpShadowColor);
+    m_d2dContext->FillRoundedRectangle(hpRect, m_brush.Get());
+
+    D2D1_RECT_F hpHighlightRect =
+        D2D1::RectF(hpLeft, hpTop, hpRight, hpTop + (hpBottom - hpTop) * 0.65f);
+
+    m_brush->SetColor(hpColor);
+    m_d2dContext->FillRectangle(hpHighlightRect, m_brush.Get());
+
+    m_brush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
+    m_d2dContext->DrawRoundedRectangle(bgRect, m_brush.Get(), 2.0f);
+}
+
+
+// ResourceManager에서 처리
+void D2DRenderer::DrawBitmap(
+    ID2D1Bitmap* bitmap,
+    const D2D1_RECT_F& dest)
+{
+    if (bitmap == nullptr) return;
+
+    m_d2dContext->DrawBitmap(bitmap, dest);
 }

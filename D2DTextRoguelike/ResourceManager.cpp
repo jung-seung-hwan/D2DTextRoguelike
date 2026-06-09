@@ -17,6 +17,16 @@ bool ResourceManager::Initialize(ID2D1DeviceContext7* pContext)
     return SUCCEEDED(hr);
 }
 
+ID2D1Bitmap* ResourceManager::GetBitmap(const std::wstring& key) const
+{
+    auto it = m_bitmapMap.find(key);
+
+    if (it == m_bitmapMap.end())
+        return nullptr;
+
+    return it->second.Get();
+}
+
 bool ResourceManager::LoadWICBitmap(const std::wstring& key, const std::wstring& filePath)
 {
     if (m_pContext == nullptr || m_pWICFactory == nullptr) return false;
@@ -71,16 +81,6 @@ bool ResourceManager::LoadWICBitmap(const std::wstring& key, const std::wstring&
     m_bitmapMap[key] = pD2DBitmap;
 
     return true;
-}
-
-ID2D1Bitmap* ResourceManager::GetBitmap(const std::wstring& key) const
-{
-    auto it = m_bitmapMap.find(key);
-    if (it != m_bitmapMap.end())
-    {
-        return it->second.Get();
-    }
-    return nullptr;
 }
 
 void ResourceManager::Release()
