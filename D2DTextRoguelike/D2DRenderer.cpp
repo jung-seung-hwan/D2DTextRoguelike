@@ -21,23 +21,11 @@ void D2DRenderer::Initialize(HWND hwnd)
     CreateDeviceAndSwapChain(hwnd);
     CreateRenderTargets();
 
-    ComPtr<IWICImagingFactory> wicFactory;
-
-    HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory,
-        nullptr,
-        CLSCTX_INPROC_SERVER,
-        IID_PPV_ARGS(&wicFactory));
-
-    DX::ThrowIfFailed(hr);
-
-    m_wicFactory = wicFactory;
 }
 
 void D2DRenderer::Uninitialize()
 {
     ReleaseRenderTargets();
-
-    m_wicFactory = nullptr;
 
     m_targetBitmap = nullptr;
     m_brush = nullptr;
@@ -272,7 +260,7 @@ void D2DRenderer::DrawHPBar(
     if (maxHp <= 0) return;
 
     float ratio = static_cast<float>(hp) / static_cast<float>(maxHp);
-    float result = std::max(0.0f, std::min(0.0f, 1.0f));
+    ratio = std::max(0.0f, std::min(ratio, 1.0f));
 
     D2D1_COLOR_F hpColor;
     D2D1_COLOR_F hpShadowColor;
