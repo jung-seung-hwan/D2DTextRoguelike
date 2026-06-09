@@ -4,6 +4,7 @@
 #include "ResourceManager.h"
 #include "RoomSelectState.h" 
 #include "StatusPanel.h"
+#include "SceneManager.h"
 
 CombatState::CombatState(int floor, MonsterType type)
     : m_floor(floor), m_type(type)
@@ -137,7 +138,7 @@ void CombatState::CreateUI(PlayScene* pScene)
     m_uiList.push_back(std::move(attackBtn));
 
     // 다음 상태로 넘어가기 위한 버튼 생성
-    auto nextBtn = std::make_unique<UIButton>(L"나가기", 120.0f, 40.0f);
+    auto nextBtn = std::make_unique<UIButton>(L"다음", 120.0f, 40.0f);
     nextBtn->SetLocalPosition(100.0f, 470.0f);
     nextBtn->SetOnClick([this, pScene]() // pScene 캡처
         {
@@ -146,10 +147,17 @@ void CombatState::CreateUI(PlayScene* pScene)
                 pScene->IncreaseFloor();
                 pScene->ChangeState(std::make_unique<RoomSelectState>());
             }
+            else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
+            {
+                wchar_t buffer[256];
+                swprintf_s(buffer, 256, L"전투에서 패배했다. 다시 도전해보자");
+                m_dialoguePanel->PlayText(buffer);
+                SceneManager::Instance().ChangeScene(L"TitleScene");
+            }
             else
             {
                 wchar_t buffer[256];
-                swprintf_s(buffer, 256, L"전투가 종료되어야지 나갈 수 있다.");
+                swprintf_s(buffer, 256, L"전투가 종료되어야지 진행할 수 있다.");
                 m_dialoguePanel->PlayText(buffer);
             }
         });
