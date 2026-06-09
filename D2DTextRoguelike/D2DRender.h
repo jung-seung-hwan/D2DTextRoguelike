@@ -60,6 +60,14 @@ namespace myspace
             D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
         );
 
+        void DrawHPBar(
+            float x,
+            float y,
+            float width,
+            float height,
+            int hp,
+            int maxHp);
+
     private:
 
         void CreateDeviceAndSwapChain(HWND hwnd);

@@ -8,11 +8,11 @@ class StatusPanel : public UIObject
 public:
 	StatusPanel(GameObject* target, float width, float height);
 
-	void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
+	void Render(myspace::D2DRenderer* m_pRenderer, TextRenderer* pTextRenderer) override;
 
 private:
 	void DrawName(TextRenderer* pTextRenderer);
-	void DrawHPBar(ID2D1DeviceContext7* pContext);
+	void DrawHPBar(myspace::D2DRenderer* m_pRenderer);
 	void DrawStats(TextRenderer* pTextRenderer);
 
 private:

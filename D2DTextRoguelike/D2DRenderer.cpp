@@ -320,3 +320,84 @@ void D2DRenderer::DrawBitmap(
         interpolation
     );
 }
+
+void D2DRenderer::DrawHPBar(
+    float x,
+    float y,
+    float width,
+    float height,
+    int hp,
+    int maxHp) 
+{
+    {
+        if (maxHp <= 0)
+            return;
+
+        float ratio = static_cast<float>(hp) / maxHp;
+
+        if (ratio < 0.0f) ratio = 0.0f;
+        if (ratio > 1.0f) ratio = 1.0f;
+
+        D2D1_COLOR_F hpColor;
+        D2D1_COLOR_F hpShadowColor;
+
+        if (ratio > 0.5f)
+        {
+            hpColor = D2D1::ColorF(0.1f, 0.9f, 0.2f);
+            hpShadowColor = D2D1::ColorF(0.05f, 0.45f, 0.1f);
+        }
+        else if (ratio > 0.25f)
+        {
+            hpColor = D2D1::ColorF(1.0f, 0.55f, 0.05f);
+            hpShadowColor = D2D1::ColorF(0.5f, 0.25f, 0.02f);
+        }
+        else
+        {
+            hpColor = D2D1::ColorF(0.95f, 0.1f, 0.1f);
+            hpShadowColor = D2D1::ColorF(0.45f, 0.02f, 0.02f);
+        }
+
+        Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> bgBrush;
+        Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> borderBrush;
+        Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> hpBrush;
+        Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> hpShadowBrush;
+
+        m_d2dContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &bgBrush);
+        m_d2dContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &borderBrush);
+        m_d2dContext->CreateSolidColorBrush(hpColor, &hpBrush);
+        m_d2dContext->CreateSolidColorBrush(hpShadowColor, &hpShadowBrush);
+
+        D2D1_ROUNDED_RECT bgRect =
+        {
+            D2D1::RectF(x, y, x + width, y + height),
+            6.0f,
+            6.0f
+        };
+
+        m_d2dContext->FillRoundedRectangle(bgRect, bgBrush.Get());
+
+        float hpLeft = x + 2.0f;
+        float hpTop = y + 2.0f;
+        float hpRight = x + 2.0f + (width - 4.0f) * ratio;
+        float hpBottom = y + height - 2.0f;
+
+        D2D1_ROUNDED_RECT hpRect =
+        {
+            D2D1::RectF(hpLeft, hpTop, hpRight, hpBottom),
+            4.0f,
+            4.0f
+        };
+
+        // 아래쪽 그림자 먼저
+        m_d2dContext->FillRoundedRectangle(hpRect, hpShadowBrush.Get());
+
+        // 위쪽 밝은 HP 영역
+        D2D1_RECT_F hpHighlightRect =
+            D2D1::RectF(hpLeft, hpTop, hpRight, hpTop + (hpBottom - hpTop) * 0.65f);
+
+        m_d2dContext->FillRectangle(hpHighlightRect, hpBrush.Get());
+
+        // 테두리는 마지막
+        m_d2dContext->DrawRoundedRectangle(bgRect, borderBrush.Get(), 2.0f);
+    }
+}
