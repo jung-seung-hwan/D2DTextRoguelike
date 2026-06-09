@@ -21,9 +21,7 @@ void UIImage::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRendere
     // 투명도가 포함된 비트맵을 지정된 사각형 영역에 렌더링
     pRenderer->DrawBitmap(
         m_pBitmap,
-        destRect,
-        1.0f,
-        D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
+        destRect
     );
 
     UIObject::Render(pRenderer, pTextRenderer);

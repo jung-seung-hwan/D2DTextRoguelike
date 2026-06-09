@@ -40,8 +40,6 @@ namespace myspace
 
         void RenderEnd();
 
-        void CreateBitmapFromFile(const wchar_t* path, ID2D1Bitmap1*& outBitmap);
-
         // 텍스트 상자용
         void FillRectangle(const D2D1_RECT_F& rect, const D2D1::ColorF& color);
         void DrawRectangle(const D2D1_RECT_F& rect, const D2D1::ColorF& color, float thickness = 1.0f);
@@ -54,11 +52,7 @@ namespace myspace
 
         void DrawBitmap(
             ID2D1Bitmap* bitmap,
-            const D2D1_RECT_F& dest,
-            float opacity = 1.0f,
-            D2D1_BITMAP_INTERPOLATION_MODE interpolation =
-            D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
-        );
+            const D2D1_RECT_F& dest);
 
         void DrawHPBar(
             float x,
@@ -88,6 +82,6 @@ namespace myspace
         ComPtr<ID2D1Device7>           m_d2dDevice;
         ComPtr<ID2D1DeviceContext7>    m_d2dContext;
 
-        ComPtr<IWICImagingFactory>     m_wicFactory;
+        static D2DRenderer* s_instance;
     };
 }// namespace 
