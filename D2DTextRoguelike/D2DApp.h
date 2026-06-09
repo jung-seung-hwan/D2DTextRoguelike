@@ -27,8 +27,6 @@ private:
     void OnResize(int width, int height) override;
     void OnClose() override;
 
-    bool InitD2DRenderSystem(HWND hwnd);
-    void ReleaseD2DRenderSystem();
     void RenderFrame();
 
 

@@ -81,7 +81,5 @@ namespace myspace
 
         ComPtr<ID2D1Device7>           m_d2dDevice;
         ComPtr<ID2D1DeviceContext7>    m_d2dContext;
-
-        ComPtr<IWICImagingFactory>     m_wicFactory;
     };
 }// namespace 
