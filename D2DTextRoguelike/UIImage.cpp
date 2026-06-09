@@ -7,7 +7,7 @@ UIImage::UIImage(ID2D1Bitmap* pBitmap, float width, float height)
     m_size = { width, height };
 }
 
-void UIImage::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void UIImage::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     if (!m_isActive || !m_isVisible || m_pBitmap == nullptr) return;
 
@@ -19,12 +19,12 @@ void UIImage::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
     );
 
     // 투명도가 포함된 비트맵을 지정된 사각형 영역에 렌더링
-    pContext->DrawBitmap(
+    pRenderer->DrawBitmap(
         m_pBitmap,
-        &destRect,
-        1.0f, 
+        destRect,
+        1.0f,
         D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
     );
 
-    UIObject::Render(pContext, pTextRenderer);
+    UIObject::Render(pRenderer, pTextRenderer);
 }

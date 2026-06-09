@@ -4,6 +4,7 @@
 #include <d2d1_3.h>
 #include <memory>
 #include "TextRenderer.h"
+#include "D2DRender.h"
 
 // 모든 ui의 부모 클래스
 class UIObject
@@ -14,7 +15,7 @@ public:
 
     virtual void Initialize();
     virtual void Update(float deltaTime);
-    virtual void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer);
+    virtual void Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer);
 
     // 계층 구조 관리 -> 부모 UI가 자식 UI의 소유권을 가지며,
     // UIObject 소멸 시 자식 객체도 자동으로 해제하기 위해 unique_ptr 사용

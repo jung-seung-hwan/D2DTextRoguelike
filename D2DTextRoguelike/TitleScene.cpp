@@ -47,7 +47,7 @@ void TitleScene::Update(float deltaTime)
     }
 }
 
-void TitleScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void TitleScene::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     pTextRenderer->DrawText(
         L"TEXT ROGUELIKE",
@@ -58,7 +58,7 @@ void TitleScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRender
     // ¹öÆ° ·»´õ¸µ
     for (auto& ui : m_uiList)
     {
-        ui->Render(pContext, pTextRenderer);
+        ui->Render(pRenderer, pTextRenderer);
     }
 }
 

@@ -41,11 +41,11 @@ void PlayScene::Update(float deltaTime)
     }
 }
 
-void PlayScene::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void PlayScene::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     if (m_currentState)
     {
-        m_currentState->Render(this, pContext, pTextRenderer); // 현재 상태에 렌더링 위임
+        m_currentState->Render(this, pRenderer, pTextRenderer); // 현재 상태에 렌더링 위임
     }
 }
 

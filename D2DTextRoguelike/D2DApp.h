@@ -2,6 +2,7 @@
 
 #include "NzWndBase.h"
 #include "InputManager.h"
+#include "D2DRender.h"
 #include "TextRenderer.h"
 #include "GameTimer.h"
 #include "SceneManager.h"
@@ -57,6 +58,7 @@ private:
     // Offscreen RenderTarget
     ComPtr<ID2D1Bitmap1>          m_targetBitmap;
 
+    myspace::D2DRenderer* m_pRenderer = nullptr;
     TextRenderer* m_pTextRenderer = nullptr;
 
     // 타이머 사용

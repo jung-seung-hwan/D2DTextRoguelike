@@ -3,7 +3,7 @@
 
 int GameObject::TakeDamage(int damage)
 {
-	int roll = rand() & 100;
+	int roll = rand() % 100;
 
 	if (roll < evasion)
 	{

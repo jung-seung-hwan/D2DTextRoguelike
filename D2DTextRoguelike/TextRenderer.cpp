@@ -34,6 +34,9 @@ bool TextRenderer::Initialize(ID2D1DeviceContext7* pContext)
 
 void TextRenderer::Release()
 {
+    // 스마트포인터인 Comptr 사용했지만 리소스 해제와 생명주기 관리를 위해 별도로 Release 함수 사용
+    // ex) TextRenderer 객체는 살리고 내부 자원만 초기화하는 경우
+    // 향후 해상도 변경, 언어 변경, 폰트 교체에 사용하기 위해 일단 작성
     m_pTextBrush.Reset();
     m_pDefaultTextFormat.Reset();
     m_pDWriteFactory.Reset();

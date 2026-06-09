@@ -41,39 +41,36 @@ void SceneManager::Update(float deltaTime)
     }
 }
 
-void SceneManager::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void SceneManager::Render(myspace::D2DRenderer* m_pRenderer, TextRenderer* pTextRenderer)
 {
     if (m_currentScene != nullptr)
     {
         // 현재 활성화된 씬에게 그리기 도구를 그대로 전달
         // 매니저는 화면 갱신 요청만 전송하고 그림은 각각의 렌더링 파이프라인에서 처리
-        m_currentScene->Render(pContext, pTextRenderer);
+        m_currentScene->Render(m_pRenderer, pTextRenderer);
     }
 
     // 화면 전환 연출이 진행 중이라면 그 위에 반투명한 검은색 막 생성
     if (m_transitionState != TransitionState::None)
     {
-        if (m_pFadeBrush == nullptr)
-        {
-            pContext->CreateSolidColorBrush(D2D1::ColorF(0.0f, 0.0f, 0.0f, m_fadeAlpha), &m_pFadeBrush);
-        }
-        else
-        {
-            // 브러시가 있다면 투명도만 갱신
-            m_pFadeBrush->SetColor(D2D1::ColorF(0.0f, 0.0f, 0.0f, m_fadeAlpha));
-        }
+        D2D1_SIZE_F rtSize = m_pRenderer->GetSize();
 
-        // 현재 윈도우 창의 정확한 해상도를 가져옴
-        D2D1_SIZE_F rtSize = pContext->GetSize();
-        D2D1_RECT_F fullScreenRect = D2D1::RectF(0.0f, 0.0f, rtSize.width, rtSize.height);
+        D2D1_RECT_F fullScreenRect = D2D1::RectF(
+            0.0f,
+            0.0f,
+            rtSize.width,
+            rtSize.height
+        );
 
-        pContext->FillRectangle(fullScreenRect, m_pFadeBrush.Get());
+        m_pRenderer->FillRectangle(
+            fullScreenRect,
+            D2D1::ColorF(0.0f, 0.0f, 0.0f, m_fadeAlpha)
+        );
     }
 }
 
 void SceneManager::Release()
 {
-    m_pFadeBrush.Reset();
 
     if (m_currentScene != nullptr)
     {

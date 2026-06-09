@@ -16,7 +16,7 @@ void RoomSelectState::Update(PlayScene* pScene, float deltaTime)
     }
 }
 
-void RoomSelectState::Render(PlayScene* pScene, ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void RoomSelectState::Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     wchar_t titleBuffer[64];
     swprintf_s(titleBuffer, 64, L"현재 층: %d층\n진입할 방을 선택하십시오.", pScene->GetCurrentFloor());
@@ -29,7 +29,7 @@ void RoomSelectState::Render(PlayScene* pScene, ID2D1DeviceContext7* pContext, T
 
     for (auto& ui : m_uiList)
     {
-        ui->Render(pContext, pTextRenderer);
+        ui->Render(pRenderer, pTextRenderer);
     }
 }
 

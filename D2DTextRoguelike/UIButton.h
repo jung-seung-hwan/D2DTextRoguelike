@@ -10,7 +10,7 @@ public:
     ~UIButton() = default;
 
     void Update(float deltaTime) override;
-    void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
+    void Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer) override;
 
     // 외부에서 클릭 시 실행할 동작을 등록하는 함수
     void SetOnClick(std::function<void()> onClick) { m_onClick = onClick; }

@@ -9,7 +9,7 @@ public:
     ~DialoguePanel() = default;
 
     void Update(float deltaTime) override;
-    void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
+    void Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer) override;
 
     // 텍스트 연출 시작
     void PlayText(const std::wstring& text);

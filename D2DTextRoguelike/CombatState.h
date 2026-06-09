@@ -18,7 +18,7 @@ public:
 
     virtual void Enter(PlayScene* pScene) override;
     virtual void Update(PlayScene* pScene, float deltaTime) override;
-    virtual void Render(PlayScene* pScene, ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
+    virtual void Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer) override;
     virtual void Exit(PlayScene* pScene) override;
 
 private:

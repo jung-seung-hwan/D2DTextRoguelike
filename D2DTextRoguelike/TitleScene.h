@@ -13,7 +13,7 @@ public:
 
     void Initialize() override;
     void Update(float deltaTime) override;
-    void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
+    void Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer) override;
     void Release() override;
 private:
     std::vector<std::unique_ptr<UIObject>> m_uiList;

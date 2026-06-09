@@ -1,6 +1,7 @@
 #pragma once
 #include "SingletonBase.h"
 #include "Scene.h"
+#include "D2DRender.h"
 #include "TextRenderer.h"
 #include <unordered_map>
 #include <string>
@@ -21,7 +22,7 @@ class SceneManager : public SingletonBase<SceneManager>
 
 public:
     void Update(float deltaTime);
-    void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer);
+    void Render(myspace::D2DRenderer* m_pRenderer, TextRenderer* pTextRenderer);
     void Release();
 
     void AddScene(const std::wstring& name, Scene* scene);
@@ -41,5 +42,4 @@ private:
     float m_fadeAlpha = 0.0f;
     float m_fadeSpeed = 1.0f;
 
-    Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> m_pFadeBrush;
 };

@@ -93,7 +93,7 @@ void D2DRenderer::SetTransform(const D2D1_MATRIX_3X2_F tm)
 void D2DRenderer::RenderBegin()
 {
     m_d2dContext->BeginDraw();
-    m_d2dContext->Clear(D2D1::ColorF(D2D1::ColorF::White)); // 배경을 흰색으로 초기화
+    m_d2dContext->Clear(D2D1::ColorF(D2D1::ColorF::Black)); // 배경을 흰색으로 초기화
 }
 
 void D2DRenderer::RenderEnd()
@@ -291,4 +291,32 @@ void D2DRenderer::CreateBitmapFromFile(const wchar_t* path, ID2D1Bitmap1*& outBi
 
     // ⑥ DeviceContext에서 WIC 비트맵으로부터 D2D1Bitmap1 생성
     hr = m_d2dContext->CreateBitmapFromWicBitmap(converter.Get(), &bmpProps, &outBitmap);
+}
+
+void D2DRenderer::FillRectangle(const D2D1_RECT_F& rect, const D2D1::ColorF& color)
+{
+    m_brush->SetColor(color);
+    m_d2dContext->FillRectangle(rect, m_brush.Get());
+}
+
+void D2DRenderer::DrawRectangle(const D2D1_RECT_F& rect, const D2D1::ColorF& color, float thickness)
+{
+    m_brush->SetColor(color);
+    m_d2dContext->DrawRectangle(rect, m_brush.Get(), thickness);
+}
+
+void D2DRenderer::DrawBitmap(
+    ID2D1Bitmap* bitmap,
+    const D2D1_RECT_F& dest,
+    float opacity,
+    D2D1_BITMAP_INTERPOLATION_MODE interpolation)
+{
+    if (bitmap == nullptr) return;
+
+    m_d2dContext->DrawBitmap(
+        bitmap,
+        dest,
+        opacity,
+        interpolation
+    );
 }

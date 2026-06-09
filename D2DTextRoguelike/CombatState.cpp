@@ -49,14 +49,14 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
     }
 }
 
-void CombatState::Render(PlayScene* pScene, ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     ID2D1Bitmap* playerBitmap = ResourceManager::Instance().GetBitmap(L"PlayerDummy");
 
 
     if (playerBitmap != nullptr)
     {
-        pContext->DrawBitmap(
+        pRenderer->DrawBitmap(
             playerBitmap,
             D2D1::RectF(0.0f, 0.0f, 700.0f, 1000.0f)
         );
@@ -66,7 +66,7 @@ void CombatState::Render(PlayScene* pScene, ID2D1DeviceContext7* pContext, TextR
 
     if (slimeBitmap != nullptr)
     {
-        pContext->DrawBitmap(
+        pRenderer->DrawBitmap(
             slimeBitmap,
             D2D1::RectF(560.0f, 130.0f, 720.0f, 290.0f)
         );
@@ -119,7 +119,7 @@ void CombatState::Render(PlayScene* pScene, ID2D1DeviceContext7* pContext, TextR
     // UI ÀÏ°ı ·»´õ¸µ
     for (auto& ui : m_uiList)
     {
-        ui->Render(pContext, pTextRenderer);
+        ui->Render(pRenderer, pTextRenderer);
     }
 }
 

@@ -84,12 +84,12 @@ void DialoguePanel::Update(float deltaTime)
     }
 }
 
-void DialoguePanel::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void DialoguePanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     if (!m_isActive || !m_isVisible) return;
 
     // UIPanel로 배경 사각형 렌더링
-    UIPanel::Render(pContext, pTextRenderer);
+    UIPanel::Render(pRenderer, pTextRenderer);
     if (m_currentText.empty()) return;
 
     // 현재까지 진행된 텍스트 렌더링

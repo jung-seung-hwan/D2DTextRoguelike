@@ -8,7 +8,7 @@ public:
     UIImage(ID2D1Bitmap* pBitmap, float width, float height);
     ~UIImage() = default;
 
-    void Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer) override;
+    void Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer) override;
 
 private:
     ID2D1Bitmap* m_pBitmap = nullptr; // ∑ª¥ı∏µ«“ ∫Ò∆Æ∏ ¿« ¡÷º“

@@ -25,14 +25,14 @@ void UIObject::Update(float deltaTime)
     }
 }
 
-void UIObject::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void UIObject::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     if (!m_isActive || !m_isVisible) return;
 
     // 자식들에게 Render 전달
     for (auto& child : m_children)
     {
-        child->Render(pContext, pTextRenderer);
+        child->Render(pRenderer, pTextRenderer);
     }
 }
 

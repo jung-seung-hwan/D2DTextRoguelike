@@ -29,14 +29,17 @@ bool D2DApp::Initialize()
     }
 
     InputManager::Instance().Initialize(m_hWnd);
-    InitD2DRenderSystem(m_hWnd);
+    //InitD2DRenderSystem(m_hWnd);
+
+    m_pRenderer = myspace::D2DRenderer::CreateD2DRenderer();
+    m_pRenderer->Initialize(m_hWnd);
 
     // 텍스트 분리 처리를 위해 context를 TextRenderer에 넘겨줌
     m_pTextRenderer = new TextRenderer();
-    m_pTextRenderer->Initialize(m_d2dContext.Get());
+    m_pTextRenderer->Initialize(m_pRenderer->GetContext());
 
     // 배경 로딩
-    if (!ResourceManager::Instance().Initialize(m_d2dContext.Get()))
+    if (!ResourceManager::Instance().Initialize(m_pRenderer->GetContext()))
     {
         OutputDebugStringW(L"[Error] ResourceManager Initialization Failed.\n");
         return false;
@@ -92,7 +95,11 @@ void D2DApp::Finalize()
         m_pTextRenderer = nullptr;
     }
 
-    ReleaseD2DRenderSystem();
+    if (m_pRenderer != nullptr)
+    {
+        m_pRenderer->Uninitialize();
+        m_pRenderer = nullptr;
+    }
 
     __super::Destroy();
 
@@ -129,18 +136,16 @@ void D2DApp::OnClose()
 
 void D2DApp::RenderFrame()
 {
-    if (!m_d2dContext || !m_swapChain) return;
+    if (!m_pRenderer || !m_pTextRenderer) return;
 
-    m_d2dContext->BeginDraw();
+    m_pRenderer->RenderBegin();
 
-    // 배경 클리어
-    m_d2dContext->Clear(D2D1::ColorF(D2D1::ColorF::Black));
+    SceneManager::Instance().Render(
+        m_pRenderer,
+        m_pTextRenderer
+    );
 
-    // 씬 매니저에게 화면 출력 위임
-    SceneManager::Instance().Render(m_d2dContext.Get(), m_pTextRenderer);
-
-    m_d2dContext->EndDraw();
-    m_swapChain->Present(1, 0);
+    m_pRenderer->RenderEnd();
 }
 
 
@@ -253,15 +258,15 @@ bool D2DApp::InitD2DRenderSystem(HWND hwnd)
     return true;
 }
 
-void D2DApp::ReleaseD2DRenderSystem()
-{
-    m_brush.Reset();
-    m_targetBitmap.Reset();
-
-    m_d2dContext.Reset();
-    m_d2dDevice.Reset();
-    m_d2dDevice.Reset();
-    m_swapChain.Reset();
-    m_d3dContext.Reset();
-    m_d3dDevice.Reset();
-}
+//void D2DApp::ReleaseD2DRenderSystem()
+//{
+//    m_brush.Reset();
+//    m_targetBitmap.Reset();
+//
+//    m_d2dContext.Reset();
+//    m_d2dDevice.Reset();
+//    m_d2dDevice.Reset();
+//    m_swapChain.Reset();
+//    m_d3dContext.Reset();
+//    m_d3dDevice.Reset();
+//}

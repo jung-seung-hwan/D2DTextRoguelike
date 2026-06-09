@@ -47,7 +47,7 @@ void UIButton::Update(float deltaTime)
     }
 }
 
-void UIButton::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
+void UIButton::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     if (!m_isActive || !m_isVisible) return;
 
@@ -64,5 +64,5 @@ void UIButton::Render(ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer
     );
 
     // 자식 UI가 있다면 마저 그리도록 부모 Render 호출
-    UIObject::Render(pContext, pTextRenderer);
+    UIObject::Render(pRenderer, pTextRenderer);
 }

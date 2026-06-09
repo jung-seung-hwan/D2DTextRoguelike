@@ -13,6 +13,11 @@ namespace myspace
 
         ~D2DRenderer() { Uninitialize(); }
 
+        ID2D1DeviceContext7* GetContext() const
+        {
+            return m_d2dContext.Get();
+        }
+
         static D2DRenderer* CreateD2DRenderer();
 
         void Initialize(HWND hwnd);
@@ -36,6 +41,24 @@ namespace myspace
         void RenderEnd();
 
         void CreateBitmapFromFile(const wchar_t* path, ID2D1Bitmap1*& outBitmap);
+
+        // 텍스트 상자용
+        void FillRectangle(const D2D1_RECT_F& rect, const D2D1::ColorF& color);
+        void DrawRectangle(const D2D1_RECT_F& rect, const D2D1::ColorF& color, float thickness = 1.0f);
+
+        // fade in, fade out
+        D2D1_SIZE_F GetSize() const
+        {
+            return m_d2dContext->GetSize();
+        }
+
+        void DrawBitmap(
+            ID2D1Bitmap* bitmap,
+            const D2D1_RECT_F& dest,
+            float opacity = 1.0f,
+            D2D1_BITMAP_INTERPOLATION_MODE interpolation =
+            D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
+        );
 
     private:
 
