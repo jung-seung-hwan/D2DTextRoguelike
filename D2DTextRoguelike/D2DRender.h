@@ -81,5 +81,7 @@ namespace myspace
 
         ComPtr<ID2D1Device7>           m_d2dDevice;
         ComPtr<ID2D1DeviceContext7>    m_d2dContext;
+
+        static D2DRenderer* s_instance;
     };
 }// namespace 

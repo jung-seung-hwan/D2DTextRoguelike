@@ -20,6 +20,12 @@ bool D2DApp::OnWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 bool D2DApp::Initialize()
 {
+    HRESULT hr = CoInitialize(nullptr);
+    if (FAILED(hr))
+    {
+        return false;
+    }
+
     const wchar_t* className = L"D2DTextRoguelike";
     const wchar_t* windowName = L"TextRoguelike";
 
@@ -127,8 +133,9 @@ void D2DApp::Render()
 void D2DApp::OnResize(int width, int height)
 {
     __super::OnResize(width, height);
+    if (m_pRenderer)
+        m_pRenderer->Resize(width, height);
 }
-
 void D2DApp::OnClose()
 {
 

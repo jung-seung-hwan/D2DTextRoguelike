@@ -3,15 +3,13 @@
 
 using namespace myspace;
 
+D2DRenderer* D2DRenderer::s_instance = nullptr;
+
 D2DRenderer* D2DRenderer::CreateD2DRenderer()
 {
-    static D2DRenderer* instance = new D2DRenderer;
-
-    if (nullptr == instance)
-    {
-        throw std::runtime_error("Failed to create D2DRenderer instance.");
-    }
-    return (instance);
+    if (nullptr == s_instance)
+        s_instance = new D2DRenderer;
+    return s_instance;
 }
 
 void D2DRenderer::Initialize(HWND hwnd)
@@ -27,14 +25,12 @@ void D2DRenderer::Uninitialize()
 {
     ReleaseRenderTargets();
 
-    m_targetBitmap = nullptr;
-    m_brush = nullptr;
-
-    m_d2dContext = nullptr;
-    m_d2dDevice = nullptr;
-
-    m_swapChain = nullptr;
-    m_d3dDevice = nullptr;
+    m_targetBitmap.Reset();
+    m_brush.Reset();
+    m_d2dContext.Reset();
+    m_d2dDevice.Reset();
+    m_swapChain.Reset();
+    m_d3dDevice.Reset();
 }
 
 void D2DRenderer::Resize(UINT width, UINT height)
