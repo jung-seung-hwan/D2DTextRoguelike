@@ -1,9 +1,7 @@
 #pragma once
-#include "D2DRender.h"
-// 전방 선언: 상태 객체가 씬의 상태를 변경하거나 데이터를 참조할 수 있도록 PlayScene 포인터를 전달받음
 class PlayScene;
-struct ID2D1DeviceContext7;
 class TextRenderer;
+class D2DRender;
 
 
 class ISceneState
