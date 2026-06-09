@@ -3,6 +3,7 @@
 #include "DataManager.h"
 #include "ResourceManager.h"
 #include "RoomSelectState.h" 
+#include "StatusPanel.h"
 
 CombatState::CombatState(int floor, MonsterType type)
     : m_floor(floor), m_type(type)
@@ -11,6 +12,18 @@ CombatState::CombatState(int floor, MonsterType type)
 
 void CombatState::Enter(PlayScene* pScene)
 {
+    // 플레이어 상태창 생성 (HP 등)
+    auto playerStatus = std::make_unique<StatusPanel>(
+        pScene->GetPlayer(),
+        300.0f,
+        10.0f
+    );
+
+    // 플레이어 상태창을 UI 목록에 등록
+    playerStatus->SetLocalPosition(520.0f, 400.0f);
+    m_uiList.push_back(std::move(playerStatus));
+
+
     m_player = pScene->GetPlayer();
 
     StartCombat(pScene);
@@ -49,36 +62,29 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
     }
 }
 
-void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
+void CombatState::Render(PlayScene* pScene, ID2D1DeviceContext7* pContext, TextRenderer* pTextRenderer)
 {
-    ID2D1Bitmap* playerBitmap = ResourceManager::Instance().GetBitmap(L"PlayerDummy");
 
+    ID2D1Bitmap* playerBitmap = ResourceManager::Instance().GetBitmap(L"Player");
 
     if (playerBitmap != nullptr)
     {
-        pRenderer->DrawBitmap(
+        // 밑에서 50.0f, 50.0f 띄우고 400x400 크기로 배치
+        pContext->DrawBitmap(
             playerBitmap,
-            D2D1::RectF(0.0f, 0.0f, 700.0f, 1000.0f)
+            D2D1::RectF(50.0f, 250.0f, 450.0f, 650.0f) // (left, top, right, bottom)
         );
     }
 
-    ID2D1Bitmap* slimeBitmap = ResourceManager::Instance().GetBitmap(L"SlimeDummy");
+    ID2D1Bitmap* slimeBitmap = ResourceManager::Instance().GetBitmap(L"Slime");
 
     if (slimeBitmap != nullptr)
     {
-        pRenderer->DrawBitmap(
+        pContext->DrawBitmap(
             slimeBitmap,
-            D2D1::RectF(560.0f, 130.0f, 720.0f, 290.0f)
+            D2D1::RectF(560.0f, 130.0f, 720.0f, 290.0f) // (left, top, right, bottom)
         );
     }
-
-    // 화면 출력 테스트용 텍스트
-    pTextRenderer->DrawText(
-        L"Play Started!",
-        100.0f, 100.0f, 300.0f, 50.0f,
-        D2D1::ColorF(D2D1::ColorF::Red)
-    );
-
 
     wchar_t floorBuffer[64];
     swprintf_s(floorBuffer, 64, L"현재 층: %d층", m_floor);
@@ -88,38 +94,11 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer, Tex
         D2D1::ColorF(D2D1::ColorF::Yellow)
     );
 
-    if (!m_monster.name.empty())
-    {
-        wchar_t buffer[256];
-        swprintf_s(buffer, 256, L"이름: %s\n체력: %d / %d\n공격력: %d",
-            m_monster.name.c_str(),
-            m_monster.hp,
-            m_monster.maxHp,
-            m_monster.attack);
-        pTextRenderer->DrawText(
-            buffer,
-            100.0f, 150.0f, 300.0f, 150.0f, // 텍스트가 그려질 사각형 영역
-            D2D1::ColorF(D2D1::ColorF::White)
-        );
-    }
-
-    wchar_t playerBuffer[256];
-    swprintf_s(playerBuffer, 256, L"플레이어\n체력: %d / %d\n공격력: %d",
-        m_player->hp,
-        m_player->maxHp,
-        m_player->attack
-    );
-
-    pTextRenderer->DrawText(
-        playerBuffer,
-        100.0f, 320.0f, 300.0f, 150.0f,
-        D2D1::ColorF(D2D1::ColorF::White)
-    );
 
     // UI 일괄 렌더링
     for (auto& ui : m_uiList)
     {
-        ui->Render(pRenderer, pTextRenderer);
+        ui->Render(pContext, pTextRenderer);
     }
 }
 

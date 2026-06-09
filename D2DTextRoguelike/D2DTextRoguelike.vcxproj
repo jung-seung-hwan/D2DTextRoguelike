@@ -149,6 +149,7 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SimpleMathHelper.h" />
     <ClInclude Include="SingletonBase.h" />
+    <ClInclude Include="StatusPanel.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="UIButton.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="RoomSelectState.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SimpleMathHelper.cpp" />
+    <ClCompile Include="StatusPanel.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UIButton.cpp" />
