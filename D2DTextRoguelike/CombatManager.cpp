@@ -21,19 +21,19 @@ void CombatManager::PlayerAction(PLAYERACTION action)
 	switch (action)
 	{
 	case PLAYERACTION::ATTACK:
-		m_damageToMonster = m_player->Attack(*m_monster);
+		PlayerAttack();
 		break;
 
 	case PLAYERACTION::DEFEND:
-		//m_player->Defend();
+		PlayerDefend();
 		break;
 
 	case PLAYERACTION::SKILL:
-		// 나중에 스킬 구현 예정
+		PlayerSkill();
 		break;
 
 	case PLAYERACTION::ITEM:
-		// 나중에 아이템 구현 예정
+		PlayerItem();
 		break;
 	}
 
@@ -46,6 +46,38 @@ void CombatManager::PlayerAction(PLAYERACTION action)
 	m_state = BATTLESTATE::ENEMYTURN;
 	EnemyTurn();
 }
+
+
+
+
+void CombatManager::PlayerAttack()
+{
+	m_damageToMonster = m_player->Attack(*m_monster);
+}
+
+
+void CombatManager::PlayerDefend()
+{
+	m_player->Defend();
+}
+
+
+
+void CombatManager::PlayerSkill()
+{
+	int skillDamage = m_player->attack * 2;
+
+	m_damageToMonster = m_monster->TakeDamage(skillDamage);
+}
+
+
+
+void CombatManager::PlayerItem()
+{
+
+}
+
+
 
 void CombatManager::EnemyTurn()
 {

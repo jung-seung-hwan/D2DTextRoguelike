@@ -10,6 +10,5 @@ public:
 
 public:
 	void Heal(int amount);
-	void Defend();
 };
 
