@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "UIObject.h"
 
+#include "D2DRender.h"
+#include "TextRenderer.h"
+
 UIObject::UIObject()
     : m_parent(nullptr), m_localPosition{ 0, 0 }, m_globalPosition{ 0, 0 },
     m_size{ 0, 0 }, m_isActive(true), m_isVisible(true)

@@ -1,14 +1,13 @@
 #pragma once
-#include "PlayScene.h"
 #include "ISceneState.h"
-#include "CombatManager.h"
 #include "Monster.h"
+#include "CombatManager.h"
 #include "UIObject.h"
-#include "DialoguePanel.h"
-#include "UIButton.h"
-#include <vector>
-#include <memory>
-#include "Player.h"
+
+class Player;
+class UIObject;
+class DialoguePanel;
+
 
 class CombatState : public ISceneState
 {

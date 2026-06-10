@@ -1,10 +1,14 @@
 #pragma once
 #include <vector>
-#include <string>
 #include <d2d1_3.h>
 #include <memory>
-#include "TextRenderer.h"
-#include "D2DRender.h"
+
+class TextRenderer;
+
+namespace myspace
+{
+    class D2DRenderer;
+}
 
 // 모든 ui의 부모 클래스
 class UIObject

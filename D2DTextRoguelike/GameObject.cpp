@@ -1,5 +1,5 @@
+#include "pch.h"
 #include "GameObject.h"
-#include <algorithm>
 
 int GameObject::TakeDamage(int damage)
 {

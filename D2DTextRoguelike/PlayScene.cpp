@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "PlayScene.h"
 #include "RoomSelectState.h"
-#include "StatusPanel.h"
 
 void PlayScene::Initialize()
 {

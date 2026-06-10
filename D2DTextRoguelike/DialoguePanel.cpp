@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DialoguePanel.h"
+
 #include "InputManager.h"
+#include "TextRenderer.h"
 
 DialoguePanel::DialoguePanel(float width, float height)
     : UIPanel(width, height), m_textSpeed(0.03f), m_elapsedTime(0.0f), m_charIndex(0), m_isFinished(true)

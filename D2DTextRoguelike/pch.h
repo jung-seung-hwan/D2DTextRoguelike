@@ -25,6 +25,8 @@
 #include <list>
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <fstream>
 
 
 // COM 및 DirectX 인터페이스
@@ -82,3 +84,16 @@ namespace DX
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "windowscodecs.lib")
+
+
+namespace EngineConfig
+{
+    constexpr int SCREEN_WIDTH = 1280;
+    constexpr int SCREEN_HEIGHT = 1024;
+
+    constexpr float SCREEN_WIDTH_F = static_cast<float>(SCREEN_WIDTH);
+    constexpr float SCREEN_HEIGHT_F = static_cast<float>(SCREEN_HEIGHT);
+
+    constexpr float SCREEN_CENTER_X = SCREEN_WIDTH / 2.0f;
+    constexpr float SCREEN_CENTER_Y = SCREEN_HEIGHT / 2.0f;
+}

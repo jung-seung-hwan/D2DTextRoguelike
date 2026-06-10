@@ -1,10 +1,10 @@
 #pragma once
-#include <vector>
-#include <memory>
 #include "Scene.h"
-#include "TextRenderer.h"
 #include "Player.h"
 #include "ISceneState.h"
+
+#include <vector>
+#include <memory>
 
 class PlayScene : public Scene
 {

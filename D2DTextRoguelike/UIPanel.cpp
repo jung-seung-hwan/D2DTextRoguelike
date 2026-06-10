@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIPanel.h"
-#include <wrl/client.h> 
+
+#include "D2DRender.h"
 
 UIPanel::UIPanel(float width, float height)
     : m_bgColor(D2D1::ColorF(D2D1::ColorF::Black, 0.8f))
