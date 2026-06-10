@@ -132,6 +132,7 @@
     <ClInclude Include="D2DTransform.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="DialoguePanel.h" />
+    <ClInclude Include="DiceSystem.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="D2DTransform.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="DialoguePanel.cpp" />
+    <ClCompile Include="DiceSystem.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="InputManager.cpp" />

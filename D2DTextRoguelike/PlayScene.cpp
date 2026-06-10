@@ -14,6 +14,7 @@ void PlayScene::Initialize()
     m_player.evasion = 10;
     m_player.isDead = false;
     ChangeState(std::make_unique<RoomSelectState>());
+
 }
 
 void PlayScene::Update(float deltaTime)
