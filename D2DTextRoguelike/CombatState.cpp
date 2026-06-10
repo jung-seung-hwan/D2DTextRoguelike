@@ -123,23 +123,68 @@ void CombatState::CreateUI(PlayScene* pScene)
     // 공격 버튼 생성
     auto attackBtn = std::make_unique<UIButton>(L"공격", 120.0f, 40.0f);
     attackBtn->SetLocalPosition(30.0f, 470.0f);
-    attackBtn->SetOnClick([this]() // this는 CombatState를 가리킴
+    attackBtn->SetOnClick([this]()
         {
             if (m_combatManager.IsBattleEnd()) return;
 
+            // 전투 연산 실행
             m_combatManager.PlayerAction(PLAYERACTION::ATTACK);
 
             if (m_dialoguePanel)
             {
                 wchar_t buffer[256];
+                wchar_t log1[128] = { 0, };
+
+                // 플레이어 공격 결과 텍스트 구성 (전투 결과와 무관하게 무조건 발생)
+                int damageToMonster = m_combatManager.GetDamageToMonster();
+
+                if (damageToMonster == -1)
+                {
+                    swprintf_s(log1, 128, L"%s이(가) 공격을 회피했다!", m_monster.name.c_str());
+                }
+                else
+                {
+                    swprintf_s(log1, 128, L"%s에게 %d의 피해를 입혔다.", m_monster.name.c_str(), damageToMonster);
+                }
+
+                // 전투 상태에 따른 분기 및 텍스트 조합
                 if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
                 {
-                    swprintf_s(buffer, 256, L"%s을/를 쓰러뜨렸다!", m_monster.name.c_str());
+                    // 승리 시: 공격 결과 + 몬스터 처치 메시지
+                    swprintf_s(buffer, 256, L"%s\n%s을(를) 쓰러뜨렸다!", log1, m_monster.name.c_str());
                 }
-                else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
+                else
                 {
-                    swprintf_s(buffer, 256, L"플레이어가 쓰러졌다...");
+                    // 몬스터 생존 시: 적 반격 결과 연산
+                    wchar_t log2[128] = { 0, };
+                    int damageToPlayer = m_combatManager.GetDamageToPlayer();
+
+                    if (damageToPlayer == -1)
+                    {
+                        swprintf_s(log2, 128, L"적의 공격을 민첩하게 회피했다!");
+                    }
+                    else if (damageToPlayer == 0)
+                    {
+                        swprintf_s(log2, 128, L"방어막이 공격을 막아냈다.");
+                    }
+                    else
+                    {
+                        swprintf_s(log2, 128, L"적의 반격! %d의 피해를 입었다.", damageToPlayer);
+                    }
+
+                    // 패배 여부 확인
+                    if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
+                    {
+                        // 패배 시: 공격 결과 + 반격 결과 + 플레이어 사망 메시지
+                        swprintf_s(buffer, 256, L"%s\n%s\n플레이어가 쓰러졌다...", log1, log2);
+                    }
+                    else
+                    {
+                        // 일반 진행: 공격 결과 + 반격 결과
+                        swprintf_s(buffer, 256, L"%s\n%s", log1, log2);
+                    }
                 }
+
                 m_dialoguePanel->PlayText(buffer);
             }
         });
@@ -147,7 +192,7 @@ void CombatState::CreateUI(PlayScene* pScene)
 
     // 다음 상태로 넘어가기 위한 버튼 생성
     auto nextBtn = std::make_unique<UIButton>(L"다음", 120.0f, 40.0f);
-    nextBtn->SetLocalPosition(100.0f, 470.0f);
+    nextBtn->SetLocalPosition(160.0f, 470.0f);
     nextBtn->SetOnClick([this, pScene]() // pScene 캡처
         {
             if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
@@ -157,10 +202,20 @@ void CombatState::CreateUI(PlayScene* pScene)
             }
             else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
             {
-                wchar_t buffer[256];
-                swprintf_s(buffer, 256, L"전투에서 패배했다. 다시 도전해보자");
-                m_dialoguePanel->PlayText(buffer);
-                SceneManager::Instance().ChangeScene(L"TitleScene");
+                // 메시지 확인 여부에 따른 2단계 제어
+                if (!m_isDefeatAcknowledged)
+                {
+                    wchar_t buffer[256];
+                    swprintf_s(buffer, 256, L"전투에서 패배했다. 다시 도전해보자");
+                    m_dialoguePanel->PlayText(buffer);
+
+                    // 상태를 갱신하여 다음 클릭 시 씬 전환이 발생하도록 처리
+                    m_isDefeatAcknowledged = true;
+                }
+                else
+                {
+                    SceneManager::Instance().ChangeScene(L"TitleScene");
+                }
             }
             else
             {

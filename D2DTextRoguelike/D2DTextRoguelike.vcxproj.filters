@@ -114,8 +114,11 @@
     <ClInclude Include="StatusPanel.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="DiceSystem.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="EnhanceState.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="RestState.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,8 +203,11 @@
     <ClCompile Include="StatusPanel.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="DiceSystem.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="EnhanceState.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="RestState.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

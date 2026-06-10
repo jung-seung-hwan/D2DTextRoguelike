@@ -3,38 +3,34 @@
 
 int GameObject::TakeDamage(int damage)
 {
-	int roll = rand() % 100;
+    int roll = rand() % 100;
 
-	if (roll < evasion)
-	{
-		return 0;
-	}
+    // 회피 성공 시 식별자 -1 반환
+    if (roll < evasion)
+    {
+        return -1;
+    }
 
-	float reductRate = defense / (defense + 100.0f);
-	int finalDamage = static_cast<int>(damage * (1.0f - reductRate));
+    float reductRate = defense / (defense + 100.0f);
+    int finalDamage = static_cast<int>(damage * (1.0f - reductRate));
 
-	if (finalDamage < 1)
-		finalDamage = 1;
+    if (finalDamage < 1) finalDamage = 1;
 
-	if (shield > 0)
-	{
-		finalDamage -= shield;
+    if (shield > 0)
+    {
+        finalDamage -= shield;
+        if (finalDamage < 0) finalDamage = 0; // 쉴드로 방어한 경우는 0 데미지
+        shield = 0;
+    }
 
-		if (finalDamage < 0)
-			finalDamage = 0;
+    hp -= finalDamage;
+    if (hp <= 0)
+    {
+        hp = 0;
+        isDead = true;
+    }
 
-		shield = 0;
-	}
-
-	hp -= finalDamage;
-
-	if (hp <= 0)
-	{
-		hp = 0;
-		isDead = true;
-	}
-
-	return finalDamage;
+    return finalDamage;
 }
 
 int GameObject::Attack(GameObject& target)

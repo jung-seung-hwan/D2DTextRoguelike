@@ -27,6 +27,7 @@
 #include <string>
 #include <unordered_map>
 #include <fstream>
+#include <random>
 
 
 // COM 및 DirectX 인터페이스

@@ -9,7 +9,7 @@ void PlayScene::Initialize()
     m_player.name = L"플레이어";
     m_player.maxHp = 100;
     m_player.hp = 100;
-    m_player.attack = 1;
+    m_player.attack = 1000;
     m_player.defense = 0;
     m_player.evasion = 10;
     m_player.isDead = false;
