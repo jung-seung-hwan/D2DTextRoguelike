@@ -12,6 +12,7 @@
 #include "UIObject.h"
 #include "DialoguePanel.h"
 #include "UIbutton.h"
+#include "UIImage.h"
 #include "StatusPanel.h"
 
 CombatState::CombatState(int floor, MonsterType type)
@@ -73,6 +74,22 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
 
 void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, TextRenderer* pTextRenderer)
 {
+    ID2D1Bitmap* pBgBitmap = nullptr;
+    if (m_type == MonsterType::Boss || m_type == MonsterType::MidBoss)
+    {
+        // 보스용 배경 이미지 (ResourceManager에 미리 로드되어 있어야 함)
+        pBgBitmap = ResourceManager::Instance().GetBitmap(L"BossBG");
+    }
+    else
+    {
+        // 일반 전투용 배경 이미지
+        pBgBitmap = ResourceManager::Instance().GetBitmap(L"BattleBG");
+    }
+
+    if (pBgBitmap != nullptr)
+    {
+        m_pRenderer->DrawBitmap(pBgBitmap, D2D1::RectF(0.0f, 0.0f, EngineConfig::SCREEN_WIDTH_F, EngineConfig::SCREEN_HEIGHT_F));
+    }
 
     ID2D1Bitmap* playerBitmap = ResourceManager::Instance().GetBitmap(L"Player");
 

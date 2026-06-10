@@ -11,6 +11,7 @@
 #include "UIObject.h"
 #include "DialoguePanel.h"
 #include "UIbutton.h"
+#include "UIImage.h"
 #include "StatusPanel.h"
 
 EnhanceState::EnhanceState(int floor)
@@ -56,6 +57,13 @@ void EnhanceState::Update(PlayScene* pScene, float deltaTime)
 
 void EnhanceState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, TextRenderer* pTextRenderer)
 {
+    ID2D1Bitmap* pBgBitmap = nullptr;
+    pBgBitmap = ResourceManager::Instance().GetBitmap(L"AwardBG");
+
+    if (pBgBitmap != nullptr)
+    {
+        m_pRenderer->DrawBitmap(pBgBitmap, D2D1::RectF(0.0f, 0.0f, EngineConfig::SCREEN_WIDTH_F, EngineConfig::SCREEN_HEIGHT_F));
+    }
 
     ID2D1Bitmap* playerBitmap = ResourceManager::Instance().GetBitmap(L"Player");
 
