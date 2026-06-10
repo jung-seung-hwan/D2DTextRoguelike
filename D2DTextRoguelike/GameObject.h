@@ -13,6 +13,8 @@ public:
 	int defense = 0;
 	int evasion = 0;
 
+	int shield = 0;
+
 	bool isDead = false;
 
 public:
@@ -24,7 +26,7 @@ public:
 
 	virtual int TakeDamage(int damage);
 	virtual int Attack(GameObject& target);
-	//virtual void Defend();
+	virtual void Defend();
 
 	bool IsDead() const;
 };

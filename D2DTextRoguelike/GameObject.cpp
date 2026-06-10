@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include <algorithm>
 
 int GameObject::TakeDamage(int damage)
 {
@@ -10,10 +9,21 @@ int GameObject::TakeDamage(int damage)
 		return 0;
 	}
 
-	int finalDamage = damage - defense;
+	float reductRate = defense / (defense + 100.0f);
+	int finalDamage = static_cast<int>(damage * (1.0f - reductRate));
 
 	if (finalDamage < 1)
 		finalDamage = 1;
+
+	if (shield > 0)
+	{
+		finalDamage -= shield;
+
+		if (finalDamage < 0)
+			finalDamage = 0;
+
+		shield = 0;
+	}
 
 	hp -= finalDamage;
 
@@ -31,10 +41,11 @@ int GameObject::Attack(GameObject& target)
 	return target.TakeDamage(attack);
 }
 
-//void GameObject::Defend() 
-//{
-//
-//}
+void GameObject::Defend()
+{
+	// 최대 체력의 20% 방어막 생성 (1회용)
+	shield = maxHp / 5;
+}
 
 bool GameObject::IsDead() const
 {
