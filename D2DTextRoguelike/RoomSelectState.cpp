@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "RoomSelectState.h"
 #include "CombatState.h"
+#include "EnhanceState.h"
+#include "RestState.h"
 #include "PlayScene.h"
 
 #include "TextRenderer.h"
@@ -53,31 +55,73 @@ void RoomSelectState::Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer,
 
 void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
 {
-    // 3개의 방 선택지 생성 (가로 배열)
-    float startX = 100.0f;
-    float yPos = 300.0f;
+    int currentFloor = pScene->GetCurrentFloor();
 
-    for (int i = 0; i < 3; ++i)
+    // 1. 보스 구간 (10층, 20층, 30층)
+    if (currentFloor % 10 == 0)
     {
-        // 임시로 모든 방을 전투 방으로 가정
-        auto roomBtn = std::make_unique<UIButton>(L"미지의 방", 150.0f, 80.0f);
-        roomBtn->SetLocalPosition(startX + (i * 200.0f), yPos);
+        // 30층이면 최종 보스, 그 외(10, 20)는 중간 보스
+        MonsterType type = (currentFloor == 30) ? MonsterType::Boss : MonsterType::MidBoss;
+        std::wstring btnText = (type == MonsterType::Boss) ? L"최종 보스방 진입" : L"중간 보스방 진입";
 
-        // 버튼 클릭 시의 상태 전환 로직 (람다 캡처를 통한 씬 참조)
-        roomBtn->SetOnClick([this, pScene]()
+        auto roomBtn = std::make_unique<UIButton>(btnText, 300.0f, 80.0f);
+        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 150.0f, 300.0f);
+
+        roomBtn->SetOnClick([this, pScene, type, currentFloor]()
             {
-                int currentFloor = pScene->GetCurrentFloor();
-
-                // 층수 진행에 따른 보스 난이도 분기
-                MonsterType type = MonsterType::Normal;
-                if (currentFloor % 10 == 0) type = MonsterType::Boss;
-                else if (currentFloor % 5 == 0) type = MonsterType::MidBoss;
-
-                // CombatState로 제어권 및 소유권 전환
                 pScene->ChangeState(std::make_unique<CombatState>(currentFloor, type));
             });
 
         m_uiList.push_back(std::move(roomBtn));
+    }
+    // 2. 휴식 구간 (9층, 19층, 29층)
+    else if (currentFloor % 10 == 9)
+    {
+        auto roomBtn = std::make_unique<UIButton>(L"휴식방 진입", 300.0f, 80.0f);
+        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 150.0f, 300.0f);
+
+        roomBtn->SetOnClick([this, pScene, currentFloor]()
+            {
+                 pScene->ChangeState(std::make_unique<RestState>(currentFloor));
+            });
+
+        m_uiList.push_back(std::move(roomBtn));
+    }
+    // 3. 일반 구간 (1~8층 패턴)
+    else
+    {
+        float startX = EngineConfig::SCREEN_CENTER_X - 300.0f;
+        float yPos = 300.0f;
+
+        // C++11 표준 메르센 트위스터 난수 엔진 초기화
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(1, 100);
+
+        for (int i = 0; i < 3; ++i)
+        {
+            // 가중치 적용: 1~70이 나오면 전투방(70%), 71~100이 나오면 강화방(30%)
+            int roll = dist(gen);
+            bool isCombatRoom = (roll <= 70);
+
+            std::wstring btnText = isCombatRoom ? L"전투방" : L"강화방";
+            auto roomBtn = std::make_unique<UIButton>(btnText, 150.0f, 80.0f);
+            roomBtn->SetLocalPosition(startX + (i * 225.0f), yPos);
+
+            roomBtn->SetOnClick([this, pScene, isCombatRoom, currentFloor]()
+                {
+                    if (isCombatRoom)
+                    {
+                        pScene->ChangeState(std::make_unique<CombatState>(currentFloor, MonsterType::Normal));
+                    }
+                    else
+                    {
+                         pScene->ChangeState(std::make_unique<EnhanceState>(currentFloor));
+                    }
+                });
+
+            m_uiList.push_back(std::move(roomBtn));
+        }
     }
 }
 

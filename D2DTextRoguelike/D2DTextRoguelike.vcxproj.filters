@@ -114,6 +114,12 @@
     <ClInclude Include="StatusPanel.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="EnhanceState.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="RestState.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -196,6 +202,12 @@
     </ClCompile>
     <ClCompile Include="StatusPanel.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="EnhanceState.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="RestState.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

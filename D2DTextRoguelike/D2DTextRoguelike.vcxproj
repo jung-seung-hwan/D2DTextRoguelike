@@ -132,6 +132,7 @@
     <ClInclude Include="D2DTransform.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="DialoguePanel.h" />
+    <ClInclude Include="EnhanceState.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="RestState.h" />
     <ClInclude Include="RoomSelectState.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
@@ -165,6 +167,7 @@
     <ClCompile Include="D2DTransform.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="DialoguePanel.cpp" />
+    <ClCompile Include="EnhanceState.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -175,6 +178,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="RestState.cpp" />
     <ClCompile Include="RoomSelectState.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SimpleMathHelper.cpp" />

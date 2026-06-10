@@ -6,7 +6,7 @@
       "Type": "Normal",
       "Evasion": 10,
       "MinFloor": 1,
-      "MaxFloor": 5,
+      "MaxFloor": 30,
       "MaxHp": 100,
       "Attack": 10
     },
@@ -15,8 +15,8 @@
       "Name": "고블린",
       "Type": "Normal",
       "Evasion": 10,
-      "MinFloor": 2,
-      "MaxFloor": 7,
+      "MinFloor": 1,
+      "MaxFloor": 30,
       "MaxHp": 150,
       "Attack": 18
     },
@@ -25,8 +25,8 @@
       "Name": "골렘",
       "Type": "Normal",
       "Evasion": 10,
-      "MinFloor": 2,
-      "MaxFloor": 8,
+      "MinFloor": 1,
+      "MaxFloor": 30,
       "MaxHp": 300,
       "Attack": 10
     },
@@ -35,8 +35,8 @@
       "Name": "정예 오크",
       "Type": "MidBoss",
       "Evasion": 10,
-      "MinFloor": 5,
-      "MaxFloor": 5,
+      "MinFloor": 10,
+      "MaxFloor": 20,
       "MaxHp": 500,
       "Attack": 40
     },
@@ -45,8 +45,8 @@
       "Name": "드래곤",
       "Type": "Boss",
       "Evasion": 10,
-      "MinFloor": 10,
-      "MaxFloor": 10,
+      "MinFloor": 30,
+      "MaxFloor": 30,
       "MaxHp": 2000,
       "Attack": 100
     }
