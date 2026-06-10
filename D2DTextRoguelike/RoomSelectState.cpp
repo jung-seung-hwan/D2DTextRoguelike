@@ -10,6 +10,7 @@
 
 #include "UIButton.h"
 #include "UIImage.h"
+#include "UIRoomButton.h"
 
 #include "Monster.h"
 
@@ -64,9 +65,11 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
         MonsterType type = (currentFloor == 30) ? MonsterType::Boss : MonsterType::MidBoss;
         std::wstring btnText = (type == MonsterType::Boss) ? L"최종 보스방 진입" : L"중간 보스방 진입";
 
-        auto roomBtn = std::make_unique<UIButton>(btnText, 300.0f, 80.0f);
-        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 150.0f, 300.0f);
+        // 보스방 이미지 로드 및 UIRoomButton 생성
+        ID2D1Bitmap* pDoorImg = ResourceManager::Instance().GetBitmap(L"BossDr");
+        auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, btnText, 300.0f, 350.0f);
 
+        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 75.0f, 300.0f);
         roomBtn->SetOnClick([this, pScene, type, currentFloor]()
             {
                 pScene->ChangeState(std::make_unique<CombatState>(currentFloor, type));
@@ -77,20 +80,21 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
     // 2. 휴식 구간 (9층, 19층, 29층)
     else if (currentFloor % 10 == 9)
     {
-        auto roomBtn = std::make_unique<UIButton>(L"휴식방 진입", 300.0f, 80.0f);
-        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 150.0f, 300.0f);
+        ID2D1Bitmap* pDoorImg = ResourceManager::Instance().GetBitmap(L"BreakDr");
+        auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, L"휴식방", 300.0f, 350.0f);
 
+        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 75.0f, 300.0f);
         roomBtn->SetOnClick([this, pScene, currentFloor]()
-            {
-                 pScene->ChangeState(std::make_unique<RestState>(currentFloor));
-            });
+        {
+            pScene->ChangeState(std::make_unique<RestState>(currentFloor));
+        });
 
         m_uiList.push_back(std::move(roomBtn));
     }
     // 3. 일반 구간 (1~8층 패턴)
     else
     {
-        float startX = EngineConfig::SCREEN_CENTER_X - 300.0f;
+        float startX = EngineConfig::SCREEN_CENTER_X - 550.0f;
         float yPos = 300.0f;
 
         // C++11 표준 메르센 트위스터 난수 엔진 초기화
@@ -105,8 +109,12 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
             bool isCombatRoom = (roll <= 70);
 
             std::wstring btnText = isCombatRoom ? L"전투방" : L"강화방";
-            auto roomBtn = std::make_unique<UIButton>(btnText, 150.0f, 80.0f);
-            roomBtn->SetLocalPosition(startX + (i * 225.0f), yPos);
+            // 상태에 따라 로드할 이미지 키값 분기
+            std::wstring imgKey = isCombatRoom ? L"BattleDr" : L"AwardDr";
+            ID2D1Bitmap* pDoorImg = ResourceManager::Instance().GetBitmap(imgKey);
+
+            auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, btnText, 300.0f, 350.0f);
+            roomBtn->SetLocalPosition(startX + (i * 400.0f), yPos);
 
             roomBtn->SetOnClick([this, pScene, isCombatRoom, currentFloor]()
                 {
@@ -116,7 +124,7 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
                     }
                     else
                     {
-                         pScene->ChangeState(std::make_unique<EnhanceState>(currentFloor));
+                        pScene->ChangeState(std::make_unique<EnhanceState>(currentFloor));
                     }
                 });
 
