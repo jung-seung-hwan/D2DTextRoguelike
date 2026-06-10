@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "NzWndBase.h"
-#include <iostream>
 
 LRESULT CALLBACK NzWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {

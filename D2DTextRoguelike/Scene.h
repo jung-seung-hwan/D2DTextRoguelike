@@ -1,6 +1,10 @@
 #pragma once
-#include "D2DRender.h"
-#include "TextRenderer.h"
+class TextRenderer;
+
+namespace myspace
+{
+    class D2DRenderer;
+}
 
 class Scene
 {

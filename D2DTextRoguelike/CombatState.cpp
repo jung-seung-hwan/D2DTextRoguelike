@@ -1,10 +1,18 @@
 #include "pch.h"
 #include "CombatState.h"
+#include "RoomSelectState.h" 
+#include "PlayScene.h"
+
+#include "D2DRender.h"
+#include "TextRenderer.h"
 #include "DataManager.h"
 #include "ResourceManager.h"
-#include "RoomSelectState.h" 
-#include "StatusPanel.h"
 #include "SceneManager.h"
+
+#include "UIObject.h"
+#include "DialoguePanel.h"
+#include "UIbutton.h"
+#include "StatusPanel.h"
 
 CombatState::CombatState(int floor, MonsterType type)
     : m_floor(floor), m_type(type)

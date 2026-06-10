@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "UIImage.h"
 
+#include "D2DRender.h"
+
 UIImage::UIImage(ID2D1Bitmap* pBitmap, float width, float height)
     : m_pBitmap(pBitmap)
 {

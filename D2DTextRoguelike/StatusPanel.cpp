@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "StatusPanel.h"
+
+#include "D2DRender.h"
 #include "TextRenderer.h"
 
 StatusPanel::StatusPanel(GameObject* target, float width, float height)

@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "SceneManager.h"
 
+#include "Scene.h"
+#include "D2DRender.h"
+
 void SceneManager::Update(float deltaTime)
 {
     // 페이드 상태 제어

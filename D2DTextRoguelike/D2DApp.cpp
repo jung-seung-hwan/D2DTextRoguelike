@@ -29,7 +29,7 @@ bool D2DApp::Initialize()
     const wchar_t* className = L"D2DTextRoguelike";
     const wchar_t* windowName = L"TextRoguelike";
 
-    if (false == __super::Create(className, windowName, 900, 700))
+    if (false == __super::Create(className, windowName, EngineConfig::SCREEN_WIDTH, EngineConfig::SCREEN_HEIGHT))
     {
         return false;
     }
@@ -50,6 +50,10 @@ bool D2DApp::Initialize()
         return false;
     }
     ResourceManager::Instance().LoadWICBitmap(L"TitleBG", L"./Resource/TitleScene.png");
+    ResourceManager::Instance().LoadWICBitmap(L"BattleBG", L"./Resource/BattleRoom.png");
+    ResourceManager::Instance().LoadWICBitmap(L"AwardBG", L"./Resource/AwardRoom.png");
+    ResourceManager::Instance().LoadWICBitmap(L"BossBG", L"./Resource/BossRoom.png");
+    ResourceManager::Instance().LoadWICBitmap(L"BreakBG", L"./Resource/BreakRoom2.png");
     ResourceManager::Instance().LoadWICBitmap(L"Player", L"./Resource/Player.png");
     ResourceManager::Instance().LoadWICBitmap(L"Slime", L"./Resource/Slime.png");
 

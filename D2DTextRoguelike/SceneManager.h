@@ -1,11 +1,15 @@
 #pragma once
 #include "SingletonBase.h"
-#include "Scene.h"
-#include "D2DRender.h"
-#include "TextRenderer.h"
 #include <unordered_map>
 #include <string>
-#include <wrl/client.h>
+
+class Scene;
+class TextRenderer;
+
+namespace myspace
+{
+    class D2DRenderer;
+}
 
 // 씬 전환 상태를 관리
 enum class TransitionState

@@ -1,10 +1,28 @@
 #include "pch.h"
 #include "RoomSelectState.h"
 #include "CombatState.h"
-#include "DataManager.h"
+#include "PlayScene.h"
+
+#include "TextRenderer.h"
+#include "ResourceManager.h"
+
+#include "UIButton.h"
+#include "UIImage.h"
+
+#include "Monster.h"
 
 void RoomSelectState::Enter(PlayScene* pScene)
 {
+    ID2D1Bitmap* pBgBitmap = ResourceManager::Instance().GetBitmap(L"BattleBG");
+    if (pBgBitmap != nullptr)
+    {
+        // 화면 해상도에 맞추어 이미지 객체 생성
+        auto bgImage = std::make_unique<UIImage>(pBgBitmap, EngineConfig::SCREEN_WIDTH_F, EngineConfig::SCREEN_HEIGHT_F);
+        bgImage->SetLocalPosition(0.0f, 0.0f);
+
+        // 배경화면이므로 반드시 UI 요소들 중 가장 먼저 벡터에 삽입해야 뒤로 깔림
+        m_uiList.push_back(std::move(bgImage));
+    }
     CreateRoomButtons(pScene);
 }
 
@@ -18,6 +36,11 @@ void RoomSelectState::Update(PlayScene* pScene, float deltaTime)
 
 void RoomSelectState::Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
+    for (auto& ui : m_uiList)
+    {
+        ui->Render(pRenderer, pTextRenderer);
+    }
+
     wchar_t titleBuffer[64];
     swprintf_s(titleBuffer, 64, L"현재 층: %d층\n진입할 방을 선택하십시오.", pScene->GetCurrentFloor());
 
@@ -26,11 +49,6 @@ void RoomSelectState::Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer,
         100.0f, 100.0f, 500.0f, 100.0f,
         D2D1::ColorF(D2D1::ColorF::White)
     );
-
-    for (auto& ui : m_uiList)
-    {
-        ui->Render(pRenderer, pTextRenderer);
-    }
 }
 
 void RoomSelectState::CreateRoomButtons(PlayScene* pScene)

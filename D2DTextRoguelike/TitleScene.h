@@ -1,9 +1,10 @@
 #pragma once
 #include "Scene.h"
-#include "TextRenderer.h"
 #include "UIObject.h"
+
 #include <vector>
 
+class UIObject;
 
 class TitleScene : public Scene
 {

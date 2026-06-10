@@ -1,8 +1,11 @@
 #pragma once
 class PlayScene;
 class TextRenderer;
-class D2DRender;
 
+namespace myspace
+{
+    class D2DRenderer;
+}
 
 class ISceneState
 {

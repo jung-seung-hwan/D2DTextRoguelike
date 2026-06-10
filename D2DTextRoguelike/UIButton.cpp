@@ -2,6 +2,8 @@
 #include "UIButton.h"
 #include "InputManager.h"
 
+#include "TextRenderer.h"
+
 UIButton::UIButton(const std::wstring& text, float width, float height)
     : m_text(text), m_isHovered(false), m_onClick(nullptr)
 {

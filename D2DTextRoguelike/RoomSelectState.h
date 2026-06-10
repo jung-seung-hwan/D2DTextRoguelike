@@ -1,11 +1,11 @@
 #pragma once
-#include "PlayScene.h"
 #include "ISceneState.h"
 #include "UIObject.h"
-#include "DialoguePanel.h"
-#include "UIButton.h"
+
 #include <vector>
 #include <memory>
+
+class UIObject;
 
 class RoomSelectState : public ISceneState
 {

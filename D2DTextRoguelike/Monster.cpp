@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Monster.h"
 
 void Monster::InitFromData(const MonsterData& data)
