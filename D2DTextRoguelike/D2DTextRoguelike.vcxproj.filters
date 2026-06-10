@@ -120,6 +120,9 @@
     <ClInclude Include="RestState.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="DiceSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -208,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="RestState.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DiceSystem.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

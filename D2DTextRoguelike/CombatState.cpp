@@ -190,9 +190,26 @@ void CombatState::CreateUI(PlayScene* pScene)
         });
     m_uiList.push_back(std::move(attackBtn));
 
+    auto defendBtn = std::make_unique<UIButton>(L"방어", 120.0f, 40.0f);
+    defendBtn->SetLocalPosition(160.0f, 470.0f);
+    defendBtn->SetOnClick([this]() {
+        m_combatManager.SetAction(PLAYERACTION::DEFEND);
+
+        if (m_dialoguePanel)
+        {
+            m_dialoguePanel->PlayText(L"방어를 선택했다.");
+        }
+        });
+
+    auto diceBtn = std::make_unique<UIButton>(L"주사위", 120.0f, 40.0f);
+    diceBtn->SetLocalPosition(290.0f, 470.0f);
+    diceBtn->SetOnClick([this]() {
+        m_combatManager.RollDice();
+        });
+
     // 다음 상태로 넘어가기 위한 버튼 생성
     auto nextBtn = std::make_unique<UIButton>(L"다음", 120.0f, 40.0f);
-    nextBtn->SetLocalPosition(160.0f, 470.0f);
+    nextBtn->SetLocalPosition(420.0f, 470.0f);
     nextBtn->SetOnClick([this, pScene]() // pScene 캡처
         {
             if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
