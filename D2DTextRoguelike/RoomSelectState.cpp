@@ -67,9 +67,9 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
 
         // 보스방 이미지 로드 및 UIRoomButton 생성
         ID2D1Bitmap* pDoorImg = ResourceManager::Instance().GetBitmap(L"BossDr");
-        auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, btnText, 300.0f, 350.0f);
+        auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, btnText, 300.0f, 300.0f);
 
-        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 75.0f, 300.0f);
+        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 150.0f, 300.0f);
         roomBtn->SetOnClick([this, pScene, type, currentFloor]()
             {
                 pScene->ChangeState(std::make_unique<CombatState>(currentFloor, type));
@@ -81,9 +81,9 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
     else if (currentFloor % 10 == 9)
     {
         ID2D1Bitmap* pDoorImg = ResourceManager::Instance().GetBitmap(L"BreakDr");
-        auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, L"휴식방", 300.0f, 350.0f);
+        auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, L"휴식방", 300.0f, 300.0f);
 
-        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 75.0f, 300.0f);
+        roomBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - 150.0f, 300.0f);
         roomBtn->SetOnClick([this, pScene, currentFloor]()
         {
             pScene->ChangeState(std::make_unique<RestState>(currentFloor));
@@ -113,7 +113,7 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
             std::wstring imgKey = isCombatRoom ? L"BattleDr" : L"AwardDr";
             ID2D1Bitmap* pDoorImg = ResourceManager::Instance().GetBitmap(imgKey);
 
-            auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, btnText, 300.0f, 350.0f);
+            auto roomBtn = std::make_unique<UIRoomButton>(pDoorImg, btnText, 300.0f, 300.0f);
             roomBtn->SetLocalPosition(startX + (i * 400.0f), yPos);
 
             roomBtn->SetOnClick([this, pScene, isCombatRoom, currentFloor]()

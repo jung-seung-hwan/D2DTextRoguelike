@@ -35,7 +35,7 @@ public:
 
     // 텍스트 포맷 생성 및 기본 폰트 설정
     bool CreateTextFormat(const std::wstring& fontName, float fontSize);
-    void SetDefaultFont(const std::wstring& fontName, float fontSize);
+    bool SetDefaultFont(const std::wstring& fontName, float fontSize);
 
     // 문자열 출력 (기본값은 왼쪽 정렬)
     void DrawText(const std::wstring& text, float x, float y, float width, float height, const D2D1::ColorF& color, TextAlign align = TextAlign::Left, VerticalAlign vAlign = VerticalAlign::Top);

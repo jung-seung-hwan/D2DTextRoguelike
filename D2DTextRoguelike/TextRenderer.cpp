@@ -27,7 +27,8 @@ bool TextRenderer::Initialize(ID2D1DeviceContext7* pContext)
     if (FAILED(hr)) return false;
 
     // 기본 폰트 설정
-    SetDefaultFont(L"맑은 고딕", 15.0f);
+    if (!SetDefaultFont(L"맑은 고딕", 15.0f))
+        return false;
 
     return true;
 }
@@ -59,21 +60,16 @@ bool TextRenderer::CreateTextFormat(const std::wstring& fontName, float fontSize
         인자6 : 글자 크기
         인자7 : 로케일
     */
-    IDWriteTextFormat* pRawFormat = nullptr;
     HRESULT hr = m_pDWriteFactory->CreateTextFormat(
         fontName.c_str(),
-        NULL,
+        nullptr,
         DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL,
         DWRITE_FONT_STRETCH_NORMAL,
         fontSize,
-        L"",
-        &pRawFormat
+        L"ko-kr",
+        &m_pDefaultTextFormat
     );
-
-    if (FAILED(hr)) return false;
-
-    m_pDefaultTextFormat.Attach(pRawFormat);
 
 
     // 문단 정렬 (세로)
@@ -84,9 +80,9 @@ bool TextRenderer::CreateTextFormat(const std::wstring& fontName, float fontSize
     return true;
 }
 
-void TextRenderer::SetDefaultFont(const std::wstring& fontName, float fontSize)
+bool TextRenderer::SetDefaultFont(const std::wstring& fontName, float fontSize)
 {
-    CreateTextFormat(fontName, fontSize);
+    return CreateTextFormat(fontName, fontSize);
 }
 
 
@@ -107,7 +103,9 @@ void TextRenderer::DrawText(const std::wstring& text, float x, float y, float wi
     // 텍스트를 그릴 색상 브러시 생성
     if (m_pTextBrush == nullptr)
     {
-        m_pContext->CreateSolidColorBrush(color, &m_pTextBrush);
+        HRESULT hr = m_pContext->CreateSolidColorBrush(color, &m_pTextBrush);
+        if (FAILED(hr))
+            return;
     }
     else
     {

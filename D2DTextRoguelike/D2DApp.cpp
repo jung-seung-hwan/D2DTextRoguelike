@@ -20,12 +20,6 @@ bool D2DApp::OnWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 bool D2DApp::Initialize()
 {
-    HRESULT hr = CoInitialize(nullptr);
-    if (FAILED(hr))
-    {
-        return false;
-    }
-
     const wchar_t* className = L"D2DTextRoguelike";
     const wchar_t* windowName = L"TextRoguelike";
 
@@ -41,7 +35,13 @@ bool D2DApp::Initialize()
 
     // 텍스트 분리 처리를 위해 context를 TextRenderer에 넘겨줌
     m_pTextRenderer = new TextRenderer();
-    m_pTextRenderer->Initialize(m_pRenderer->GetContext());
+
+    if (!m_pTextRenderer->Initialize(m_pRenderer->GetContext()))
+    {
+        delete m_pTextRenderer;
+        m_pTextRenderer = nullptr;
+        return false;
+    }
 
     // 배경 로딩
     if (!ResourceManager::Instance().Initialize(m_pRenderer->GetContext()))
@@ -49,22 +49,39 @@ bool D2DApp::Initialize()
         OutputDebugStringW(L"[Error] ResourceManager Initialization Failed.\n");
         return false;
     }
-    ResourceManager::Instance().LoadWICBitmap(L"TitleBG", L"./Resource/TitleScene.png");
-    ResourceManager::Instance().LoadWICBitmap(L"BattleBG", L"./Resource/BattleRoom.png");
-    ResourceManager::Instance().LoadWICBitmap(L"AwardBG", L"./Resource/AwardRoom.png");
-    ResourceManager::Instance().LoadWICBitmap(L"BossBG", L"./Resource/BossRoom.png");
-    ResourceManager::Instance().LoadWICBitmap(L"BreakBG", L"./Resource/BreakRoom2.png");
-    ResourceManager::Instance().LoadWICBitmap(L"BattleDr", L"./Resource/BattleRoomDoor.png");
-    ResourceManager::Instance().LoadWICBitmap(L"AwardDr", L"./Resource/AwardRoomDoor.png");
-    ResourceManager::Instance().LoadWICBitmap(L"BossDr", L"./Resource/BossRoomDoor.png");
-    ResourceManager::Instance().LoadWICBitmap(L"BreakDr", L"./Resource/BreakRoomDoor.png");
-    ResourceManager::Instance().LoadWICBitmap(L"Player", L"./Resource/Player.png");
-    ResourceManager::Instance().LoadWICBitmap(L"Slime", L"./Resource/Slime.png");
+    struct BitmapInfo
+    {
+        const wchar_t* key;
+        const wchar_t* path;
+    };
 
+    BitmapInfo bitmaps[] =
+    {
+        { L"TitleBG",  L"./Resource/TitleScene.png" },
+        { L"BattleBG", L"./Resource/BattleRoom.png" },
+        { L"AwardBG",  L"./Resource/AwardRoom.png" },
+        { L"BossBG",   L"./Resource/BossRoom.png" },
+        { L"BreakBG",  L"./Resource/BreakRoom2.png" },
+        { L"BattleDr", L"./Resource/BattleRoomDoor.png" },
+        { L"AwardDr",  L"./Resource/AwardRoomDoor.png" },
+        { L"BossDr",   L"./Resource/BossRoomDoor.png" },
+        { L"BreakDr",  L"./Resource/BreakRoomDoor.png" },
+        { L"Player",   L"./Resource/Player.png" },
+        { L"Slime",    L"./Resource/Slime.png" }
+    };
 
-    m_timer.Reset();
+    for (const auto& bitmap : bitmaps)
+    {
+        if (!ResourceManager::Instance().LoadWICBitmap(bitmap.key, bitmap.path))
+        {
+            return false;
+        }
+    }
 
-    DataManager::Instance().LoadMonsterData("./Resource/MonsterData.json");
+    if ( !DataManager::Instance().LoadMonsterData("./Resource/MonsterData.json"))
+    {
+        return false;
+    }
 
     // 씬 등록 및 초기 화면 설정 (필요한 씬이 있으면 추가)
     SceneManager::Instance().AddScene(L"TitleScene", new TitleScene());
@@ -72,6 +89,8 @@ bool D2DApp::Initialize()
 
     // 시작 화면을 TitleScene으로 지정
     SceneManager::Instance().ChangeScene(L"TitleScene");
+
+    m_timer.Reset();
 
     return true;
 }
@@ -103,7 +122,6 @@ void D2DApp::Finalize()
 
     if (m_pTextRenderer != nullptr)
     {
-        m_pTextRenderer->Release();
         delete m_pTextRenderer;
         m_pTextRenderer = nullptr;
     }
@@ -117,8 +135,6 @@ void D2DApp::Finalize()
 
     __super::Destroy();
 
-    // com 라이브러리 종료
-    CoUninitialize();
 }
 
 void D2DApp::Update()
