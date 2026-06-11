@@ -1,4 +1,5 @@
 #pragma once
+#include "DiceSystem.h"
 
 class Player;
 class Monster;
@@ -25,6 +26,8 @@ class CombatManager
 public:
 	void StartBattle(Player* player, Monster* monster);
 
+	void SetAction(PLAYERACTION action);
+	void RollDice();
 	void PlayerAction(PLAYERACTION action);
 
 	void EnemyTurn();
@@ -42,6 +45,16 @@ public:
 		return m_damageToPlayer;
 	}
 
+	const DiceSystem::Result& GetPlayerDice() const
+	{
+		return m_playerDice;
+	}
+
+	const DiceSystem::Result& GetEnemyDice() const
+	{
+		return m_enemyDice;
+	}
+
 private:
 	void PlayerAttack();
 	void PlayerDefend();
@@ -52,11 +65,14 @@ private:
 	Player* m_player = nullptr;
 	Monster* m_monster = nullptr;
 
+	PLAYERACTION m_pendingAction = PLAYERACTION::ATTACK;
 	BATTLESTATE m_state = BATTLESTATE::NONE;
 	int m_turnCount = 0;
 
 	int m_damageToMonster = 0;
 	int m_damageToPlayer = 0;
 
+	DiceSystem::Result m_playerDice;
+	DiceSystem::Result m_enemyDice;
 };
 

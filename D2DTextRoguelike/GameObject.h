@@ -26,6 +26,7 @@ public:
 
 	virtual int TakeDamage(int damage);
 	virtual int Attack(GameObject& target);
+	virtual int Attack(GameObject& target, float multiplier);
 	virtual void Defend();
 
 	bool IsDead() const;

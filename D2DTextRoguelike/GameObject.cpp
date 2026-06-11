@@ -38,6 +38,13 @@ int GameObject::Attack(GameObject& target)
 	return target.TakeDamage(attack);
 }
 
+int GameObject::Attack(GameObject& target, float multiplier)
+{
+	int finalDamage = static_cast<int>(attack * multiplier);
+
+	return target.TakeDamage(finalDamage);
+}
+
 void GameObject::Defend()
 {
 	// 최대 체력의 20% 방어막 생성 (1회용)

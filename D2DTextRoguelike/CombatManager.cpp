@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CombatManager.h"
+
 #include "Player.h"
 #include "Monster.h"
 
@@ -12,6 +13,25 @@ void CombatManager::StartBattle(Player* player, Monster* monster)
 	m_turnCount = 1;
 
 }
+
+void CombatManager::SetAction(PLAYERACTION action)
+{
+	if (m_state != BATTLESTATE::PLAYERTURN)
+		return;
+
+	m_pendingAction = action;
+}
+
+void CombatManager::RollDice()
+{
+	if (m_state != BATTLESTATE::PLAYERTURN)
+		return;
+
+	m_playerDice = DiceSystem::RollD20();
+
+	PlayerAction(m_pendingAction);
+}
+
 
 void CombatManager::PlayerAction(PLAYERACTION action)
 {
@@ -52,7 +72,22 @@ void CombatManager::PlayerAction(PLAYERACTION action)
 
 void CombatManager::PlayerAttack()
 {
-	m_damageToMonster = m_player->Attack(*m_monster);
+	DiceSystem::Result diceResult = DiceSystem::RollD20();
+
+	if (diceResult.IsFumble())
+	{
+		int recoilDamage = m_player->attack / 2;
+
+		m_damageToMonster = 0;
+		m_damageToPlayer = m_player->TakeDamage(recoilDamage);
+
+		return;
+	}
+
+	m_damageToMonster = m_player->Attack(
+		*m_monster,
+		m_playerDice.totalMultiplier
+	);
 }
 
 

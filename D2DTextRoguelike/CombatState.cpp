@@ -22,21 +22,29 @@ CombatState::CombatState(int floor, MonsterType type)
 
 void CombatState::Enter(PlayScene* pScene)
 {
-    // 플레이어 상태창 생성 (HP 등)
-    auto playerStatus = std::make_unique<StatusPanel>(
-        pScene->GetPlayer(),
-        300.0f,
-        10.0f
-    );
-
-    // 플레이어 상태창을 UI 목록에 등록
-    playerStatus->SetLocalPosition(520.0f, 400.0f);
-    m_uiList.push_back(std::move(playerStatus));
-
-
     m_player = pScene->GetPlayer();
 
     StartCombat(pScene);
+
+    // 플레이어 상태창 생성 (HP 등)
+    auto playerStatus = std::make_unique<StatusPanel>(
+        pScene->GetPlayer(),
+        360.0f, 12.0f
+    );
+
+    // 플레이어 상태창을 UI 목록에 등록
+    playerStatus->SetLocalPosition(600.0f, 560.0f);
+    m_uiList.push_back(std::move(playerStatus));
+
+    // 몬스터 상태창
+    auto monsterStatus = std::make_unique<StatusPanel>(
+        &m_monster,
+        300.0f,
+        12.0f
+    );
+    monsterStatus->SetLocalPosition(70.0f, 60.0f);
+    m_uiList.push_back(std::move(monsterStatus));
+
     CreateUI(pScene);
 
     if (m_dialoguePanel)
@@ -95,10 +103,10 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
 
     if (playerBitmap != nullptr)
     {
-        // 밑에서 50.0f, 50.0f 띄우고 400x400 크기로 배치
+        // 밑에서 50.0f, 50.0f 띄우고 400x400 크기로 배치 < 해상도 수정됨
         m_pRenderer->DrawBitmap(
             playerBitmap,
-            D2D1::RectF(50.0f, 250.0f, 450.0f, 650.0f) // (left, top, right, bottom)
+            D2D1::RectF(70.0f, 360.0f, 560.0f, 850.0f) // (left, top, right, bottom)
         );
     }
 
@@ -108,7 +116,7 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
     {
         m_pRenderer->DrawBitmap(
             slimeBitmap,
-            D2D1::RectF(560.0f, 130.0f, 720.0f, 290.0f) // (left, top, right, bottom)
+            D2D1::RectF(620.0f, 180.0f, 900.0f, 460.0f) // (left, top, right, bottom)
         );
     }
 
@@ -116,7 +124,7 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
     swprintf_s(floorBuffer, 64, L"현재 층: %d층", m_floor);
     pTextRenderer->DrawText(
         floorBuffer,
-        100.0f, 60.0f, 300.0f, 50.0f,
+        100.0f, 80.0f, 300.0f, 50.0f,
         D2D1::ColorF(D2D1::ColorF::Yellow)
     );
 
@@ -131,9 +139,9 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
 void CombatState::CreateUI(PlayScene* pScene)
 {
     // 대화창 생성 로직
-    auto dialoguePanel = std::make_unique<DialoguePanel>(860.0f, 150.0f);
+    auto dialoguePanel = std::make_unique<DialoguePanel>(1160.0f, 170.0f);
     m_dialoguePanel = dialoguePanel.get(); // 제어용 포인터 저장
-    m_dialoguePanel->SetLocalPosition(20.0f, 530.0f);
+    m_dialoguePanel->SetLocalPosition(60.0f, 850.0f);
     m_dialoguePanel->SetActive(false);
     m_uiList.push_back(std::move(dialoguePanel));
 
@@ -145,71 +153,94 @@ void CombatState::CreateUI(PlayScene* pScene)
             if (m_combatManager.IsBattleEnd()) return;
 
             // 전투 연산 실행
-            m_combatManager.PlayerAction(PLAYERACTION::ATTACK);
+            m_combatManager.SetAction(PLAYERACTION::ATTACK);
 
             if (m_dialoguePanel)
             {
-                wchar_t buffer[256];
-                wchar_t log1[128] = { 0, };
+                m_dialoguePanel->PlayText(L"공격을 선택했다.\n주사위를 굴려 행동을 실행하자.");
 
-                // 플레이어 공격 결과 텍스트 구성 (전투 결과와 무관하게 무조건 발생)
-                int damageToMonster = m_combatManager.GetDamageToMonster();
 
-                if (damageToMonster == -1)
-                {
-                    swprintf_s(log1, 128, L"%s이(가) 공격을 회피했다!", m_monster.name.c_str());
-                }
-                else
-                {
-                    swprintf_s(log1, 128, L"%s에게 %d의 피해를 입혔다.", m_monster.name.c_str(), damageToMonster);
-                }
-
-                // 전투 상태에 따른 분기 및 텍스트 조합
-                if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
-                {
-                    // 승리 시: 공격 결과 + 몬스터 처치 메시지
-                    swprintf_s(buffer, 256, L"%s\n%s을(를) 쓰러뜨렸다!", log1, m_monster.name.c_str());
-                }
-                else
-                {
-                    // 몬스터 생존 시: 적 반격 결과 연산
-                    wchar_t log2[128] = { 0, };
-                    int damageToPlayer = m_combatManager.GetDamageToPlayer();
-
-                    if (damageToPlayer == -1)
-                    {
-                        swprintf_s(log2, 128, L"적의 공격을 민첩하게 회피했다!");
-                    }
-                    else if (damageToPlayer == 0)
-                    {
-                        swprintf_s(log2, 128, L"방어막이 공격을 막아냈다.");
-                    }
-                    else
-                    {
-                        swprintf_s(log2, 128, L"적의 반격! %d의 피해를 입었다.", damageToPlayer);
-                    }
-
-                    // 패배 여부 확인
-                    if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
-                    {
-                        // 패배 시: 공격 결과 + 반격 결과 + 플레이어 사망 메시지
-                        swprintf_s(buffer, 256, L"%s\n%s\n플레이어가 쓰러졌다...", log1, log2);
-                    }
-                    else
-                    {
-                        // 일반 진행: 공격 결과 + 반격 결과
-                        swprintf_s(buffer, 256, L"%s\n%s", log1, log2);
-                    }
-                }
-
-                m_dialoguePanel->PlayText(buffer);
             }
         });
     m_uiList.push_back(std::move(attackBtn));
 
+    auto defendBtn = std::make_unique<UIButton>(L"방어", 120.0f, 40.0f);
+    defendBtn->SetLocalPosition(160.0f, 470.0f);
+    defendBtn->SetOnClick([this]() {
+        m_combatManager.SetAction(PLAYERACTION::DEFEND);
+
+        if (m_dialoguePanel)
+        {
+            m_dialoguePanel->PlayText(L"방어를 선택했다.");
+        }
+        });
+    m_uiList.push_back(std::move(defendBtn));
+
+    auto diceBtn = std::make_unique<UIButton>(L"주사위", 120.0f, 40.0f);
+    diceBtn->SetLocalPosition(290.0f, 470.0f);
+    diceBtn->SetOnClick([this]() {
+        m_combatManager.RollDice();
+
+        wchar_t buffer[256];
+        wchar_t log1[128] = { 0, };
+
+        // 플레이어 공격 결과 텍스트 구성 (전투 결과와 무관하게 무조건 발생)
+        int damageToMonster = m_combatManager.GetDamageToMonster();
+
+        if (damageToMonster == -1)
+        {
+            swprintf_s(log1, 128, L"%s이(가) 공격을 회피했다!", m_monster.name.c_str());
+        }
+        else
+        {
+            swprintf_s(log1, 128, L"%s에게 %d의 피해를 입혔다.", m_monster.name.c_str(), damageToMonster);
+        }
+
+        // 전투 상태에 따른 분기 및 텍스트 조합
+        if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
+        {
+            // 승리 시: 공격 결과 + 몬스터 처치 메시지
+            swprintf_s(buffer, 256, L"%s\n%s을(를) 쓰러뜨렸다!", log1, m_monster.name.c_str());
+        }
+        else
+        {
+            // 몬스터 생존 시: 적 반격 결과 연산
+            wchar_t log2[128] = { 0, };
+            int damageToPlayer = m_combatManager.GetDamageToPlayer();
+
+            if (damageToPlayer == -1)
+            {
+                swprintf_s(log2, 128, L"적의 공격을 민첩하게 회피했다!");
+            }
+            else if (damageToPlayer == 0)
+            {
+                swprintf_s(log2, 128, L"방어막이 공격을 막아냈다.");
+            }
+            else
+            {
+                swprintf_s(log2, 128, L"적의 반격! %d의 피해를 입었다.", damageToPlayer);
+            }
+
+            // 패배 여부 확인
+            if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
+            {
+                // 패배 시: 공격 결과 + 반격 결과 + 플레이어 사망 메시지
+                swprintf_s(buffer, 256, L"%s\n%s\n플레이어가 쓰러졌다...", log1, log2);
+            }
+            else
+            {
+                // 일반 진행: 공격 결과 + 반격 결과
+                swprintf_s(buffer, 256, L"%s\n%s", log1, log2);
+            }
+        }
+
+        m_dialoguePanel->PlayText(buffer);
+        });
+    m_uiList.push_back(std::move(diceBtn));
+
     // 다음 상태로 넘어가기 위한 버튼 생성
     auto nextBtn = std::make_unique<UIButton>(L"다음", 120.0f, 40.0f);
-    nextBtn->SetLocalPosition(160.0f, 470.0f);
+    nextBtn->SetLocalPosition(420.0f, 470.0f);
     nextBtn->SetOnClick([this, pScene]() // pScene 캡처
         {
             if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
