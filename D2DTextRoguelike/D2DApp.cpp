@@ -54,6 +54,10 @@ bool D2DApp::Initialize()
     ResourceManager::Instance().LoadWICBitmap(L"AwardBG", L"./Resource/AwardRoom.png");
     ResourceManager::Instance().LoadWICBitmap(L"BossBG", L"./Resource/BossRoom.png");
     ResourceManager::Instance().LoadWICBitmap(L"BreakBG", L"./Resource/BreakRoom2.png");
+    ResourceManager::Instance().LoadWICBitmap(L"BattleDr", L"./Resource/BattleRoomDoor.png");
+    ResourceManager::Instance().LoadWICBitmap(L"AwardDr", L"./Resource/AwardRoomDoor.png");
+    ResourceManager::Instance().LoadWICBitmap(L"BossDr", L"./Resource/BossRoomDoor.png");
+    ResourceManager::Instance().LoadWICBitmap(L"BreakDr", L"./Resource/BreakRoomDoor.png");
     ResourceManager::Instance().LoadWICBitmap(L"Player", L"./Resource/Player.png");
     ResourceManager::Instance().LoadWICBitmap(L"Slime", L"./Resource/Slime.png");
 

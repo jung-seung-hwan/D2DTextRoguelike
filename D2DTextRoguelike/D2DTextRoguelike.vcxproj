@@ -159,6 +159,7 @@
     <ClInclude Include="UIImage.h" />
     <ClInclude Include="UIObject.h" />
     <ClInclude Include="UIPanel.h" />
+    <ClInclude Include="UIRoomButton.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CombatState.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="UIImage.cpp" />
     <ClCompile Include="UIObject.cpp" />
     <ClCompile Include="UIPanel.cpp" />
+    <ClCompile Include="UIRoomButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\MonsterData.json" />
