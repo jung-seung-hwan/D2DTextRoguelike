@@ -277,6 +277,9 @@ void CombatState::CreateUI(PlayScene* pScene)
             // 패배 여부 확인
             if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
             {
+                m_attackBtn->SetActive(false);
+                m_defendBtn->SetActive(false);
+                m_diceBtn->SetActive(false);
                 // 패배 시: 공격 결과 + 반격 결과 + 플레이어 사망 메시지
                 swprintf_s(buffer, 256, L"%s\n%s\n플레이어가 쓰러졌다...", log1, log2);
             }

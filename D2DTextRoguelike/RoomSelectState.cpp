@@ -28,6 +28,8 @@ void RoomSelectState::Enter(PlayScene* pScene)
         m_uiList.push_back(std::move(bgImage));
     }
 
+    CreateRoomButtons(pScene);
+
     // 정보 패널 생성 (초기 상태는 비활성)
     auto infoPanel = std::make_unique<PlayerInfoPanel>(pScene->GetPlayer(), 400.0f, 500.0f);
     infoPanel->SetLocalPosition(EngineConfig::SCREEN_WIDTH_F - 250.0f, 50.0f); // 우측 상단 배치
@@ -46,7 +48,6 @@ void RoomSelectState::Enter(PlayScene* pScene)
         });
 
     m_uiList.push_back(std::move(toggleBtn));
-    CreateRoomButtons(pScene);
 }
 
 void RoomSelectState::Update(PlayScene* pScene, float deltaTime)
