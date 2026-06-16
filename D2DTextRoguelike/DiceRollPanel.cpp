@@ -5,6 +5,8 @@
 
 void DiceRollPanel::Open()
 {
+    m_result = DiceSystem::Result();
+
     m_isRolling = false;
     m_hasStartedRoll = false;
     m_currentTime = 0.0f;
@@ -17,6 +19,8 @@ void DiceRollPanel::Open()
 
 void DiceRollPanel::StartRoll()
 {
+    m_result = DiceSystem::RollD20();
+
     m_isRolling = true;
     m_hasStartedRoll = true;
     m_currentTime = 0.0f;
@@ -70,6 +74,10 @@ void DiceRollPanel::Update(float deltaTime)
         m_isRolling = false;
         m_finishHoldTimer = 0.0f;
 
+        if (!m_result.rolls.empty())
+        {
+            m_displayNumber = m_result.rolls.back().roll;
+        }
     }
 }
 

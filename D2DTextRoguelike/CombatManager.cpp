@@ -22,13 +22,12 @@ void CombatManager::SetAction(PLAYERACTION action)
 	m_pendingAction = action;
 }
 
-void CombatManager::RollDice()
+void CombatManager::ApplyDiceResult(const DiceSystem::Result& result)
 {
 	if (m_state != BATTLESTATE::PLAYERTURN)
 		return;
 
-	m_playerDice = DiceSystem::RollD20();
-
+	m_playerDice = result;
 	PlayerAction(m_pendingAction);
 }
 

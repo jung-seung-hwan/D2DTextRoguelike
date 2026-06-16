@@ -27,7 +27,7 @@ public:
 	void StartBattle(Player* player, Monster* monster);
 
 	void SetAction(PLAYERACTION action);
-	void RollDice();
+	void ApplyDiceResult(const DiceSystem::Result& result);
 	void PlayerAction(PLAYERACTION action);
 
 	void EnemyTurn();
