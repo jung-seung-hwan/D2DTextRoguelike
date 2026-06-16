@@ -376,9 +376,15 @@ void CombatState::CreateUI(PlayScene* pScene)
             {
                 m_attackBtn->SetActive(false);
                 m_defendBtn->SetActive(false);
-                //m_diceButton->SetActive(false);
-                pScene->IncreaseFloor();
-                pScene->ChangeState(std::make_unique<RoomSelectState>());
+                if (m_floor >= 30)
+                {
+                    SceneManager::Instance().ChangeScene(L"EndingScene");
+                }
+                else
+                {
+                    pScene->IncreaseFloor();
+                    pScene->ChangeState(std::make_unique<RoomSelectState>());
+                }
             }
             else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
             {
