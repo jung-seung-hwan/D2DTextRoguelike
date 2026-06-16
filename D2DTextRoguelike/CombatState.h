@@ -41,7 +41,10 @@ private:
     // 패배 메시지 확인 여부를 저장하는 논리 변수 추가
     bool m_isDefeatAcknowledged = false;
 
-    UIButton* m_diceButton = nullptr;
+    bool m_showEnemyDice = false;
+    int m_enemyDiceNumber = 0;
+    float m_enemyDiceTimer = 0.0f;
+    float m_enemyDiceDisplayTime = 1.0f;
 
     // 보상 처리 및 화면 제어용 포인터 변수 추가
     const ItemData* m_droppedItemData = nullptr;

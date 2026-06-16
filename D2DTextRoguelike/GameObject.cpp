@@ -51,6 +51,14 @@ void GameObject::Defend()
 	shield = maxHp / 5;
 }
 
+void GameObject::Defend(int shieldAmount)
+{
+    if (shieldAmount < 0)
+        shieldAmount = 0;
+
+    shield = shieldAmount;
+}
+
 bool GameObject::IsDead() const
 {
 	return isDead;
