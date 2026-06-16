@@ -20,6 +20,7 @@ CombatState::CombatState(int floor, MonsterType type)
 {
 }
 
+
 void CombatState::Enter(PlayScene* pScene)
 {
     m_player = pScene->GetPlayer();
@@ -50,11 +51,12 @@ void CombatState::Enter(PlayScene* pScene)
     if (m_dialoguePanel)
     {
         wchar_t buffer[256];
-        swprintf_s(buffer, 256, L"- %d층 -\n야생의 %s(이)가 나타났다!", m_floor, m_monster.name.c_str());
+        swprintf_s(buffer, 256, L"- %d층 -\n몬스터 %s(이)가 나타났다!", m_floor, m_monster.name.c_str());
         m_dialoguePanel->PlayText(buffer);
         m_dialoguePanel->SetActive(true);
     }
 }
+
 
 void CombatState::StartCombat(PlayScene* pScene)
 {
@@ -72,6 +74,7 @@ void CombatState::StartCombat(PlayScene* pScene)
     m_combatManager.StartBattle(pScene->GetPlayer(), &m_monster);
 }
 
+
 void CombatState::Update(PlayScene* pScene, float deltaTime)
 {
     for (auto& ui : m_uiList)
@@ -80,12 +83,13 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
     }
 }
 
+
 void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, TextRenderer* pTextRenderer)
 {
     ID2D1Bitmap* pBgBitmap = nullptr;
     if (m_type == MonsterType::Boss || m_type == MonsterType::MidBoss)
     {
-        // 보스용 배경 이미지 (ResourceManager에 미리 로드되어 있어야 함)
+        // 보스용 배경 이미지
         pBgBitmap = ResourceManager::Instance().GetBitmap(L"BossBG");
     }
     else
@@ -128,13 +132,13 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
         D2D1::ColorF(D2D1::ColorF::Yellow)
     );
 
-
     // UI 일괄 렌더링
     for (auto& ui : m_uiList)
     {
         ui->Render(m_pRenderer, pTextRenderer);
     }
 }
+
 
 void CombatState::CreateUI(PlayScene* pScene)
 {
@@ -147,6 +151,7 @@ void CombatState::CreateUI(PlayScene* pScene)
 
     // 공격 버튼 생성
     auto attackBtn = std::make_unique<UIButton>(L"공격", 120.0f, 40.0f);
+    m_attackBtn = attackBtn.get();
     attackBtn->SetLocalPosition(30.0f, 470.0f);
     attackBtn->SetOnClick([this]()
         {
@@ -165,6 +170,7 @@ void CombatState::CreateUI(PlayScene* pScene)
     m_uiList.push_back(std::move(attackBtn));
 
     auto defendBtn = std::make_unique<UIButton>(L"방어", 120.0f, 40.0f);
+    m_defendBtn = defendBtn.get();
     defendBtn->SetLocalPosition(160.0f, 470.0f);
     defendBtn->SetOnClick([this]() {
         m_combatManager.SetAction(PLAYERACTION::DEFEND);
@@ -177,14 +183,15 @@ void CombatState::CreateUI(PlayScene* pScene)
     m_uiList.push_back(std::move(defendBtn));
 
     auto diceBtn = std::make_unique<UIButton>(L"주사위", 120.0f, 40.0f);
+    m_diceBtn = diceBtn.get();
     diceBtn->SetLocalPosition(290.0f, 470.0f);
-    diceBtn->SetOnClick([this]() {
+    diceBtn->SetOnClick([this, pScene]() {
         m_combatManager.RollDice();
 
         wchar_t buffer[256];
         wchar_t log1[128] = { 0, };
 
-        // 플레이어 공격 결과 텍스트 구성 (전투 결과와 무관하게 무조건 발생)
+        // 플레이어 공격 결과 텍스트
         int damageToMonster = m_combatManager.GetDamageToMonster();
 
         if (damageToMonster == -1)
@@ -199,8 +206,54 @@ void CombatState::CreateUI(PlayScene* pScene)
         // 전투 상태에 따른 분기 및 텍스트 조합
         if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
         {
-            // 승리 시: 공격 결과 + 몬스터 처치 메시지
             swprintf_s(buffer, 256, L"%s\n%s을(를) 쓰러뜨렸다!", log1, m_monster.name.c_str());
+            // 버튼 비활성화
+            m_attackBtn->SetActive(false);
+            m_defendBtn->SetActive(false);
+            m_diceBtn->SetActive(false);
+            m_nextBtn->SetActive(false);
+            // 드롭 아이템 획득 시도
+            m_droppedItemData = DataManager::Instance().GetRandomItemData(m_floor);
+
+            if (m_droppedItemData != nullptr)
+            {
+                // 현재 장착 중인 동일 스탯의 수치 확인
+                int currentStat = pScene->GetPlayer()->GetInventory().GetStatBonus(m_droppedItemData->statType);
+
+                // 능력치 종류를 UI 출력용 문자열로 변환
+                std::wstring statName = L"";
+                switch (m_droppedItemData->statType)
+                {
+                case ItemStatType::Attack:  statName = L"공격력"; break;
+                case ItemStatType::Defense: statName = L"방어력"; break;
+                case ItemStatType::Evasion: statName = L"회피율"; break;
+                }
+
+                // 변환된 능력치 이름을 포함하여 텍스트 구성
+                wchar_t rewardBuffer[512] = { 0, };
+                swprintf_s(rewardBuffer, 512, L"%s\n\n전리품 발견: %s (%s +%d)\n현재 %s: +%d\n장비하시겠습니까?",
+                    buffer,
+                    m_droppedItemData->name.c_str(),
+                    statName.c_str(),
+                    m_droppedItemData->baseValue,
+                    statName.c_str(),
+                    currentStat);
+
+                m_dialoguePanel->PlayText(rewardBuffer);
+
+                // 장비 획득, 버리기 버튼 활성화
+                m_equipBtn->SetActive(true);
+                m_discardBtn->SetActive(true);
+            }
+            else
+            {
+                // 드롭 아이템이 없을 경우 바로 다음 버튼 활성화
+                wchar_t emptyRewardBuffer[512] = { 0, };
+                swprintf_s(emptyRewardBuffer, 512, L"%s\n아무것도 발견하지 못했다.", buffer);
+
+                m_dialoguePanel->PlayText(emptyRewardBuffer);
+                m_nextBtn->SetActive(true);
+            }
         }
         else
         {
@@ -232,24 +285,61 @@ void CombatState::CreateUI(PlayScene* pScene)
                 // 일반 진행: 공격 결과 + 반격 결과
                 swprintf_s(buffer, 256, L"%s\n%s", log1, log2);
             }
+            m_dialoguePanel->PlayText(buffer);
         }
 
-        m_dialoguePanel->PlayText(buffer);
         });
     m_uiList.push_back(std::move(diceBtn));
 
+    // 보상 선택 버튼 - 장착
+    auto equipBtn = std::make_unique<UIButton>(L"장착", 120.0f, 40.0f);
+    m_equipBtn = equipBtn.get();
+    m_equipBtn->SetLocalPosition(30.0f, 470.0f);
+    m_equipBtn->SetActive(false); // 초기 비활성
+    m_equipBtn->SetOnClick([this, pScene]() {
+        if (m_droppedItemData != nullptr)
+        {
+            auto newItem = std::make_unique<Item>(m_droppedItemData->name, m_droppedItemData->statType, m_droppedItemData->baseValue);
+            pScene->GetPlayer()->GetInventory().EquipItem(std::move(newItem), pScene->GetPlayer());
+
+            m_dialoguePanel->PlayText(L"새로운 장비를 장착했습니다.");
+        }
+
+        CompleteRewardSelection();
+        });
+    m_uiList.push_back(std::move(equipBtn));
+
+    // 보상 선택 버튼 - 버리기
+    auto discardBtn = std::make_unique<UIButton>(L"버리기", 120.0f, 40.0f);
+    m_discardBtn = discardBtn.get();
+    m_discardBtn->SetLocalPosition(160.0f, 470.0f);
+    m_discardBtn->SetActive(false); // 초기 비활성
+    m_discardBtn->SetOnClick([this]() {
+        m_dialoguePanel->PlayText(L"장비를 버리고 발걸음을 옮깁니다.");
+
+        CompleteRewardSelection();
+        });
+    m_uiList.push_back(std::move(discardBtn));
+
     // 다음 상태로 넘어가기 위한 버튼 생성
     auto nextBtn = std::make_unique<UIButton>(L"다음", 120.0f, 40.0f);
+    m_nextBtn = nextBtn.get();
     nextBtn->SetLocalPosition(420.0f, 470.0f);
     nextBtn->SetOnClick([this, pScene]() // pScene 캡처
         {
             if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
             {
+                m_attackBtn->SetActive(false);
+                m_defendBtn->SetActive(false);
+                m_diceBtn->SetActive(false);
                 pScene->IncreaseFloor();
                 pScene->ChangeState(std::make_unique<RoomSelectState>());
             }
             else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
             {
+                m_attackBtn->SetActive(false);
+                m_defendBtn->SetActive(false);
+                m_diceBtn->SetActive(false);
                 // 메시지 확인 여부에 따른 2단계 제어
                 if (!m_isDefeatAcknowledged)
                 {
@@ -275,8 +365,19 @@ void CombatState::CreateUI(PlayScene* pScene)
     m_uiList.push_back(std::move(nextBtn));
 }
 
+
 void CombatState::Exit(PlayScene* pScene)
 {
     m_uiList.clear();
     m_dialoguePanel = nullptr;
+}
+
+void CombatState::CompleteRewardSelection()
+{
+    // 장착/버리기 버튼 숨김
+    m_equipBtn->SetActive(false);
+    m_discardBtn->SetActive(false);
+
+    // 다음 층으로 이동 가능한 버튼 활성화
+    m_nextBtn->SetActive(true);
 }

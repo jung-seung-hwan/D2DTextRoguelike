@@ -80,7 +80,14 @@ bool D2DApp::Initialize()
 
     if ( !DataManager::Instance().LoadMonsterData("./Resource/MonsterData.json"))
     {
+        DataManager::Instance().Release();
         return false;
+    }
+
+    if (!DataManager::Instance().LoadItemData("./Resource/ItemData.json"))
+    {
+        DataManager::Instance().Release();
+        return false; 
     }
 
     // 씬 등록 및 초기 화면 설정 (필요한 씬이 있으면 추가)

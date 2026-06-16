@@ -11,6 +11,7 @@
 #include "UIButton.h"
 #include "UIImage.h"
 #include "UIRoomButton.h"
+#include "PlayerInfoPanel.h"
 
 #include "Monster.h"
 
@@ -26,6 +27,25 @@ void RoomSelectState::Enter(PlayScene* pScene)
         // 배경화면이므로 반드시 UI 요소들 중 가장 먼저 벡터에 삽입해야 뒤로 깔림
         m_uiList.push_back(std::move(bgImage));
     }
+
+    // 정보 패널 생성 (초기 상태는 비활성)
+    auto infoPanel = std::make_unique<PlayerInfoPanel>(pScene->GetPlayer(), 400.0f, 500.0f);
+    infoPanel->SetLocalPosition(EngineConfig::SCREEN_WIDTH_F - 250.0f, 50.0f); // 우측 상단 배치
+    infoPanel->SetActive(false);
+
+    PlayerInfoPanel* pInfoPanel = infoPanel.get();
+    m_uiList.push_back(std::move(infoPanel));
+
+    // 패널 토글 버튼 생성
+    auto toggleBtn = std::make_unique<UIButton>(L"상태창 열기", 120.0f, 40.0f);
+    toggleBtn->SetLocalPosition(EngineConfig::SCREEN_WIDTH_F - 150.0f, 20.0f);
+    toggleBtn->SetOnClick([pInfoPanel]()
+        {
+            bool currentState = pInfoPanel->IsActive();
+            pInfoPanel->SetActive(!currentState);
+        });
+
+    m_uiList.push_back(std::move(toggleBtn));
     CreateRoomButtons(pScene);
 }
 
@@ -58,7 +78,7 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
 {
     int currentFloor = pScene->GetCurrentFloor();
 
-    // 1. 보스 구간 (10층, 20층, 30층)
+    // 보스 구간 (10층, 20층, 30층)
     if (currentFloor % 10 == 0)
     {
         // 30층이면 최종 보스, 그 외(10, 20)는 중간 보스
@@ -77,7 +97,7 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
 
         m_uiList.push_back(std::move(roomBtn));
     }
-    // 2. 휴식 구간 (9층, 19층, 29층)
+    // 휴식 구간 (9층, 19층, 29층)
     else if (currentFloor % 10 == 9)
     {
         ID2D1Bitmap* pDoorImg = ResourceManager::Instance().GetBitmap(L"BreakDr");
@@ -91,13 +111,12 @@ void RoomSelectState::CreateRoomButtons(PlayScene* pScene)
 
         m_uiList.push_back(std::move(roomBtn));
     }
-    // 3. 일반 구간 (1~8층 패턴)
+    // 일반 구간 (1~8층 패턴)
     else
     {
         float startX = EngineConfig::SCREEN_CENTER_X - 550.0f;
         float yPos = 300.0f;
 
-        // C++11 표준 메르센 트위스터 난수 엔진 초기화
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<int> dist(1, 100);

@@ -36,12 +36,6 @@
     <ClInclude Include="D2DRender.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="D2DTransform.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleMathHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="PlatformHelpers.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -123,6 +117,18 @@
     <ClInclude Include="DiceSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="UIRoomButton.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerInfoPanel.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -138,12 +144,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="D2DRenderer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="D2DTransform.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleMathHelper.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
@@ -215,9 +215,24 @@
     <ClCompile Include="DiceSystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="UIRoomButton.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerInfoPanel.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\MonsterData.json">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="Resource\ItemData.json">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>

@@ -5,16 +5,8 @@
 void PlayScene::Initialize()
 {
     m_currentFloor = 1;
-
-    m_player.name = L"플레이어";
-    m_player.maxHp = 100;
-    m_player.hp = 100;
-    m_player.attack = 10;
-    m_player.defense = 0;
-    m_player.evasion = 10;
-    m_player.isDead = false;
+    m_player.Reset();
     ChangeState(std::make_unique<RoomSelectState>());
-
 }
 
 void PlayScene::Update(float deltaTime)

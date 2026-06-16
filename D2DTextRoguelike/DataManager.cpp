@@ -112,8 +112,88 @@ const MonsterData* DataManager::GetMonsterData(const std::wstring& id) const
     return nullptr; // 없으면 nullptr 반환
 }
 
+
+bool DataManager::LoadItemData(const std::string& filePath)
+{
+    std::ifstream file(filePath);
+    if (!file.is_open())
+    {
+        OutputDebugStringW(L"[Error] Failed to open Item JSON file.\n");
+        return false;
+    }
+
+    try
+    {
+        json j;
+        file >> j; // JSON 파일 읽기 완료
+
+        // JSON 배열 순회 ("items" 키 기준)
+        for (const auto& item : j["items"])
+        {
+            ItemData data;
+
+            // 기본 식별자 파싱 및 문자열 변환
+            data.id = item["id"].get<int>();
+            data.name = UTF8ToWString(item["name"].get<std::string>());
+
+            // 능력치 타입 파싱 및 열거형 변환
+            std::string statStr = item["statType"].get<std::string>();
+            if (statStr == "Attack")
+            {
+                data.statType = ItemStatType::Attack;
+            }
+            else if (statStr == "Defense")
+            {
+                data.statType = ItemStatType::Defense;
+            }
+            else if (statStr == "Evasion")
+            {
+                data.statType = ItemStatType::Evasion;
+            }
+
+            // 수치 및 등장 층수 파싱
+            data.baseValue = item["baseValue"].get<int>();
+            data.minFloor = item["minFloor"].get<int>();
+            data.maxFloor = item["maxFloor"].get<int>();
+
+            // 벡터에 적재
+            m_itemDatas.push_back(data);
+        }
+
+        OutputDebugStringW(L"[System] ItemData Loaded Successfully.\n");
+        return true;
+    }
+    catch (const json::exception& e)
+    {
+        OutputDebugStringA(e.what()); // 파싱 에러 출력
+        return false;
+    }
+}
+
+
+const ItemData* DataManager::GetRandomItemData(int currentFloor) const
+{
+    std::vector<const ItemData*> availableItems;
+
+    // 현재 층수에 등장 가능한 아이템만 필터링
+    for (const auto& data : m_itemDatas)
+    {
+        if (currentFloor >= data.minFloor && currentFloor <= data.maxFloor)
+        {
+            availableItems.push_back(&data);
+        }
+    }
+
+    // 필터링된 아이템이 없다면 예외 처리
+    if (availableItems.empty()) return nullptr;
+
+    // 필터링된 목록 중 무작위 선택
+    return availableItems[std::uniform_int_distribution<int>(0, (int)availableItems.size() - 1)(m_rng)];
+}
+
 void DataManager::Release()
 {
     m_monsterTable.clear();
+    m_itemDatas.clear();
 }
 

@@ -129,7 +129,6 @@
     <ClInclude Include="CombatManager.h" />
     <ClInclude Include="D2DApp.h" />
     <ClInclude Include="D2DRender.h" />
-    <ClInclude Include="D2DTransform.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="DialoguePanel.h" />
     <ClInclude Include="DiceSystem.h" />
@@ -138,19 +137,21 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="ISceneState.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="NzWndBase.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlatformHelpers.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerInfoPanel.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="RestState.h" />
     <ClInclude Include="RoomSelectState.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="SimpleMathHelper.h" />
     <ClInclude Include="SingletonBase.h" />
     <ClInclude Include="StatusPanel.h" />
     <ClInclude Include="TextRenderer.h" />
@@ -166,7 +167,6 @@
     <ClCompile Include="CombatManager.cpp" />
     <ClCompile Include="D2DApp.cpp" />
     <ClCompile Include="D2DRenderer.cpp" />
-    <ClCompile Include="D2DTransform.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="DialoguePanel.cpp" />
     <ClCompile Include="DiceSystem.cpp" />
@@ -174,17 +174,19 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="NzWndBase.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerInfoPanel.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="RestState.cpp" />
     <ClCompile Include="RoomSelectState.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="SimpleMathHelper.cpp" />
     <ClCompile Include="StatusPanel.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -195,6 +197,7 @@
     <ClCompile Include="UIRoomButton.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resource\ItemData.json" />
     <None Include="Resource\MonsterData.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

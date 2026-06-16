@@ -1,0 +1,124 @@
+{
+  "items": [
+    {
+      "id": 1001,
+      "name": "녹슨 철검",
+      "statType": "Attack",
+      "baseValue": 3,
+      "minFloor": 1,
+      "maxFloor": 10
+    },
+    {
+      "id": 1002,
+      "name": "가죽 갑옷",
+      "statType": "Defense",
+      "baseValue": 2,
+      "minFloor": 1,
+      "maxFloor": 10
+    },
+    {
+      "id": 1003,
+      "name": "낡은 전투화",
+      "statType": "Evasion",
+      "baseValue": 2,
+      "minFloor": 1,
+      "maxFloor": 10
+    },
+    {
+      "id": 1004,
+      "name": "용병의 한손검",
+      "statType": "Attack",
+      "baseValue": 5,
+      "minFloor": 5,
+      "maxFloor": 15
+    },
+    {
+      "id": 1005,
+      "name": "전술 코트",
+      "statType": "Defense",
+      "baseValue": 4,
+      "minFloor": 5,
+      "maxFloor": 15
+    },
+    {
+      "id": 2001,
+      "name": "정예병의 검",
+      "statType": "Attack",
+      "baseValue": 8,
+      "minFloor": 11,
+      "maxFloor": 20
+    },
+    {
+      "id": 2002,
+      "name": "특수 합금 장갑",
+      "statType": "Defense",
+      "baseValue": 7,
+      "minFloor": 11,
+      "maxFloor": 20
+    },
+    {
+      "id": 2003,
+      "name": "경량화 추진 부츠",
+      "statType": "Evasion",
+      "baseValue": 5,
+      "minFloor": 11,
+      "maxFloor": 20
+    },
+    {
+      "id": 2004,
+      "name": "고주파 진동 블레이드",
+      "statType": "Attack",
+      "baseValue": 12,
+      "minFloor": 15,
+      "maxFloor": 25
+    },
+    {
+      "id": 2005,
+      "name": "광학 미채 망토",
+      "statType": "Evasion",
+      "baseValue": 8,
+      "minFloor": 15,
+      "maxFloor": 25
+    },
+    {
+      "id": 3001,
+      "name": "별을 베는 대검",
+      "statType": "Attack",
+      "baseValue": 18,
+      "minFloor": 21,
+      "maxFloor": 30
+    },
+    {
+      "id": 3002,
+      "name": "반응형 나노 슈트",
+      "statType": "Defense",
+      "baseValue": 15,
+      "minFloor": 21,
+      "maxFloor": 30
+    },
+    {
+      "id": 3003,
+      "name": "위상 이동 장치",
+      "statType": "Evasion",
+      "baseValue": 12,
+      "minFloor": 21,
+      "maxFloor": 30
+    },
+    {
+      "id": 3004,
+      "name": "승리의 기념비 파편",
+      "statType": "Attack",
+      "baseValue": 22,
+      "minFloor": 25,
+      "maxFloor": 30
+    },
+    {
+      "id": 3005,
+      "name": "절대 방벽 발생기",
+      "statType": "Defense",
+      "baseValue": 18,
+      "minFloor": 25,
+      "maxFloor": 30
+    }
+  ]
+}
