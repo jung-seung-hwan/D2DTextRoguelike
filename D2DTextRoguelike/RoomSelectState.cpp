@@ -31,8 +31,8 @@ void RoomSelectState::Enter(PlayScene* pScene)
     CreateRoomButtons(pScene);
 
     // 정보 패널 생성 (초기 상태는 비활성)
-    auto infoPanel = std::make_unique<PlayerInfoPanel>(pScene->GetPlayer(), 400.0f, 500.0f);
-    infoPanel->SetLocalPosition(EngineConfig::SCREEN_WIDTH_F - 250.0f, 50.0f); // 우측 상단 배치
+    auto infoPanel = std::make_unique<PlayerInfoPanel>(pScene->GetPlayer(), 600.0f, 500.0f);
+    infoPanel->SetLocalPosition(100.0f, 50.0f); // 우측 상단 배치
     infoPanel->SetActive(false);
 
     PlayerInfoPanel* pInfoPanel = infoPanel.get();
@@ -40,7 +40,7 @@ void RoomSelectState::Enter(PlayScene* pScene)
 
     // 패널 토글 버튼 생성
     auto toggleBtn = std::make_unique<UIButton>(L"상태창 열기", 120.0f, 40.0f);
-    toggleBtn->SetLocalPosition(EngineConfig::SCREEN_WIDTH_F - 150.0f, 20.0f);
+    toggleBtn->SetLocalPosition(100.0f, 20.0f);
     toggleBtn->SetOnClick([pInfoPanel]()
         {
             bool currentState = pInfoPanel->IsActive();
@@ -70,8 +70,9 @@ void RoomSelectState::Render(PlayScene* pScene, myspace::D2DRenderer* pRenderer,
 
     pTextRenderer->DrawText(
         titleBuffer,
-        100.0f, 100.0f, 500.0f, 100.0f,
-        D2D1::ColorF(D2D1::ColorF::White)
+        EngineConfig::SCREEN_WIDTH_F - 600.0f, 40.0f, 500.0f, 100.0f,
+        D2D1::ColorF(D2D1::ColorF::White),
+        TextAlign::Right
     );
 }
 

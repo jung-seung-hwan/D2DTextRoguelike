@@ -36,7 +36,23 @@ void Item::Enhance(Player* pPlayer)
 
     m_enhanceLevel++;
 
-    int bonusStat = (m_statType == ItemStatType::Evasion) ? 1 : 3;
+    int bonusStat = 0;
+
+    switch (m_statType)
+    {
+    case ItemStatType::Attack:
+        bonusStat = 3;
+        break;
+    case ItemStatType::Defense:
+        bonusStat = 3;
+        break;
+    case ItemStatType::Evasion:
+        bonusStat = 1;
+        break;
+    case ItemStatType::Hp:
+        bonusStat = 10;
+        break;
+    }
     m_statValue += bonusStat;
 
     switch (m_statType)

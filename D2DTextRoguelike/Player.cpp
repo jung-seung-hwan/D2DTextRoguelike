@@ -12,9 +12,9 @@ void Player::Reset()
     name = L"플레이어";
     maxHp = 100;
     hp = maxHp;
-    attack = 50;
-    defense = 0;
-    evasion = 10;
+    attack = 25;
+    defense = 5;
+    evasion = 5;
     isDead = false;
     gold = 0;
     shield = 0;

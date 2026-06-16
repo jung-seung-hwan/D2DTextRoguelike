@@ -4,51 +4,92 @@
       "Id": "MOB_SLIME",
       "Name": "슬라임",
       "Type": "Normal",
-      "Evasion": 10,
+      "Evasion": 5,
       "MinFloor": 1,
-      "MaxFloor": 30,
-      "MaxHp": 100,
-      "Attack": 10
+      "MaxFloor": 5,
+      "MaxHp": 65,
+      "Attack": 8
     },
     {
       "Id": "MOB_GOBLIN",
       "Name": "고블린",
       "Type": "Normal",
-      "Evasion": 10,
-      "MinFloor": 1,
-      "MaxFloor": 30,
-      "MaxHp": 150,
-      "Attack": 18
+      "Evasion": 8,
+      "MinFloor": 3,
+      "MaxFloor": 10,
+      "MaxHp": 115,
+      "Attack": 14
     },
     {
-      "Id": "MOB_Golem",
+      "Id": "MOB_GOLEM",
       "Name": "골렘",
       "Type": "Normal",
-      "Evasion": 10,
-      "MinFloor": 1,
-      "MaxFloor": 30,
-      "MaxHp": 300,
-      "Attack": 10
+      "Evasion": 4,
+      "MinFloor": 7,
+      "MaxFloor": 15,
+      "MaxHp": 210,
+      "Attack": 22
     },
     {
-      "Id": "MID_ORC",
+      "Id": "MOB_ASSASSIN",
+      "Name": "암살자",
+      "Type": "Normal",
+      "Evasion": 18,
+      "MinFloor": 11,
+      "MaxFloor": 20,
+      "MaxHp": 170,
+      "Attack": 34
+    },
+    {
+      "Id": "MOB_WAR_MACHINE",
+      "Name": "전투 기계",
+      "Type": "Normal",
+      "Evasion": 6,
+      "MinFloor": 17,
+      "MaxFloor": 28,
+      "MaxHp": 430,
+      "Attack": 48
+    },
+    {
+      "Id": "MOB_VOID_KNIGHT",
+      "Name": "공허 기사",
+      "Type": "Normal",
+      "Evasion": 12,
+      "MinFloor": 23,
+      "MaxFloor": 29,
+      "MaxHp": 520,
+      "Attack": 58
+    },
+
+    {
+      "Id": "MID_ORC_1",
       "Name": "정예 오크",
       "Type": "MidBoss",
-      "Evasion": 10,
+      "Evasion": 8,
       "MinFloor": 10,
+      "MaxFloor": 10,
+      "MaxHp": 420,
+      "Attack": 35
+    },
+    {
+      "Id": "MID_ORC_2",
+      "Name": "강화 정예 오크",
+      "Type": "MidBoss",
+      "Evasion": 12,
+      "MinFloor": 20,
       "MaxFloor": 20,
-      "MaxHp": 500,
-      "Attack": 40
+      "MaxHp": 850,
+      "Attack": 60
     },
     {
       "Id": "BOSS_DRAGON",
       "Name": "드래곤",
       "Type": "Boss",
-      "Evasion": 10,
+      "Evasion": 12,
       "MinFloor": 30,
       "MaxFloor": 30,
-      "MaxHp": 2000,
-      "Attack": 100
+      "MaxHp": 1800,
+      "Attack": 85
     }
   ]
 }

@@ -224,8 +224,9 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
     swprintf_s(floorBuffer, 64, L"현재 층: %d층", m_floor);
     pTextRenderer->DrawText(
         floorBuffer,
-        100.0f, 80.0f, 300.0f, 50.0f,
-        D2D1::ColorF(D2D1::ColorF::Yellow)
+        EngineConfig::SCREEN_WIDTH_F - 400.0f, 40.0f, 300.0f, 50.0f,
+        D2D1::ColorF(D2D1::ColorF::Yellow),
+        TextAlign::Right
     );
 
 
@@ -337,7 +338,7 @@ void CombatState::CreateUI(PlayScene* pScene)
     // 보상 선택 버튼 - 장착
     auto equipBtn = std::make_unique<UIButton>(L"장착", 120.0f, 40.0f);
     m_equipBtn = equipBtn.get();
-    m_equipBtn->SetLocalPosition(firstButtonX + buttonSpacing, buttonY);
+    m_equipBtn->SetLocalPosition(firstButtonX, buttonY);
     m_equipBtn->SetActive(false); // 초기 비활성
     m_equipBtn->SetOnClick([this, pScene]() {
         if (m_droppedItemData != nullptr)
@@ -355,7 +356,7 @@ void CombatState::CreateUI(PlayScene* pScene)
     // 보상 선택 버튼 - 버리기
     auto discardBtn = std::make_unique<UIButton>(L"버리기", 120.0f, 40.0f);
     m_discardBtn = discardBtn.get();
-    m_discardBtn->SetLocalPosition(firstButtonX + buttonSpacing * 2.0f, buttonY);
+    m_discardBtn->SetLocalPosition(firstButtonX + buttonSpacing, buttonY);
     m_discardBtn->SetActive(false); // 초기 비활성
     m_discardBtn->SetOnClick([this]() {
         m_dialoguePanel->PlayText(L"장비를 버리고 발걸음을 옮깁니다.");
