@@ -82,24 +82,32 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
 
     if (m_diceRollPanel->IsFinished())
     {
+        PLAYERACTION selectedAction = m_combatManager.GetPendingAction();
         m_combatManager.RollDice();
 
-
-        m_combatManager.RollDice();
+        m_diceButton->SetActive(false);
+        m_attackBtn->SetActive(false);
+        m_defendBtn->SetActive(false);
 
         wchar_t buffer[256];
         wchar_t log1[128] = { 0, };
 
-        // 플레이어 공격 결과 텍스트 구성 (전투 결과와 무관하게 무조건 발생)
-        int damageToMonster = m_combatManager.GetDamageToMonster();
+        if (selectedAction == PLAYERACTION::ATTACK)
+        {
+            int damageToMonster = m_combatManager.GetDamageToMonster();
 
-        if (damageToMonster == -1)
-        {
-            swprintf_s(log1, 128, L"%s이(가) 공격을 회피했다!", m_monster.name.c_str());
+            if (damageToMonster == -1)
+            {
+                swprintf_s(log1, 128, L"%s이(가) 공격을 회피했다!", m_monster.name.c_str());
+            }
+            else
+            {
+                swprintf_s(log1, 128, L"%s에게 %d의 피해를 입혔다.", m_monster.name.c_str(), damageToMonster);
+            }
         }
-        else
+        else if (selectedAction == PLAYERACTION::DEFEND)
         {
-            swprintf_s(log1, 128, L"%s에게 %d의 피해를 입혔다.", m_monster.name.c_str(), damageToMonster);
+            swprintf_s(log1, 128, L"방어 태세를 취했다. 방어막이 생성되었다.");
         }
 
         // 전투 상태에 따른 분기 및 텍스트 조합
@@ -158,40 +166,14 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
         }
         else
         {
-            // 몬스터 생존 시: 적 반격 결과 연산
-            wchar_t log2[128] = { 0, };
-            int damageToPlayer = m_combatManager.GetDamageToPlayer();
-
-            if (damageToPlayer == -1)
-            {
-                swprintf_s(log2, 128, L"적의 공격을 민첩하게 회피했다!");
-            }
-            else if (damageToPlayer == 0)
-            {
-                swprintf_s(log2, 128, L"방어막이 공격을 막아냈다.");
-            }
-            else
-            {
-                swprintf_s(log2, 128, L"적의 반격! %d의 피해를 입었다.", damageToPlayer);
-            }
-            ///
-            // 패배 여부 확인
-            if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
-            {
-                m_attackBtn->SetActive(false);
-                m_defendBtn->SetActive(false);
-                m_diceButton->SetActive(false);
-                // 패배 시: 공격 결과 + 반격 결과 + 플레이어 사망 메시지
-                swprintf_s(buffer, 256, L"%s\n%s\n플레이어가 쓰러졌다...", log1, log2);
-            }
-            else
-            {
-                // 일반 진행: 공격 결과 + 반격 결과
-                swprintf_s(buffer, 256, L"%s\n%s", log1, log2);
-            }
+            swprintf_s(buffer, 256, L"%s\n%s의 턴입니다. 다음을 눌러 진행하세요.", log1, m_monster.name.c_str());
             m_dialoguePanel->PlayText(buffer);
         }
 
+        if (m_combatManager.GetState() == BATTLESTATE::ENEMYTURN)
+        {
+            m_nextBtn->SetActive(true);
+        }
 
         m_diceRollPanel->SetActive(false);
     }
@@ -255,21 +237,33 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
 
 void CombatState::CreateUI(PlayScene* pScene)
 {
+    constexpr float dialogueX = 60.0f;
+    constexpr float dialogueY = 800.0f;
+    constexpr float buttonY = dialogueY - 48.0f;
+    constexpr float buttonSpacing = 130.0f;
+    constexpr float firstButtonX = dialogueX + 890.0f;
+
+    constexpr float dicePanelX = 460.0f;
+    constexpr float dicePanelY = 260.0f;
+    constexpr float diceButtonX = dicePanelX + 120.0f;
+    constexpr float diceButtonY = dicePanelY + 205.0f;
+
     // 대화창 생성 로직
     auto dialoguePanel = std::make_unique<DialoguePanel>(1160.0f, 170.0f);
     m_dialoguePanel = dialoguePanel.get(); // 제어용 포인터 저장
-    m_dialoguePanel->SetLocalPosition(60.0f, 850.0f);
+    m_dialoguePanel->SetLocalPosition(dialogueX, dialogueY);
     m_dialoguePanel->SetActive(false);
     m_uiList.push_back(std::move(dialoguePanel));
 
     // 공격 버튼 생성
     auto attackBtn = std::make_unique<UIButton>(L"공격", 120.0f, 40.0f);
     m_attackBtn = attackBtn.get();
-    attackBtn->SetLocalPosition(30.0f, 470.0f);
+    attackBtn->SetLocalPosition(firstButtonX, buttonY);
     attackBtn->SetOnClick([this]()
         {
 
-            if (m_combatManager.IsBattleEnd()) return;
+            if (m_combatManager.GetState() != BATTLESTATE::PLAYERTURN)
+                return;
 
             // 전투 연산 실행
             m_combatManager.SetAction(PLAYERACTION::ATTACK);
@@ -280,6 +274,11 @@ void CombatState::CreateUI(PlayScene* pScene)
 
 
             }
+            if (m_diceRollPanel)
+            {
+                m_diceRollPanel->Open();
+            }
+
             if (m_diceButton)
             {
                 m_diceButton->SetActive(true);
@@ -289,14 +288,24 @@ void CombatState::CreateUI(PlayScene* pScene)
 
     auto defendBtn = std::make_unique<UIButton>(L"방어", 120.0f, 40.0f);
     m_defendBtn = defendBtn.get();
-    defendBtn->SetLocalPosition(160.0f, 470.0f);
+    defendBtn->SetLocalPosition(firstButtonX + buttonSpacing, buttonY);
     defendBtn->SetOnClick([this]() {
+
+        if (m_combatManager.GetState() != BATTLESTATE::PLAYERTURN)
+            return;
+
         m_combatManager.SetAction(PLAYERACTION::DEFEND);
 
         if (m_dialoguePanel)
         {
             m_dialoguePanel->PlayText(L"방어를 선택했다.");
         }
+
+        if (m_diceRollPanel)
+        {
+            m_diceRollPanel->Open();
+        }
+
         if (m_diceButton)
         {
             m_diceButton->SetActive(true);
@@ -304,14 +313,21 @@ void CombatState::CreateUI(PlayScene* pScene)
         });
     m_uiList.push_back(std::move(defendBtn));
 
-    auto diceBtn = std::make_unique<UIButton>(L"주사위", 120.0f, 40.0f);
+    auto diceRollPanel = std::make_unique<DiceRollPanel>();
+    m_diceRollPanel = diceRollPanel.get();
+    m_diceRollPanel->SetLocalPosition(dicePanelX, dicePanelY);
+    m_diceRollPanel->SetActive(false);
+    m_uiList.push_back(std::move(diceRollPanel));
+
+    auto diceBtn = std::make_unique<UIButton>(L"굴리기", 120.0f, 40.0f);
     m_diceButton = diceBtn.get();
     m_diceButton->SetActive(false);    // 추가
-    diceBtn->SetLocalPosition(290.0f, 470.0f);
+    diceBtn->SetLocalPosition(diceButtonX, diceButtonY);
     diceBtn->SetOnClick([this]() {
         if (!m_diceRollPanel)
             return;
 
+        m_diceButton->SetActive(false);
         m_diceRollPanel->StartRoll();
 
         });
@@ -320,7 +336,7 @@ void CombatState::CreateUI(PlayScene* pScene)
     // 보상 선택 버튼 - 장착
     auto equipBtn = std::make_unique<UIButton>(L"장착", 120.0f, 40.0f);
     m_equipBtn = equipBtn.get();
-    m_equipBtn->SetLocalPosition(30.0f, 470.0f);
+    m_equipBtn->SetLocalPosition(firstButtonX + buttonSpacing, buttonY);
     m_equipBtn->SetActive(false); // 초기 비활성
     m_equipBtn->SetOnClick([this, pScene]() {
         if (m_droppedItemData != nullptr)
@@ -338,7 +354,7 @@ void CombatState::CreateUI(PlayScene* pScene)
     // 보상 선택 버튼 - 버리기
     auto discardBtn = std::make_unique<UIButton>(L"버리기", 120.0f, 40.0f);
     m_discardBtn = discardBtn.get();
-    m_discardBtn->SetLocalPosition(160.0f, 470.0f);
+    m_discardBtn->SetLocalPosition(firstButtonX + buttonSpacing * 2.0f, buttonY);
     m_discardBtn->SetActive(false); // 초기 비활성
     m_discardBtn->SetOnClick([this]() {
         m_dialoguePanel->PlayText(L"장비를 버리고 발걸음을 옮깁니다.");
@@ -350,7 +366,8 @@ void CombatState::CreateUI(PlayScene* pScene)
     // 다음 상태로 넘어가기 위한 버튼 생성
     auto nextBtn = std::make_unique<UIButton>(L"다음", 120.0f, 40.0f);
     m_nextBtn = nextBtn.get();
-    nextBtn->SetLocalPosition(420.0f, 470.0f);
+    nextBtn->SetLocalPosition(firstButtonX + buttonSpacing, buttonY);
+    m_nextBtn->SetActive(false);
     nextBtn->SetOnClick([this, pScene]() // pScene 캡처
         {
             if (m_combatManager.GetState() == BATTLESTATE::VICTORY)
@@ -425,6 +442,11 @@ void CombatState::CreateUI(PlayScene* pScene)
                     // 턴 종료 안내
                     swprintf_s(buffer, 256, L"%s\n턴이 종료되었습니다. 다음은 당신의 턴입니다.", log);
                     m_dialoguePanel->PlayText(buffer);
+
+                    m_nextBtn->SetActive(false);
+                    m_attackBtn->SetActive(true);
+                    m_defendBtn->SetActive(true);
+                    m_diceButton->SetActive(false);
                 }
             }
             else
@@ -435,12 +457,6 @@ void CombatState::CreateUI(PlayScene* pScene)
             }
         });
     m_uiList.push_back(std::move(nextBtn));
-
-    auto diceRollPanel = std::make_unique<DiceRollPanel>();
-    m_diceRollPanel = diceRollPanel.get();
-    m_diceRollPanel->SetLocalPosition(460.0f, 260.0f);
-    m_diceRollPanel->SetActive(false);
-    m_uiList.push_back(std::move(diceRollPanel));
 }
 
 void CombatState::Exit(PlayScene* pScene)

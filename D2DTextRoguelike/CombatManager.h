@@ -35,6 +35,11 @@ public:
 	bool IsBattleEnd() const;
 	BATTLESTATE GetState() const;
 
+	PLAYERACTION GetPendingAction() const
+	{
+		return m_pendingAction;
+	}
+
 	int GetDamageToMonster() const
 	{
 		return m_damageToMonster;

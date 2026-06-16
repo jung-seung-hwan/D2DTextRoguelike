@@ -3,11 +3,25 @@
 #include "D2DRender.h"
 #include "TextRenderer.h"
 
+void DiceRollPanel::Open()
+{
+    m_isRolling = false;
+    m_hasStartedRoll = false;
+    m_currentTime = 0.0f;
+    m_changeTimer = 0.0f;
+    m_finishHoldTimer = 0.0f;
+    m_displayNumber = 1;
+
+    SetActive(true);
+}
+
 void DiceRollPanel::StartRoll()
 {
     m_isRolling = true;
+    m_hasStartedRoll = true;
     m_currentTime = 0.0f;
     m_changeTimer = 0.0f;
+    m_finishHoldTimer = 0.0f;
     m_displayNumber = 1;
 
     SetActive(true);
@@ -20,8 +34,13 @@ bool DiceRollPanel::IsRolling() const
 
 bool DiceRollPanel::IsFinished() const
 {
-    return IsActive() && !m_isRolling;
+    return IsActive() &&
+        m_hasStartedRoll &&
+        !m_isRolling &&
+        m_finishHoldTimer >= m_finishHoldTime;
 }
+
+
 
 void DiceRollPanel::Update(float deltaTime)
 {
@@ -29,7 +48,13 @@ void DiceRollPanel::Update(float deltaTime)
         return;
 
     if (!m_isRolling)
+    {
+        if (m_hasStartedRoll)
+        {
+            m_finishHoldTimer += deltaTime;
+        }
         return;
+    }
 
     m_currentTime += deltaTime;
     m_changeTimer += deltaTime;
@@ -43,6 +68,8 @@ void DiceRollPanel::Update(float deltaTime)
     if (m_currentTime >= m_rollDuration)
     {
         m_isRolling = false;
+        m_finishHoldTimer = 0.0f;
+
     }
 }
 
@@ -98,10 +125,13 @@ void DiceRollPanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextR
         D2D1::ColorF(D2D1::ColorF::White)
     );
 
-    pTextRenderer->DrawText(
-        L"±¼¸®´Â Áß...",
-        x + 120.0f, y + 210.0f,
-        160.0f, 35.0f,
-        D2D1::ColorF(0.75f, 0.65f, 0.5f)
-    );
+    if (m_isRolling)
+    {
+        pTextRenderer->DrawText(
+            L"±¼¸®´Â Áß...",
+            x + 120.0f, y + 210.0f,
+            160.0f, 35.0f,
+            D2D1::ColorF(0.75f, 0.65f, 0.5f)
+        );
+    }
 }
