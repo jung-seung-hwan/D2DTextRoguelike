@@ -69,7 +69,8 @@ bool D2DApp::Initialize()
         { L"BossDr",   L"./Resource/BossRoomDoor.png" },
         { L"BreakDr",  L"./Resource/BreakRoomDoor.png" },
         { L"Player",   L"./Resource/Player.png" },
-        { L"Slime",    L"./Resource/Slime.png" }
+        { L"Slime",    L"./Resource/Slime.png" },
+        { L"Dice",    L"./Resource/Dice.png" }
     };
 
     for (const auto& bitmap : bitmaps)

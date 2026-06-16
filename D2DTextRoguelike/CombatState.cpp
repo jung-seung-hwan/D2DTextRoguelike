@@ -83,9 +83,9 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
     if (m_diceRollPanel->IsFinished())
     {
         PLAYERACTION selectedAction = m_combatManager.GetPendingAction();
-        m_combatManager.RollDice();
+        m_combatManager.ApplyDiceResult(m_diceRollPanel->GetResult());
 
-        m_diceButton->SetActive(false);
+        //m_diceButton->SetActive(false);
         m_attackBtn->SetActive(false);
         m_defendBtn->SetActive(false);
 
@@ -116,7 +116,7 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
             // 버튼 비활성화
             m_attackBtn->SetActive(false);
             m_defendBtn->SetActive(false);
-            m_diceButton->SetActive(false);
+            //m_diceButton->SetActive(false);
             m_nextBtn->SetActive(false);
             // 승리 시: 공격 결과 + 몬스터 처치 메시지
             swprintf_s(buffer, 256, L"%s\n%s을(를) 쓰러뜨렸다!", log1, m_monster.name.c_str());
@@ -281,10 +281,10 @@ void CombatState::CreateUI(PlayScene* pScene)
                 m_diceRollPanel->Open();
             }
 
-            if (m_diceButton)
-            {
-                m_diceButton->SetActive(true);
-            }
+            //if (m_diceButton)
+            //{
+            //    m_diceButton->SetActive(true);
+            //}
         });
     m_uiList.push_back(std::move(attackBtn));
 
@@ -308,10 +308,10 @@ void CombatState::CreateUI(PlayScene* pScene)
             m_diceRollPanel->Open();
         }
 
-        if (m_diceButton)
-        {
-            m_diceButton->SetActive(true);
-        }
+        //if (m_diceButton)
+        //{
+        //    m_diceButton->SetActive(true);
+        //}
         });
     m_uiList.push_back(std::move(defendBtn));
 
@@ -321,19 +321,19 @@ void CombatState::CreateUI(PlayScene* pScene)
     m_diceRollPanel->SetActive(false);
     m_uiList.push_back(std::move(diceRollPanel));
 
-    auto diceBtn = std::make_unique<UIButton>(L"굴리기", 120.0f, 40.0f);
-    m_diceButton = diceBtn.get();
-    m_diceButton->SetActive(false);    // 추가
-    diceBtn->SetLocalPosition(diceButtonX, diceButtonY);
-    diceBtn->SetOnClick([this]() {
-        if (!m_diceRollPanel)
-            return;
+    //auto diceBtn = std::make_unique<UIButton>(L"굴리기", 120.0f, 40.0f);
+    //m_diceButton = diceBtn.get();
+    //m_diceButton->SetActive(false);    // 추가
+    //diceBtn->SetLocalPosition(diceButtonX, diceButtonY);
+    //diceBtn->SetOnClick([this]() {
+    //    if (!m_diceRollPanel)
+    //        return;
 
-        m_diceButton->SetActive(false);
-        m_diceRollPanel->StartRoll();
+    //    m_diceButton->SetActive(false);
+    //    m_diceRollPanel->StartRoll();
 
-        });
-    m_uiList.push_back(std::move(diceBtn));
+    //    });
+    //m_uiList.push_back(std::move(diceBtn));
 
     // 보상 선택 버튼 - 장착
     auto equipBtn = std::make_unique<UIButton>(L"장착", 120.0f, 40.0f);
@@ -376,22 +376,15 @@ void CombatState::CreateUI(PlayScene* pScene)
             {
                 m_attackBtn->SetActive(false);
                 m_defendBtn->SetActive(false);
-                m_diceButton->SetActive(false);
-                if (m_floor >= 30)
-                {
-                    SceneManager::Instance().ChangeScene(L"EndingScene");
-                }
-                else
-                {
-                    pScene->IncreaseFloor();
-                    pScene->ChangeState(std::make_unique<RoomSelectState>());
-                }
+                //m_diceButton->SetActive(false);
+                pScene->IncreaseFloor();
+                pScene->ChangeState(std::make_unique<RoomSelectState>());
             }
             else if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
             {
                 m_attackBtn->SetActive(false);
                 m_defendBtn->SetActive(false);
-                m_diceButton->SetActive(false);
+                //m_diceButton->SetActive(false);
                 // 메시지 확인 여부에 따른 2단계 제어
                 if (!m_isDefeatAcknowledged)
                 {
@@ -455,7 +448,7 @@ void CombatState::CreateUI(PlayScene* pScene)
                     m_nextBtn->SetActive(false);
                     m_attackBtn->SetActive(true);
                     m_defendBtn->SetActive(true);
-                    m_diceButton->SetActive(false);
+                    //m_diceButton->SetActive(false);
                 }
             }
             else

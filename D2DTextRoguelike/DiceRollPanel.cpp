@@ -2,6 +2,8 @@
 #include "DiceRollPanel.h"
 #include "D2DRender.h"
 #include "TextRenderer.h"
+#include "ResourceManager.h"
+#include "InputManager.h"
 
 void DiceRollPanel::Open()
 {
@@ -51,6 +53,35 @@ void DiceRollPanel::Update(float deltaTime)
     if (!IsActive())
         return;
 
+    float x = m_localPosition.x;
+    float y = m_localPosition.y;
+
+    m_diceRect = D2D1::RectF(
+        x + 115.0f,
+        y + 80.0f,
+        x + 245.0f,
+        y + 210.0f
+    );
+
+    if (!m_isRolling && !m_hasStartedRoll)
+    {
+        POINT mousePos = InputManager::Instance().GetMousePos();
+
+        bool isInside =
+            mousePos.x >= m_diceRect.left &&
+            mousePos.x <= m_diceRect.right &&
+            mousePos.y >= m_diceRect.top &&
+            mousePos.y <= m_diceRect.bottom;
+
+        if (isInside && InputManager::Instance().IsMouseLeftClicked())
+        {
+            StartRoll();
+            return;
+        }
+
+        return;
+    }
+
     if (!m_isRolling)
     {
         if (m_hasStartedRoll)
@@ -83,6 +114,7 @@ void DiceRollPanel::Update(float deltaTime)
 
 void DiceRollPanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
+
     if (!IsActive())
         return;
 
@@ -116,30 +148,78 @@ void DiceRollPanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextR
         D2D1::ColorF(0.75f, 0.65f, 0.5f)
     );
 
-    pRenderer->DrawCircle(
-        x + 180.0f,
-        y + 145.0f,
-        58.0f,
-        D2D1::ColorF(0.85f, 0.75f, 0.55f)
+    //pRenderer->DrawCircle(
+    //    x + 180.0f,
+    //    y + 145.0f,
+    //    58.0f,
+    //    D2D1::ColorF(0.85f, 0.75f, 0.55f)
+    //);
+
+    float offsetX = 0.0f;
+    float scale = 1.0f;
+
+    if (m_isRolling)
+    {
+        float t = m_currentTime / m_rollDuration;
+        if (t > 1.0f) t = 1.0f;
+
+        // 초반에는 크게 좌우로 흔들리고, 후반으로 갈수록 빠르게 감쇠
+        float damping = 1.0f - t;
+        damping = damping * damping;
+
+        float swing = sinf(t * 3.141592f * 8.0f) * damping;
+
+        offsetX = swing * 22.0f;
+
+        // 살짝 눌렸다 펴지는 느낌만 추가
+        scale = 1.0f + fabsf(swing) * 0.04f;
+
+        // 마지막 15% 구간은 절도 있게 제자리로 고정
+        if (t > 0.85f)
+        {
+            float snapT = (t - 0.85f) / 0.15f;
+            offsetX *= (1.0f - snapT);
+            scale = 1.0f + (scale - 1.0f) * (1.0f - snapT);
+        }
+    }
+
+    float centerX = x + 180.0f + offsetX;
+    float centerY = y + 150.0f;
+
+    float baseSize = 150.0f;
+    float size = baseSize * scale;
+    float half = size * 0.5f;
+
+    D2D1_RECT_F diceRect = D2D1::RectF(
+        centerX - half,
+        centerY - half,
+        centerX + half,
+        centerY + half
     );
+
+    ID2D1Bitmap* diceBitmap = ResourceManager::Instance().GetBitmap(L"Dice");
+
+    if (diceBitmap != nullptr)
+    {
+        pRenderer->DrawBitmap(diceBitmap, diceRect);
+    }
+
 
     wchar_t numberBuffer[16];
     swprintf_s(numberBuffer, 16, L"%d", m_displayNumber);
 
+    float diceCenterX = (diceRect.left + diceRect.right) * 0.5f;
+    float diceCenterY = (diceRect.top + diceRect.bottom) * 0.5f;
+
     pTextRenderer->DrawText(
         numberBuffer,
-        x + 155.0f, y + 115.0f,
-        80.0f, 70.0f,
-        D2D1::ColorF(D2D1::ColorF::White)
+        diceCenterX - 35.0f,
+        diceCenterY - 30.0f,
+        70.0f,
+        60.0f,
+        D2D1::ColorF(D2D1::ColorF::White),
+        TextAlign::Center,
+        VerticalAlign::Center
     );
 
-    if (m_isRolling)
-    {
-        pTextRenderer->DrawText(
-            L"굴리는 중...",
-            x + 120.0f, y + 210.0f,
-            160.0f, 35.0f,
-            D2D1::ColorF(0.75f, 0.65f, 0.5f)
-        );
-    }
 }

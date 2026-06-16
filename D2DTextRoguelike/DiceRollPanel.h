@@ -20,6 +20,9 @@ public:
     void Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer) override;
 
 private:
+    D2D1_RECT_F m_diceRect = {};
+    bool m_isPressed = false;
+
     bool m_isRolling = false;
     bool m_hasStartedRoll = false;
 
