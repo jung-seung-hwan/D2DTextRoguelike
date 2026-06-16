@@ -7,6 +7,7 @@
 class Player;
 class DialoguePanel;
 class UIButton;
+class DiceRollPanel;
 struct ItemData;
 
 
@@ -32,12 +33,15 @@ private:
     Monster m_monster;
     CombatManager m_combatManager;
 
-    // 전투 상태에서만 사용하는 UI 리스트
+    // 전투 상태에서만 사용하는 고유 UI 리스트
     std::vector<std::unique_ptr<UIObject>> m_uiList;
     DialoguePanel* m_dialoguePanel = nullptr;
+    DiceRollPanel* m_diceRollPanel = nullptr;
 
-    // 패배 메시지 확인 여부 변수
+    // 패배 메시지 확인 여부를 저장하는 논리 변수 추가
     bool m_isDefeatAcknowledged = false;
+
+    UIButton* m_diceButton = nullptr;
 
     // 보상 처리 및 화면 제어용 포인터 변수 추가
     const ItemData* m_droppedItemData = nullptr;
@@ -49,4 +53,5 @@ private:
     UIButton* m_diceBtn = nullptr;
 
     void CompleteRewardSelection();
+
 };

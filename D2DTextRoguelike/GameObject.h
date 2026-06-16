@@ -23,7 +23,7 @@ public:
 	virtual void Init() {}
 	virtual void Update(float deltaTime) {}
 	virtual void Render() {}
-
+	
 	virtual int TakeDamage(int damage);
 	virtual int Attack(GameObject& target);
 	virtual int Attack(GameObject& target, float multiplier);

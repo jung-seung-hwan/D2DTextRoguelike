@@ -131,6 +131,7 @@
     <ClInclude Include="D2DRender.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="DialoguePanel.h" />
+    <ClInclude Include="DiceRollPanel.h" />
     <ClInclude Include="DiceSystem.h" />
     <ClInclude Include="EnhanceState.h" />
     <ClInclude Include="framework.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="D2DRenderer.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="DialoguePanel.cpp" />
+    <ClCompile Include="DiceRollPanel.cpp" />
     <ClCompile Include="DiceSystem.cpp" />
     <ClCompile Include="EnhanceState.cpp" />
     <ClCompile Include="GameObject.cpp" />

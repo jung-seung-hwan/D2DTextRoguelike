@@ -64,7 +64,6 @@ void CombatManager::PlayerAction(PLAYERACTION action)
 	}
 
 	m_state = BATTLESTATE::ENEMYTURN;
-	EnemyTurn();
 }
 
 
@@ -72,9 +71,8 @@ void CombatManager::PlayerAction(PLAYERACTION action)
 
 void CombatManager::PlayerAttack()
 {
-	DiceSystem::Result diceResult = DiceSystem::RollD20();
 
-	if (diceResult.IsFumble())
+	if (m_playerDice.IsFumble())
 	{
 		int recoilDamage = m_player->attack / 2;
 
