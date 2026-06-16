@@ -174,7 +174,7 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
             {
                 swprintf_s(log2, 128, L"적의 반격! %d의 피해를 입었다.", damageToPlayer);
             }
-            ///
+            
             // 패배 여부 확인
             if (m_combatManager.GetState() == BATTLESTATE::DEFEAT)
             {

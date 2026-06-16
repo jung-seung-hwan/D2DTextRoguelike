@@ -103,7 +103,7 @@ void EnhanceState::CreateUI(PlayScene* pScene)
 
     // 상태를 넘기는 다음 버튼
     auto nextBtn = std::make_unique<UIButton>(L"다음 층으로", 120.0f, 40.0f);
-    UIButton* pNextBtn = nextBtn.get(); // 원시 포인터 보관
+    UIButton* pNextBtn = nextBtn.get();
     pNextBtn->SetLocalPosition(300.0f, 470.0f);
     pNextBtn->SetActive(false);
     pNextBtn->SetOnClick([this, pScene]()
@@ -113,22 +113,38 @@ void EnhanceState::CreateUI(PlayScene* pScene)
         });
 
     // 보상을 받는 버튼
-    auto rewardBtn = std::make_unique<UIButton>(L"보상 받기", 120.0f, 40.0f);
+    auto rewardBtn = std::make_unique<UIButton>(L"장비 강화", 120.0f, 40.0f);
     UIButton* pRewardBtn = rewardBtn.get();
     pRewardBtn->SetLocalPosition(160.0f, 470.0f);
     pRewardBtn->SetOnClick([this, pNextBtn, pRewardBtn]()
         {
-            // 보상 지급 로직 (예: 체력 회복 등)
-            m_player->hp = m_player->maxHp;
+            // 인벤토리에서 무작위 장착 장비 획득
+            Item* targetItem = m_player->GetInventory().GetRandomEquippedItem();
 
             if (m_dialoguePanel)
             {
-                wchar_t buffer[256];
-                swprintf_s(buffer, 256, L"체력을 모두 회복했다!");
+                wchar_t buffer[256] = { 0, };
+
+                if (targetItem != nullptr)
+                {
+                    // 장비가 존재할 경우: 강화 로직 실행
+                    targetItem->Enhance(m_player);
+
+                    swprintf_s(buffer, 256, L"신비한 힘이 장비에 스며듭니다.\n%s 장비가 강화되었다! (현재 강화: +%d)",
+                        targetItem->GetName().c_str(),
+                        targetItem->GetEnhanceLevel());
+                }
+                else
+                {
+                    // 장착 중인 장비가 없을 경우: 대체 보상 (체력 회복)
+                    m_player->hp = m_player->maxHp;
+                    swprintf_s(buffer, 256, L"장착 중인 장비가 없습니다.\n대신 신비한 힘이 상처를 치유하여 체력을 모두 회복했다!");
+                }
+
                 m_dialoguePanel->PlayText(buffer);
             }
 
-            // 보상 버튼은 숨기고 다음 층 이동 버튼 표시
+            // 보상 버튼 비활성화 및 다음 층 이동 버튼 활성화
             pRewardBtn->SetActive(false);
             pNextBtn->SetActive(true);
         });
