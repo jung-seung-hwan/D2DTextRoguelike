@@ -4,6 +4,7 @@
 #include "Scenemanager.h"
 #include "TitleScene.h"
 #include "PlayScene.h"
+#include "EndingScene.h"
 #include "DataManager.h"
 #include "ResourceManager.h"
 
@@ -58,6 +59,7 @@ bool D2DApp::Initialize()
     BitmapInfo bitmaps[] =
     {
         { L"TitleBG",  L"./Resource/TitleScene.png" },
+        { L"EndingBG", L"./Resource/EndingScene.png" },
         { L"BattleBG", L"./Resource/BattleRoom.png" },
         { L"AwardBG",  L"./Resource/AwardRoom.png" },
         { L"BossBG",   L"./Resource/BossRoom.png" },
@@ -93,6 +95,7 @@ bool D2DApp::Initialize()
     // 씬 등록 및 초기 화면 설정 (필요한 씬이 있으면 추가)
     SceneManager::Instance().AddScene(L"TitleScene", new TitleScene());
     SceneManager::Instance().AddScene(L"PlayScene", new PlayScene());
+    SceneManager::Instance().AddScene(L"EndingScene", new EndingScene());
 
     // 시작 화면을 TitleScene으로 지정
     SceneManager::Instance().ChangeScene(L"TitleScene");

@@ -70,3 +70,8 @@ const std::map<ItemStatType, std::unique_ptr<Item>>& Inventory::GetEquipment() c
 {
     return m_equipment;
 }
+
+void Inventory::Clear()
+{
+    m_equipment.clear();
+}

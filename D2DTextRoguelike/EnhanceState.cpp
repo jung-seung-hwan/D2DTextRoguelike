@@ -113,12 +113,17 @@ void EnhanceState::CreateUI(PlayScene* pScene)
         });
 
     // 보상을 받는 버튼
-    auto rewardBtn = std::make_unique<UIButton>(L"장비 강화", 120.0f, 40.0f);
-    UIButton* pRewardBtn = rewardBtn.get();
-    pRewardBtn->SetLocalPosition(160.0f, 470.0f);
-    pRewardBtn->SetOnClick([this, pNextBtn, pRewardBtn]()
+    auto enhanceBtn = std::make_unique<UIButton>(L"장비 강화", 120.0f, 40.0f);
+    UIButton* pEnhanceBtn = enhanceBtn.get();
+    pEnhanceBtn->SetLocalPosition(100.0f, 470.0f);
+
+    // 보상 선택 버튼 2: 체력 회복
+    auto healBtn = std::make_unique<UIButton>(L"체력 회복", 120.0f, 40.0f);
+    UIButton* pHealBtn = healBtn.get();
+    pHealBtn->SetLocalPosition(240.0f, 470.0f);
+
+    pEnhanceBtn->SetOnClick([this, pNextBtn, pEnhanceBtn, pHealBtn]()
         {
-            // 인벤토리에서 무작위 장착 장비 획득
             Item* targetItem = m_player->GetInventory().GetRandomEquippedItem();
 
             if (m_dialoguePanel)
@@ -127,30 +132,46 @@ void EnhanceState::CreateUI(PlayScene* pScene)
 
                 if (targetItem != nullptr)
                 {
-                    // 장비가 존재할 경우: 강화 로직 실행
                     targetItem->Enhance(m_player);
-
                     swprintf_s(buffer, 256, L"신비한 힘이 장비에 스며듭니다.\n%s 장비가 강화되었다! (현재 강화: +%d)",
                         targetItem->GetName().c_str(),
                         targetItem->GetEnhanceLevel());
                 }
                 else
                 {
-                    // 장착 중인 장비가 없을 경우: 대체 보상 (체력 회복)
-                    m_player->hp = m_player->maxHp;
-                    swprintf_s(buffer, 256, L"장착 중인 장비가 없습니다.\n대신 신비한 힘이 상처를 치유하여 체력을 모두 회복했다!");
+                    swprintf_s(buffer, 256, L"장착 중인 장비가 없어 강화에 실패했습니다...");
                 }
 
                 m_dialoguePanel->PlayText(buffer);
             }
 
-            // 보상 버튼 비활성화 및 다음 층 이동 버튼 활성화
-            pRewardBtn->SetActive(false);
+            // 보상 획득 완료 처리 (두 선택지 모두 숨김)
+            pEnhanceBtn->SetActive(false);
+            pHealBtn->SetActive(false);
             pNextBtn->SetActive(true);
         });
 
+    pHealBtn->SetOnClick([this, pNextBtn, pEnhanceBtn, pHealBtn]()
+        {
+            m_player->hp = m_player->maxHp;
+
+            if (m_dialoguePanel)
+            {
+                wchar_t buffer[256];
+                swprintf_s(buffer, 256, L"휴식을 취합니다.\n체력을 모두 회복했습니다!");
+                m_dialoguePanel->PlayText(buffer);
+            }
+
+            // 보상 획득 완료 처리 (두 선택지 모두 숨김)
+            pEnhanceBtn->SetActive(false);
+            pHealBtn->SetActive(false);
+            pNextBtn->SetActive(true);
+        });
+
+
     m_uiList.push_back(std::move(nextBtn));
-    m_uiList.push_back(std::move(rewardBtn));
+    m_uiList.push_back(std::move(enhanceBtn));
+    m_uiList.push_back(std::move(healBtn));
 }
 
 void EnhanceState::Exit(PlayScene* pScene)

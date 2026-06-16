@@ -9,12 +9,13 @@ Player::Player()
 // 기본 스텟 설정
 void Player::Reset()
 {
+    m_inventory.Clear();
     name = L"플레이어";
     maxHp = 100;
     hp = maxHp;
-    attack = 25;
-    defense = 5;
-    evasion = 5;
+    attack = 50;
+    defense = 10;
+    evasion = 10;
     isDead = false;
     gold = 0;
     shield = 0;

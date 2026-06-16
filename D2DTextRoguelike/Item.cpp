@@ -41,7 +41,7 @@ void Item::Enhance(Player* pPlayer)
     switch (m_statType)
     {
     case ItemStatType::Attack:
-        bonusStat = 3;
+        bonusStat = 5;
         break;
     case ItemStatType::Defense:
         bonusStat = 3;
@@ -50,7 +50,7 @@ void Item::Enhance(Player* pPlayer)
         bonusStat = 1;
         break;
     case ItemStatType::Hp:
-        bonusStat = 10;
+        bonusStat = 20;
         break;
     }
     m_statValue += bonusStat;

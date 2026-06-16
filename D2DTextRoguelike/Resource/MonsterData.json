@@ -8,7 +8,7 @@
       "MinFloor": 1,
       "MaxFloor": 5,
       "MaxHp": 65,
-      "Attack": 8
+      "Attack": 6
     },
     {
       "Id": "MOB_GOBLIN",
@@ -18,7 +18,7 @@
       "MinFloor": 3,
       "MaxFloor": 10,
       "MaxHp": 115,
-      "Attack": 14
+      "Attack": 8
     },
     {
       "Id": "MOB_GOLEM",
@@ -28,7 +28,7 @@
       "MinFloor": 7,
       "MaxFloor": 15,
       "MaxHp": 210,
-      "Attack": 22
+      "Attack": 10
     },
     {
       "Id": "MOB_ASSASSIN",
@@ -38,7 +38,7 @@
       "MinFloor": 11,
       "MaxFloor": 20,
       "MaxHp": 170,
-      "Attack": 34
+      "Attack": 14
     },
     {
       "Id": "MOB_WAR_MACHINE",
@@ -48,7 +48,7 @@
       "MinFloor": 17,
       "MaxFloor": 28,
       "MaxHp": 430,
-      "Attack": 48
+      "Attack": 17
     },
     {
       "Id": "MOB_VOID_KNIGHT",
@@ -58,7 +58,7 @@
       "MinFloor": 23,
       "MaxFloor": 29,
       "MaxHp": 520,
-      "Attack": 58
+      "Attack": 20
     },
 
     {
@@ -69,7 +69,7 @@
       "MinFloor": 10,
       "MaxFloor": 10,
       "MaxHp": 420,
-      "Attack": 35
+      "Attack": 20
     },
     {
       "Id": "MID_ORC_2",
@@ -79,7 +79,7 @@
       "MinFloor": 20,
       "MaxFloor": 20,
       "MaxHp": 850,
-      "Attack": 60
+      "Attack": 25
     },
     {
       "Id": "BOSS_DRAGON",
@@ -89,7 +89,7 @@
       "MinFloor": 30,
       "MaxFloor": 30,
       "MaxHp": 1800,
-      "Attack": 85
+      "Attack": 30
     }
   ]
 }

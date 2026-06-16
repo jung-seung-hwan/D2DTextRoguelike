@@ -23,6 +23,9 @@ public:
     // 전체 아이템 정보를 반환
     const std::map<ItemStatType, std::unique_ptr<Item>>& GetEquipment() const;
 
+    // 인벤토리 초기화
+    void Clear();
+
 private:
     // 능력치 별로 하나의 아이템만 가질수 있도록 구조 설정
     std::map<ItemStatType, std::unique_ptr<Item>> m_equipment;
