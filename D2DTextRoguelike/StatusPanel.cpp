@@ -60,14 +60,15 @@ void StatusPanel::DrawStats(TextRenderer* pTextRenderer)
 	swprintf_s(
 		buffer,
 		128,
-		L"%d/%d",
+		L"%d/%d +%d",
 		m_target->hp,
-		m_target->maxHp
+		m_target->maxHp,
+		m_target->shield
 	);
 
 	pTextRenderer->DrawText(
 		buffer,
-		x + m_width - 50.0f,
+		x + m_width - 100.f,
 		y + m_height + 6.0f,
 		x + m_width,
 		y + m_height + 22.0f,

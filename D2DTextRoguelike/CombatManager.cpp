@@ -90,7 +90,16 @@ void CombatManager::PlayerAttack()
 
 void CombatManager::PlayerDefend()
 {
-	m_player->Defend();
+	if (m_playerDice.IsFumble())
+	{
+		m_player->Defend(0);
+		return;
+	}
+
+	int baseShield = m_player->maxHp / 5;
+	int shieldAmount = static_cast<int>(baseShield * m_playerDice.totalMultiplier);
+
+	m_player->Defend(shieldAmount);
 }
 
 
@@ -116,7 +125,19 @@ void CombatManager::EnemyTurn()
 	if (m_state != BATTLESTATE::ENEMYTURN)
 		return;
 
-	m_damageToPlayer = m_monster->Attack(*m_player);
+	m_enemyDice = DiceSystem::RollD20();
+
+	if (m_enemyDice.IsFumble())
+	{
+		m_damageToPlayer = 0;
+	}
+	else
+	{
+		m_damageToPlayer = m_monster->Attack(
+			*m_player,
+			m_enemyDice.totalMultiplier
+		);
+	}
 
 	if (m_player->isDead)
 	{
@@ -127,6 +148,8 @@ void CombatManager::EnemyTurn()
 	m_turnCount++;
 	m_state = BATTLESTATE::PLAYERTURN;
 }
+
+
 
 bool CombatManager::IsBattleEnd() const
 {
