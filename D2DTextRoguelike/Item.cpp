@@ -23,6 +23,9 @@ void Item::ApplyStat(Player* pPlayer)
     case ItemStatType::Evasion:
         pPlayer->evasion += m_statValue;
         break;
+    case ItemStatType::Hp:
+        pPlayer->maxHp += m_statValue;
+        break;
     }
 }
 
@@ -46,6 +49,9 @@ void Item::Enhance(Player* pPlayer)
         break;
     case ItemStatType::Evasion:
         pPlayer->evasion += bonusStat;
+        break;
+    case ItemStatType::Hp:
+        pPlayer->maxHp += bonusStat;
         break;
     }
 }

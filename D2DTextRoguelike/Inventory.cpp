@@ -23,6 +23,7 @@ void Inventory::EquipItem(std::unique_ptr<Item> newItem, Player* pPlayer)
         case ItemStatType::Attack:  pPlayer->attack -= oldStatValue; break;
         case ItemStatType::Defense: pPlayer->defense -= oldStatValue; break;
         case ItemStatType::Evasion: pPlayer->evasion -= oldStatValue; break;
+        case ItemStatType::Hp: pPlayer->maxHp -= oldStatValue; break;
         }
     }
 

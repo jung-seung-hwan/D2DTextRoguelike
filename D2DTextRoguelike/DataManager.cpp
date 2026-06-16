@@ -150,6 +150,10 @@ bool DataManager::LoadItemData(const std::string& filePath)
             {
                 data.statType = ItemStatType::Evasion;
             }
+            else if (statStr == "Hp")
+            {
+                data.statType = ItemStatType::Hp;
+            }
 
             // ¼öÄ¡ ¹× µîÀå Ãþ¼ö ÆÄ½Ì
             data.baseValue = item["baseValue"].get<int>();

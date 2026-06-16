@@ -8,7 +8,8 @@ enum class ItemStatType
 {
     Attack,
     Defense,
-    Evasion
+    Evasion,
+    Hp
 };
 
 class Item

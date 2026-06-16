@@ -41,6 +41,14 @@
       "maxFloor": 15
     },
     {
+      "id": 1006,
+      "name": "투지의 벨트",
+      "statType": "Hp",
+      "baseValue": 15,
+      "minFloor": 1,
+      "maxFloor": 10
+    },
+    {
       "id": 2001,
       "name": "정예병의 검",
       "statType": "Attack",
@@ -81,6 +89,14 @@
       "maxFloor": 25
     },
     {
+      "id": 2006,
+      "name": "생명 유지 장치",
+      "statType": "Hp",
+      "baseValue": 30,
+      "minFloor": 11,
+      "maxFloor": 20
+    },
+    {
       "id": 3001,
       "name": "별을 베는 대검",
       "statType": "Attack",
@@ -118,6 +134,14 @@
       "statType": "Defense",
       "baseValue": 18,
       "minFloor": 25,
+      "maxFloor": 30
+    },
+    {
+      "id": 3006,
+      "name": "초재생 코어",
+      "statType": "Hp",
+      "baseValue": 50,
+      "minFloor": 21,
       "maxFloor": 30
     }
   ]

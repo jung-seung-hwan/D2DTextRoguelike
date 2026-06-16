@@ -136,6 +136,7 @@ void CombatState::Update(PlayScene* pScene, float deltaTime)
                 case ItemStatType::Attack:  statName = L"공격력"; break;
                 case ItemStatType::Defense: statName = L"방어력"; break;
                 case ItemStatType::Evasion: statName = L"회피율"; break;
+                case ItemStatType::Hp: statName = L"체력"; break;
                 }
 
                 // 변환된 능력치 이름을 포함하여 텍스트 구성
