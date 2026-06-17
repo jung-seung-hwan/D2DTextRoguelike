@@ -57,10 +57,10 @@ void DiceRollPanel::Update(float deltaTime)
     float y = m_localPosition.y;
 
     m_diceRect = D2D1::RectF(
-        x + 115.0f,
-        y + 80.0f,
-        x + 245.0f,
-        y + 210.0f
+        x + 105.0f,
+        y + 55.0f,
+        x + 255.0f,
+        y + 205.0f
     );
 
     if (!m_isRolling && !m_hasStartedRoll)
@@ -137,7 +137,7 @@ void DiceRollPanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextR
     pTextRenderer->DrawText(
         L"행동 판정",
         x,
-        y + 25.0f,
+        y + 20.0f,
         360.0f,
         40.0f,
         D2D1::ColorF(D2D1::ColorF::White),
@@ -148,7 +148,7 @@ void DiceRollPanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextR
     pTextRenderer->DrawText(
         L"주사위",
         x,
-        y + 68.0f,
+        y + 200.0f,
         360.0f,
         35.0f,
         D2D1::ColorF(0.75f, 0.65f, 0.5f),
@@ -191,7 +191,7 @@ void DiceRollPanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextR
     }
 
     float centerX = x + 180.0f + offsetX;
-    float centerY = y + 155.0f;
+    float centerY = y + 130.0f;
 
     float baseSize = 150.0f;
     float size = baseSize * scale;

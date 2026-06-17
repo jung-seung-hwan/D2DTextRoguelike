@@ -35,7 +35,7 @@ void CombatState::Enter(PlayScene* pScene)
     );
 
     // 플레이어 상태창을 UI 목록에 등록
-    playerStatus->SetLocalPosition(130.0f, 330.0f);
+    playerStatus->SetLocalPosition(160.0f, 305.0f);
     m_uiList.push_back(std::move(playerStatus));
 
     // 몬스터 상태창
@@ -50,7 +50,7 @@ void CombatState::Enter(PlayScene* pScene)
     }
     else
     {
-        monsterStatus->SetLocalPosition(640.0f, 145.0f);
+        monsterStatus->SetLocalPosition(670.0f, 170.0f);
     }
     m_uiList.push_back(std::move(monsterStatus));
 
@@ -59,7 +59,7 @@ void CombatState::Enter(PlayScene* pScene)
     if (m_dialoguePanel)
     {
         wchar_t buffer[256];
-        swprintf_s(buffer, 256, L"- %d층 -\n야생의 %s(이)가 나타났다!", m_floor, m_monster.name.c_str());
+        swprintf_s(buffer, 256, L"- %d층 -\n%s(이)가 나타났다!", m_floor, m_monster.name.c_str());
         m_dialoguePanel->PlayText(buffer);
         m_dialoguePanel->SetActive(true);
     }
@@ -230,7 +230,7 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
     {
         m_pRenderer->DrawBitmap(
             monsterBitmap,
-            (m_type == MonsterType::MidBoss || m_type == MonsterType::Boss ? D2D1::RectF(360.0f, 120.0f, 1160.0f, 760.0f) : D2D1::RectF(565.0f, 170.0f, 1015.0f, 530.0f)) // (left, top, right, bottom)
+            (m_type == MonsterType::MidBoss || m_type == MonsterType::Boss ? D2D1::RectF(360.0f, 120.0f, 1160.0f, 760.0f) : D2D1::RectF(595.0f, 195.0f, 1045.0f, 555.0f)) // (left, top, right, bottom)
         );
     }
     if (m_showEnemyDice)
@@ -291,7 +291,7 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
     {
         m_pRenderer->DrawBitmap(
             playerBitmap,
-            D2D1::RectF(70.0f, 360.0f, 560.0f, 850.0f) // (left, top, right, bottom)
+            D2D1::RectF(120.0f, 360.0f, 610.0f, 850.0f) // (left, top, right, bottom)
         );
     }
 
