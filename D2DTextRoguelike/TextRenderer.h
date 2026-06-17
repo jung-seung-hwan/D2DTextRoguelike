@@ -34,7 +34,7 @@ public:
     void Release();
 
     // 텍스트 포맷 생성 및 기본 폰트 설정
-    bool CreateTextFormat(const std::wstring& formatKey, const std::wstring& fontName, float fontSize);
+    bool CreateTextFormat(const std::wstring& formatKey, const std::wstring& fontName, float fontSize, IDWriteFontCollection* pCollection);
 
     // 문자열 출력 (기본값은 왼쪽 정렬)
     void DrawText(const std::wstring& text, float x, float y, float width, float height,
@@ -50,7 +50,9 @@ public:
 private:
     ID2D1DeviceContext7* m_pContext = nullptr; // 렌더러에서 전달받아 참조만 함 (메모리 해제 X)
 
-    ComPtr<IDWriteFactory> m_pDWriteFactory;
+    ComPtr<IDWriteFactory5> m_pDWriteFactory5;
+    ComPtr<IDWriteFontCollection1> m_pCustomFontCollection;
+
     std::unordered_map<std::wstring, ComPtr<IDWriteTextFormat>> m_textFormats;
     ComPtr<ID2D1SolidColorBrush> m_pTextBrush;
 };

@@ -16,22 +16,45 @@ bool TextRenderer::Initialize(ID2D1DeviceContext7* pContext)
 
     // DirectWrite 객체(TextFormat, TextLayout 등)를 생성하기 위한 Factory 생성
     // 생성된 IDWriteFactory 인터페이스를 m_pDWriteFactory에 저장
+    ComPtr<IDWriteFactory> pBaseFactory;
     HRESULT hr = DWriteCreateFactory(
         DWRITE_FACTORY_TYPE_SHARED,
         __uuidof(IDWriteFactory),
-        reinterpret_cast<IUnknown**>(
-            m_pDWriteFactory.GetAddressOf()
-            )
+        reinterpret_cast<IUnknown**>(pBaseFactory.GetAddressOf())
     );
 
     if (FAILED(hr)) return false;
 
+    hr = pBaseFactory.As(&m_pDWriteFactory5);
+    if (FAILED(hr)) return false;
+
+    ComPtr<IDWriteFontSetBuilder1> pFontSetBuilder;
+    hr = m_pDWriteFactory5->CreateFontSetBuilder(&pFontSetBuilder);
+    if (SUCCEEDED(hr))
+    {
+        ComPtr<IDWriteFontFile> pFontFile;
+        // 실행 파일 기준의 상대 경로
+        std::wstring fontPath = L"Resource/neodgm.ttf";
+
+        hr = m_pDWriteFactory5->CreateFontFileReference(fontPath.c_str(), nullptr, &pFontFile);
+        if (SUCCEEDED(hr))
+        {
+            pFontSetBuilder->AddFontFile(pFontFile.Get());
+
+            ComPtr<IDWriteFontSet> pFontSet;
+            pFontSetBuilder->CreateFontSet(&pFontSet);
+
+            // 폰트 집합으로부터 독립적인 컬렉션 생성
+            m_pDWriteFactory5->CreateFontCollectionFromFontSet(pFontSet.Get(), &m_pCustomFontCollection);
+        }
+    }
+
     // 기본 폰트 설정
-    if (!CreateTextFormat(L"Default", L"Neo둥근모", 15.0f)) 
+    if (!CreateTextFormat(L"Default", L"Neo둥근모", 15.0f, m_pCustomFontCollection.Get()))
         return false;
 
     // UI 화면용 폰트 생성 
-    if (!CreateTextFormat(L"Title", L"Neo둥근모", 30.0f)) 
+    if (!CreateTextFormat(L"Title", L"Neo둥근모", 30.0f, m_pCustomFontCollection.Get()))
         return false;
 
     return true;
@@ -44,13 +67,13 @@ void TextRenderer::Release()
     // 향후 해상도 변경, 언어 변경, 폰트 교체에 사용하기 위해 일단 작성
     m_pTextBrush.Reset();
     m_textFormats.clear();
-    m_pDWriteFactory.Reset();
+    m_pDWriteFactory5.Reset();
     m_pContext = nullptr;
 }
 
-bool TextRenderer::CreateTextFormat(const std::wstring& formatKey, const std::wstring& fontName, float fontSize)
+bool TextRenderer::CreateTextFormat(const std::wstring& formatKey, const std::wstring& fontName, float fontSize, IDWriteFontCollection* pCollection) 
 {
-    if (m_pDWriteFactory == nullptr) return false;
+    if (m_pDWriteFactory5 == nullptr) return false;
 
     ComPtr<IDWriteTextFormat> pTextFormat;
 
@@ -64,9 +87,9 @@ bool TextRenderer::CreateTextFormat(const std::wstring& formatKey, const std::ws
         인자6 : 글자 크기
         인자7 : 로케일
     */
-    HRESULT hr = m_pDWriteFactory->CreateTextFormat(
+    HRESULT hr = m_pDWriteFactory5->CreateTextFormat(
         fontName.c_str(),
-        nullptr,
+        pCollection,
         DWRITE_FONT_WEIGHT_NORMAL,
         DWRITE_FONT_STYLE_NORMAL,
         DWRITE_FONT_STRETCH_NORMAL,
@@ -155,7 +178,7 @@ void TextRenderer::DrawText(const std::wstring& text, float x, float y, float wi
 // 현재 폰트가 공간이 얼마나 필요한지 계산 -> 실제 픽셀 크기 계산
 D2D1_SIZE_F TextRenderer::MeasureText(const std::wstring& text, const std::wstring& formatKey)
 {
-    if (m_pDWriteFactory == nullptr)
+    if (m_pDWriteFactory5 == nullptr)
         return D2D1::SizeF(0.0f, 0.0f);
 
     // 맵에서 전달받은 키에 해당하는 폰트 서식 검색
@@ -168,7 +191,7 @@ D2D1_SIZE_F TextRenderer::MeasureText(const std::wstring& text, const std::wstri
     ComPtr<IDWriteTextLayout> pLayout;
 
     // 텍스트 레이아웃 생성 시 검색된 서식 포인터(pCurrentFormat) 적용
-    HRESULT hr = m_pDWriteFactory->CreateTextLayout(
+    HRESULT hr = m_pDWriteFactory5->CreateTextLayout(
         text.c_str(),
         static_cast<UINT32>(text.length()),
         pCurrentFormat,
