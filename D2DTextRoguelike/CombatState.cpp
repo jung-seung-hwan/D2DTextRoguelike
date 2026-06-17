@@ -35,7 +35,7 @@ void CombatState::Enter(PlayScene* pScene)
     );
 
     // 플레이어 상태창을 UI 목록에 등록
-    playerStatus->SetLocalPosition(600.0f, 560.0f);
+    playerStatus->SetLocalPosition(130.0f, 330.0f);
     m_uiList.push_back(std::move(playerStatus));
 
     // 몬스터 상태창
@@ -44,7 +44,14 @@ void CombatState::Enter(PlayScene* pScene)
         300.0f,
         12.0f
     );
-    monsterStatus->SetLocalPosition(70.0f, 60.0f);
+    if (m_type == MonsterType::MidBoss || m_type == MonsterType::Boss)
+    {
+        monsterStatus->SetLocalPosition(610.0f, 95.0f);
+    }
+    else
+    {
+        monsterStatus->SetLocalPosition(640.0f, 145.0f);
+    }
     m_uiList.push_back(std::move(monsterStatus));
 
     CreateUI(pScene);
@@ -63,6 +70,7 @@ void CombatState::StartCombat(PlayScene* pScene)
     const MonsterData* data = DataManager::Instance().GetRandomMonster(m_floor, m_type);
     if (!data) return;
 
+    m_monster.monsterId = data->id;
     m_monster.name = data->name;
     m_monster.maxHp = data->maxHp;
     m_monster.hp = data->maxHp;
@@ -211,27 +219,20 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
         m_pRenderer->DrawBitmap(pBgBitmap, D2D1::RectF(0.0f, 0.0f, EngineConfig::SCREEN_WIDTH_F, EngineConfig::SCREEN_HEIGHT_F));
     }
 
-    ID2D1Bitmap* playerBitmap = ResourceManager::Instance().GetBitmap(L"Player");
+    ID2D1Bitmap* monsterBitmap = ResourceManager::Instance().GetBitmap(m_monster.monsterId);
 
-    if (playerBitmap != nullptr)
+    if (monsterBitmap == nullptr)
     {
-        // 밑에서 50.0f, 50.0f 띄우고 400x400 크기로 배치 < 해상도 수정됨
-        m_pRenderer->DrawBitmap(
-            playerBitmap,
-            D2D1::RectF(70.0f, 360.0f, 560.0f, 850.0f) // (left, top, right, bottom)
-        );
+        monsterBitmap = ResourceManager::Instance().GetBitmap(L"MOB_SLIME");
     }
 
-    ID2D1Bitmap* slimeBitmap = ResourceManager::Instance().GetBitmap(L"Slime");
-
-    if (slimeBitmap != nullptr)
+    if (monsterBitmap != nullptr)
     {
         m_pRenderer->DrawBitmap(
-            slimeBitmap,
-            D2D1::RectF(620.0f, 180.0f, 900.0f, 460.0f) // (left, top, right, bottom)
+            monsterBitmap,
+            (m_type == MonsterType::MidBoss || m_type == MonsterType::Boss ? D2D1::RectF(360.0f, 120.0f, 1160.0f, 760.0f) : D2D1::RectF(565.0f, 170.0f, 1015.0f, 530.0f)) // (left, top, right, bottom)
         );
     }
-
     if (m_showEnemyDice)
     {
         float t = 1.0f - (m_enemyDiceTimer / m_enemyDiceDisplayTime);
@@ -252,8 +253,8 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
             scale = 1.0f + (scale - 1.0f) * (1.0f - snapT);
         }
 
-        float centerX = 565.0f + offsetX;
-        float centerY = 270.0f;
+        float centerX = (m_type == MonsterType::MidBoss || m_type == MonsterType::Boss ? 555.0f : 585.0f) + offsetX;
+        float centerY = (m_type == MonsterType::MidBoss || m_type == MonsterType::Boss ? 101.0f : 151.0f);
         float size = 92.0f * scale;
         float half = size * 0.5f;
 
@@ -284,6 +285,16 @@ void CombatState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, T
             VerticalAlign::Center
         );
     }
+    ID2D1Bitmap* playerBitmap = ResourceManager::Instance().GetBitmap(L"Player");
+
+    if (playerBitmap != nullptr)
+    {
+        m_pRenderer->DrawBitmap(
+            playerBitmap,
+            D2D1::RectF(70.0f, 360.0f, 560.0f, 850.0f) // (left, top, right, bottom)
+        );
+    }
+
     wchar_t floorBuffer[64];
     swprintf_s(floorBuffer, 64, L"현재 층: %d층", m_floor);
     pTextRenderer->DrawText(

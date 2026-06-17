@@ -70,7 +70,12 @@ bool D2DApp::Initialize()
         { L"BreakDr",  L"./Resource/BreakRoomDoor.png" },
         { L"Player",   L"./Resource/Player.png" },
         { L"Slime",    L"./Resource/Slime.png" },
-        { L"Dice",    L"./Resource/Dice.png" }
+        { L"MOB_SLIME", L"./Resource/Slime.png" },
+        { L"MOB_GOBLIN", L"./Resource/Goblin.png" },
+        { L"MID_ORC_1", L"./Resource/MidOrc1.png" },
+        { L"MID_ORC_2", L"./Resource/MidOrc2.png" },
+        { L"BOSS_DRAGON", L"./Resource/Dragon.png" },
+        { L"Dice",     L"./Resource/Dice.png" }
     };
 
     for (const auto& bitmap : bitmaps)
