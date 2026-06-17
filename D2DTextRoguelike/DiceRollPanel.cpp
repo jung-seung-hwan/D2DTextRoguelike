@@ -136,18 +136,25 @@ void DiceRollPanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextR
 
     pTextRenderer->DrawText(
         L"행동 판정",
-        x + 115.0f, y + 25.0f,
-        180.0f, 40.0f,
-        D2D1::ColorF(D2D1::ColorF::White)
+        x,
+        y + 25.0f,
+        360.0f,
+        40.0f,
+        D2D1::ColorF(D2D1::ColorF::White),
+        TextAlign::Center,
+        VerticalAlign::Center
     );
 
     pTextRenderer->DrawText(
         L"주사위",
-        x + 145.0f, y + 70.0f,
-        120.0f, 35.0f,
-        D2D1::ColorF(0.75f, 0.65f, 0.5f)
+        x,
+        y + 68.0f,
+        360.0f,
+        35.0f,
+        D2D1::ColorF(0.75f, 0.65f, 0.5f),
+        TextAlign::Center,
+        VerticalAlign::Center
     );
-
     //pRenderer->DrawCircle(
     //    x + 180.0f,
     //    y + 145.0f,
@@ -184,7 +191,7 @@ void DiceRollPanel::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextR
     }
 
     float centerX = x + 180.0f + offsetX;
-    float centerY = y + 150.0f;
+    float centerY = y + 155.0f;
 
     float baseSize = 150.0f;
     float size = baseSize * scale;

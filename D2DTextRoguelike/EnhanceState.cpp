@@ -24,12 +24,12 @@ void EnhanceState::Enter(PlayScene* pScene)
     // 플레이어 상태창 생성 (HP 등)
     auto playerStatus = std::make_unique<StatusPanel>(
         pScene->GetPlayer(),
-        300.0f,
-        10.0f
+        360.0f,
+        12.0f
     );
 
     // 플레이어 상태창을 UI 목록에 등록
-    playerStatus->SetLocalPosition(520.0f, 400.0f);
+    playerStatus->SetLocalPosition(130.0f, 330.0f);
     m_uiList.push_back(std::move(playerStatus));
 
 
@@ -72,7 +72,7 @@ void EnhanceState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, 
         // 밑에서 50.0f, 50.0f 띄우고 400x400 크기로 배치
         m_pRenderer->DrawBitmap(
             playerBitmap,
-            D2D1::RectF(50.0f, 250.0f, 450.0f, 650.0f) // (left, top, right, bottom)
+            D2D1::RectF(70.0f, 360.0f, 560.0f, 850.0f) // (left, top, right, bottom)
         );
     }
 
@@ -80,8 +80,9 @@ void EnhanceState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, 
     swprintf_s(floorBuffer, 64, L"현재 층: %d층", m_floor);
     pTextRenderer->DrawText(
         floorBuffer,
-        100.0f, 60.0f, 300.0f, 50.0f,
-        D2D1::ColorF(D2D1::ColorF::Yellow)
+        EngineConfig::SCREEN_WIDTH_F - 400.0f, 40.0f, 300.0f, 50.0f,
+        D2D1::ColorF(D2D1::ColorF::Yellow),
+        TextAlign::Right
     );
 
 
@@ -95,16 +96,16 @@ void EnhanceState::Render(PlayScene* pScene, myspace::D2DRenderer* m_pRenderer, 
 void EnhanceState::CreateUI(PlayScene* pScene)
 {
     // 대화창 생성 로직
-    auto dialoguePanel = std::make_unique<DialoguePanel>(860.0f, 150.0f);
+    auto dialoguePanel = std::make_unique<DialoguePanel>(1160.0f, 170.0f);
     m_dialoguePanel = dialoguePanel.get(); // 제어용 포인터 저장
-    m_dialoguePanel->SetLocalPosition(20.0f, 530.0f);
+    m_dialoguePanel->SetLocalPosition(60.0f, 800.0f);
     m_dialoguePanel->SetActive(false);
     m_uiList.push_back(std::move(dialoguePanel));
 
     // 상태를 넘기는 다음 버튼
     auto nextBtn = std::make_unique<UIButton>(L"다음 층으로", 120.0f, 40.0f);
     UIButton* pNextBtn = nextBtn.get();
-    pNextBtn->SetLocalPosition(300.0f, 470.0f);
+    pNextBtn->SetLocalPosition(1080.0f, 752.0f);
     pNextBtn->SetActive(false);
     pNextBtn->SetOnClick([this, pScene]()
         {
@@ -115,12 +116,12 @@ void EnhanceState::CreateUI(PlayScene* pScene)
     // 보상을 받는 버튼
     auto enhanceBtn = std::make_unique<UIButton>(L"장비 강화", 120.0f, 40.0f);
     UIButton* pEnhanceBtn = enhanceBtn.get();
-    pEnhanceBtn->SetLocalPosition(100.0f, 470.0f);
+    pEnhanceBtn->SetLocalPosition(820.0f, 752.0f);
 
     // 보상 선택 버튼 2: 체력 회복
     auto healBtn = std::make_unique<UIButton>(L"체력 회복", 120.0f, 40.0f);
     UIButton* pHealBtn = healBtn.get();
-    pHealBtn->SetLocalPosition(240.0f, 470.0f);
+    pHealBtn->SetLocalPosition(950.0f, 752.0f);
 
     pEnhanceBtn->SetOnClick([this, pNextBtn, pEnhanceBtn, pHealBtn]()
         {
