@@ -23,7 +23,7 @@ void TitleScene::Initialize()
     }
 
     auto startBtn = std::make_unique<UIButton>(L"Game Start", 300.0f, 50.0f);
-    startBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - (300.0f / 2.0f), EngineConfig::SCREEN_CENTER_Y);
+    startBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - (300.0f / 2.0f), EngineConfig::SCREEN_CENTER_Y + 200.f);
     startBtn->SetOnClick([]()
         {
             SceneManager::Instance().ChangeScene(L"PlayScene");
@@ -31,7 +31,7 @@ void TitleScene::Initialize()
 
 
     auto exitBtn = std::make_unique<UIButton>(L"Exit Game", 300.0f, 50.0f);
-    exitBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - (300.0f / 2.0f), EngineConfig::SCREEN_CENTER_Y + 50.0f);
+    exitBtn->SetLocalPosition(EngineConfig::SCREEN_CENTER_X - (300.0f / 2.0f), EngineConfig::SCREEN_CENTER_Y + 250.0f);
     exitBtn->SetOnClick([]()
         {
             PostQuitMessage(0);

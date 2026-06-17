@@ -49,6 +49,7 @@ void UIButton::Update(float deltaTime)
     }
 }
 
+
 void UIButton::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRenderer)
 {
     if (!m_isActive || !m_isVisible) return;

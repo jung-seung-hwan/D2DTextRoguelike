@@ -40,11 +40,24 @@ void RoomSelectState::Enter(PlayScene* pScene)
 
     // 패널 토글 버튼 생성
     auto toggleBtn = std::make_unique<UIButton>(L"상태창 열기", 120.0f, 40.0f);
-    toggleBtn->SetLocalPosition(100.0f, 20.0f);
-    toggleBtn->SetOnClick([pInfoPanel]()
+    UIButton* pToggleBtn = toggleBtn.get();
+    pToggleBtn->SetLocalPosition(100.0f, 20.0f);
+    pToggleBtn->SetOnClick([pInfoPanel, pToggleBtn]()
         {
             bool currentState = pInfoPanel->IsActive();
+
+            // 패널 상태 반전
             pInfoPanel->SetActive(!currentState);
+
+            // 변경된 상태에 맞추어 버튼 텍스트 갱신
+            if (!currentState) // 꺼져있다가 켜지는 상황
+            {
+                pToggleBtn->SetText(L"상태창 닫기");
+            }
+            else // 켜져있다가 꺼지는 상황
+            {
+                pToggleBtn->SetText(L"상태창 열기");
+            }
         });
 
     m_uiList.push_back(std::move(toggleBtn));
