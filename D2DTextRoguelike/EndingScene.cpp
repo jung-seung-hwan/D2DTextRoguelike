@@ -10,6 +10,7 @@ void EndingScene::Initialize()
 {
     // 타이틀로 돌아가기 버튼
     auto titleBtn = std::make_unique<UIButton>(L"타이틀로 돌아가기", 200.0f, 60.0f);
+    titleBtn->SetFontKey(L"Title");
 
     // 화면 하단 중앙에 배치
     float btnX = (EngineConfig::SCREEN_WIDTH_F / 2.0f) - 100.0f;

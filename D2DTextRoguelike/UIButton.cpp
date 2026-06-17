@@ -63,7 +63,8 @@ void UIButton::Render(myspace::D2DRenderer* pRenderer, TextRenderer* pTextRender
         m_globalPosition.x, m_globalPosition.y, m_size.width, m_size.height,
         color,
         TextAlign::Center,
-        VerticalAlign::Center
+        VerticalAlign::Center,
+        m_fontKey
     );
 
     // 자식 UI가 있다면 마저 그리도록 부모 Render 호출

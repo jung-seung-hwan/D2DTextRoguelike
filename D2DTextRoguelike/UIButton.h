@@ -17,10 +17,15 @@ public:
 
     void SetText(const std::wstring& text) { m_text = text; }
 
+    // 외부에서 폰트를 바꿀 수 있게 해주는 함수
+    void SetFontKey(const std::wstring& fontKey) { m_fontKey = fontKey; }
+
 private:
     std::wstring m_text;
     bool m_isHovered; // 마우스가 버튼 위에 있는지 여부
 
     // 클릭 시 실행될 함수 (콜백)
     std::function<void()> m_onClick;
+
+    std::wstring m_fontKey = L"Default";
 };

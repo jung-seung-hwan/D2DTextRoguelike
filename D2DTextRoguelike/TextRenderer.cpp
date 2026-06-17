@@ -27,7 +27,11 @@ bool TextRenderer::Initialize(ID2D1DeviceContext7* pContext)
     if (FAILED(hr)) return false;
 
     // 기본 폰트 설정
-    if (!SetDefaultFont(L"맑은 고딕", 15.0f))
+    if (!CreateTextFormat(L"Default", L"Neo둥근모", 15.0f)) 
+        return false;
+
+    // UI 화면용 폰트 생성 
+    if (!CreateTextFormat(L"Title", L"Neo둥근모", 30.0f)) 
         return false;
 
     return true;
@@ -39,16 +43,16 @@ void TextRenderer::Release()
     // ex) TextRenderer 객체는 살리고 내부 자원만 초기화하는 경우
     // 향후 해상도 변경, 언어 변경, 폰트 교체에 사용하기 위해 일단 작성
     m_pTextBrush.Reset();
-    m_pDefaultTextFormat.Reset();
+    m_textFormats.clear();
     m_pDWriteFactory.Reset();
     m_pContext = nullptr;
 }
 
-bool TextRenderer::CreateTextFormat(const std::wstring& fontName, float fontSize)
+bool TextRenderer::CreateTextFormat(const std::wstring& formatKey, const std::wstring& fontName, float fontSize)
 {
     if (m_pDWriteFactory == nullptr) return false;
 
-    m_pDefaultTextFormat.Reset();
+    ComPtr<IDWriteTextFormat> pTextFormat;
 
     // IDWriteTextFormat 객체를 생성
     /* 
@@ -68,21 +72,19 @@ bool TextRenderer::CreateTextFormat(const std::wstring& fontName, float fontSize
         DWRITE_FONT_STRETCH_NORMAL,
         fontSize,
         L"ko-kr",
-        &m_pDefaultTextFormat
+        &pTextFormat
     );
 
 
     // 문단 정렬 (세로)
-    m_pDefaultTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+    pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
     // 자동 줄바꿈
-    m_pDefaultTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP);
+    pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP);
+
+    // 생성된 서식을 맵에 등록
+    m_textFormats[formatKey] = pTextFormat;
 
     return true;
-}
-
-bool TextRenderer::SetDefaultFont(const std::wstring& fontName, float fontSize)
-{
-    return CreateTextFormat(fontName, fontSize);
 }
 
 
@@ -97,8 +99,17 @@ bool TextRenderer::SetDefaultFont(const std::wstring& fontName, float fontSize)
     align : 가로 정렬 방식
     verticalalign : 세로 정렬 방식
 */
-void TextRenderer::DrawText(const std::wstring& text, float x, float y, float width, float height, const D2D1::ColorF& color, TextAlign align, VerticalAlign vAlign) {
-    if (m_pContext == nullptr || m_pDefaultTextFormat == nullptr) return;
+void TextRenderer::DrawText(const std::wstring& text, float x, float y, float width, float height,
+    const D2D1::ColorF& color, TextAlign align, VerticalAlign vAlign,
+    const std::wstring& formatKey)
+{
+    if (m_pContext == nullptr) return;
+
+    // 맵에서 폰트 서식 찾기
+    auto it = m_textFormats.find(formatKey);
+    if (it == m_textFormats.end()) return; // 등록되지 않은 폰트면 렌더링 중지
+
+    IDWriteTextFormat* pCurrentFormat = it->second.Get();
 
     // 텍스트를 그릴 색상 브러시 생성
     if (m_pTextBrush == nullptr)
@@ -116,28 +127,16 @@ void TextRenderer::DrawText(const std::wstring& text, float x, float y, float wi
     // 호출 시 전달받은 정렬 방식에 따라 서식의 속성을 동적으로 변경
     switch (align)
     {
-    case TextAlign::Left:
-        m_pDefaultTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
-        break;
-    case TextAlign::Center:
-        m_pDefaultTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-        break;
-    case TextAlign::Right:
-        m_pDefaultTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
-        break;
+    case TextAlign::Left:   pCurrentFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING); break;
+    case TextAlign::Center: pCurrentFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER); break;
+    case TextAlign::Right:  pCurrentFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING); break;
     }
 
     switch (vAlign)
     {
-    case VerticalAlign::Top:
-        m_pDefaultTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
-        break;
-    case VerticalAlign::Center:
-        m_pDefaultTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-        break;
-    case VerticalAlign::Bottom:
-        m_pDefaultTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR);
-        break;
+    case VerticalAlign::Top:    pCurrentFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR); break;
+    case VerticalAlign::Center: pCurrentFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER); break;
+    case VerticalAlign::Bottom: pCurrentFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR); break;
     }
 
     D2D1_RECT_F layoutRect = D2D1::RectF(x, y, x + width, y + height);
@@ -145,7 +144,7 @@ void TextRenderer::DrawText(const std::wstring& text, float x, float y, float wi
     m_pContext->DrawTextW(
         text.c_str(),
         static_cast<UINT32>(text.length()),
-        m_pDefaultTextFormat.Get(),
+        pCurrentFormat,
         layoutRect,
         m_pTextBrush.Get(),
         D2D1_DRAW_TEXT_OPTIONS_NONE,
@@ -154,18 +153,25 @@ void TextRenderer::DrawText(const std::wstring& text, float x, float y, float wi
 }
 
 // 현재 폰트가 공간이 얼마나 필요한지 계산 -> 실제 픽셀 크기 계산
-D2D1_SIZE_F TextRenderer::MeasureText(const std::wstring& text)
+D2D1_SIZE_F TextRenderer::MeasureText(const std::wstring& text, const std::wstring& formatKey)
 {
-    if (m_pDWriteFactory == nullptr || m_pDefaultTextFormat == nullptr)
+    if (m_pDWriteFactory == nullptr)
         return D2D1::SizeF(0.0f, 0.0f);
+
+    // 맵에서 전달받은 키에 해당하는 폰트 서식 검색
+    auto it = m_textFormats.find(formatKey);
+    if (it == m_textFormats.end())
+        return D2D1::SizeF(0.0f, 0.0f); 
+
+    IDWriteTextFormat* pCurrentFormat = it->second.Get();
 
     ComPtr<IDWriteTextLayout> pLayout;
 
-    // 텍스트 레이아웃 생성
+    // 텍스트 레이아웃 생성 시 검색된 서식 포인터(pCurrentFormat) 적용
     HRESULT hr = m_pDWriteFactory->CreateTextLayout(
         text.c_str(),
         static_cast<UINT32>(text.length()),
-        m_pDefaultTextFormat.Get(),
+        pCurrentFormat,
         10000.0f,
         10000.0f,
         &pLayout
@@ -175,6 +181,7 @@ D2D1_SIZE_F TextRenderer::MeasureText(const std::wstring& text)
         return D2D1::SizeF(0.0f, 0.0f);
 
     DWRITE_TEXT_METRICS metrics;
+
     // 레이아웃으로부터 계산된 텍스트 크기 정보 획득
     pLayout->GetMetrics(&metrics);
 
