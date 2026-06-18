@@ -375,7 +375,7 @@ void CombatState::CreateUI(PlayScene* pScene)
 
         if (m_dialoguePanel)
         {
-            m_dialoguePanel->PlayText(L"방어를 선택했다.");
+            m_dialoguePanel->PlayText(L"방어를 선택했다.\n주사위를 굴려 행동을 실행하자.");
         }
 
         if (m_diceRollPanel)
